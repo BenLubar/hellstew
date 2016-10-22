@@ -27,7 +27,7 @@ func (s SearchResult) Description() string {
 	return s.emoji.description
 }
 
-// Score is the likelyhood of the result being correct. Higher is better.
+// Score is the likelihood of the result being correct. Higher is better.
 func (s SearchResult) Score() int {
 	return s.score
 }
