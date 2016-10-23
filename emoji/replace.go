@@ -58,7 +58,7 @@ func replaceElement(node *html.Node) []*html.Node {
 }
 
 func replaceText(node *html.Node) []*html.Node {
-	matches := re.FindAllStringIndex(node.Data, -1)
+	matches := stateMachineMatch(node.Data)
 	if len(matches) == 0 {
 		return []*html.Node{node}
 	}
@@ -130,4 +130,27 @@ func deepClone(node *html.Node) *html.Node {
 		result.AppendChild(deepClone(child))
 	}
 	return result
+}
+
+func stateMachineMatch(str string) [][2]int {
+	var matches [][2]int
+
+	for i := 0; i < len(str); i++ {
+		term := -1
+		for j, s := i, startState; ; j++ {
+			if s.term {
+				term = j
+			}
+			if j == len(str) || s.next[str[j]] == nil {
+				break
+			}
+			s = s.next[str[j]]
+		}
+		if term != -1 {
+			matches = append(matches, [2]int{i, term})
+			i = term - 1
+		}
+	}
+
+	return matches
 }
