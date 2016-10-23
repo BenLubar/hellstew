@@ -75,5 +75,5 @@ func main() {
 			}
 		}
 		text.Call("val", buf.String())
-	})
+	}).Call("removeAttr", "disabled")
 }
