@@ -32,6 +32,26 @@ func (s SearchResult) Score() int {
 	return s.score
 }
 
+type searchResults []SearchResult
+
+// Len implements sort.Interface.
+func (s searchResults) Len() int {
+	return len(s)
+}
+
+// Swap implements sort.Interface.
+func (s searchResults) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+
+// Less implements sort.Interface.
+func (s searchResults) Less(i, j int) bool {
+	if s[i].score == s[j].score {
+		return strings.ToLower(s[i].emoji.description) < strings.ToLower(s[j].emoji.description)
+	}
+	return s[i].score > s[j].score
+}
+
 // Search returns a list of possible emoji for a query. The query is the text
 // between the colon (:) and the user's cursor.
 func Search(query string, max int) []SearchResult {
@@ -41,7 +61,7 @@ func Search(query string, max int) []SearchResult {
 
 	query = strings.ToLower(query)
 
-	results := make([]SearchResult, 0, max)
+	results := make(searchResults, 0, max)
 
 	results = searchName(results, query, 3000)
 	results = searchDescription(results, query, 2000)
@@ -49,13 +69,13 @@ func Search(query string, max int) []SearchResult {
 	results = searchSet(results, query, 0, byCategory, categories)
 
 	if len(results) < cap(results) {
-		sortResults(results)
+		sort.Sort(results)
 	}
 
 	return results
 }
 
-func searchName(results []SearchResult, query string, bonus int) []SearchResult {
+func searchName(results searchResults, query string, bonus int) searchResults {
 	for name, e := range byName {
 		result, ok := match(query, strings.Trim(name, ":"), e, bonus)
 		if !ok {
@@ -68,7 +88,7 @@ func searchName(results []SearchResult, query string, bonus int) []SearchResult 
 	return results
 }
 
-func searchDescription(results []SearchResult, query string, bonus int) []SearchResult {
+func searchDescription(results searchResults, query string, bonus int) searchResults {
 	for i := range allEmoji {
 		e := &allEmoji[i]
 		result, ok := match(query, e.description, e, bonus)
@@ -82,7 +102,7 @@ func searchDescription(results []SearchResult, query string, bonus int) []Search
 	return results
 }
 
-func searchSet(results []SearchResult, query string, bonus int, by [][]*emoji, names []string) []SearchResult {
+func searchSet(results searchResults, query string, bonus int, by [][]*emoji, names []string) searchResults {
 	for i, es := range by {
 		result, ok := match(query, names[i], es[0], bonus)
 		if !ok {
@@ -98,7 +118,7 @@ func searchSet(results []SearchResult, query string, bonus int, by [][]*emoji, n
 	return results
 }
 
-func addResult(results []SearchResult, result SearchResult) []SearchResult {
+func addResult(results searchResults, result SearchResult) searchResults {
 	for _, r := range results {
 		if r.emoji == result.emoji {
 			// new score is always lower
@@ -109,7 +129,7 @@ func addResult(results []SearchResult, result SearchResult) []SearchResult {
 	if len(results) < cap(results) {
 		results = append(results, result)
 		if len(results) == cap(results) {
-			sortResults(results)
+			sort.Sort(results)
 		}
 	} else {
 		i := sort.Search(len(results), func(i int) bool {
@@ -124,15 +144,6 @@ func addResult(results []SearchResult, result SearchResult) []SearchResult {
 		}
 	}
 	return results
-}
-
-func sortResults(results []SearchResult) {
-	sort.Slice(results, func(i, j int) bool {
-		if results[i].score == results[j].score {
-			return strings.ToLower(results[i].emoji.description) < strings.ToLower(results[j].emoji.description)
-		}
-		return results[i].score > results[j].score
-	})
 }
 
 func match(query, actual string, e *emoji, bonus int) (SearchResult, bool) {
