@@ -177,15 +177,14 @@ func appendStateMachine(buf []byte, allNames []string) []byte {
 		allNames[i] = strings.ToLower(s)
 	}
 	sort.Strings(allNames)
-	buf = append(buf, "\ntype state struct {\n\tnext [256]*state\n\tterm bool\n}\n\nvar startState = "...)
+	buf = append(buf, "\ntype state struct {\n\tnext [256]*state\n\tterm bool\n}\n\nvar startState = &state"...)
 	buf = appendState(buf, "", "", allNames)
 	buf = append(buf, "\n"...)
 	return buf
 }
 
 func appendState(buf []byte, indent, prefix string, names []string) []byte {
-	buf = append(buf, indent...)
-	buf = append(buf, "&state{\n"...)
+	buf = append(buf, "{\n"...)
 
 	if names[0] == prefix {
 		buf = append(buf, indent...)
@@ -204,6 +203,7 @@ func appendState(buf []byte, indent, prefix string, names []string) []byte {
 			end := sort.Search(len(names), func(i int) bool {
 				return names[i][len(prefix)] > b
 			})
+			buf = append(buf, nextIndent...)
 			buf = strconv.AppendUint(buf, uint64(b), 10)
 			buf = append(buf, ": "...)
 			buf = appendState(buf, nextIndent, names[0][:len(prefix)+1], names[:end])
