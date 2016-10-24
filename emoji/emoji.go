@@ -11,16 +11,44 @@ import (
 )
 
 func main() {
+	var conf emoji.Config
+
+	addGitHubEmoji := func(name string, aliases ...string) {
+		conf.AddImage("https://assets-cdn.github.com/images/icons/emoji/"+name+".png", ":"+name+":", append([]string{name}, aliases...), "GitHub", nil)
+	}
+
+	addGitHubEmoji("basecamp")
+	addGitHubEmoji("basecampy")
+	addGitHubEmoji("bowtie")
+	addGitHubEmoji("feelsgood")
+	addGitHubEmoji("finnadie")
+	addGitHubEmoji("goberserk")
+	addGitHubEmoji("godmode")
+	addGitHubEmoji("hurtrealbad")
+	addGitHubEmoji("neckbeard")
+	addGitHubEmoji("octocat")
+	addGitHubEmoji("rage1")
+	addGitHubEmoji("rage2")
+	addGitHubEmoji("rage3")
+	addGitHubEmoji("rage4")
+	addGitHubEmoji("shipit", "squirrel")
+	addGitHubEmoji("suspect")
+	addGitHubEmoji("trollface")
+
 	js.Global.Call("$", "#emoji").Call("autoComplete", js.M{
 		"cache":    false,
 		"minChars": 1,
 		"source": func(term string, response func([]string)) {
-			results := emoji.Search(term, 10)
+			results := conf.Search(term, 10)
 			output := make([]string, len(results))
 
 			var buf bytes.Buffer
 
 			for i, item := range results {
+				replacement := item.Emoji()
+				if replacement == "" {
+					replacement = ":" + item.Aliases()[0] + ":"
+				}
 				div := &html.Node{
 					Type:     html.ElementNode,
 					Data:     "div",
@@ -32,13 +60,19 @@ func main() {
 						},
 						{
 							Key: "data-val",
-							Val: item.Emoji(),
+							Val: replacement,
 						},
 					},
 				}
+				for _, node := range conf.Replace(&html.Node{
+					Type: html.TextNode,
+					Data: replacement,
+				}) {
+					div.AppendChild(node)
+				}
 				div.AppendChild(&html.Node{
 					Type: html.TextNode,
-					Data: item.Emoji() + " " + item.Description(),
+					Data: " " + item.Description(),
 				})
 
 				buf.Reset()
@@ -65,7 +99,7 @@ func main() {
 			panic(err)
 		}
 
-		nodes = emoji.Replace(nodes...)
+		nodes = conf.Replace(nodes...)
 
 		var buf bytes.Buffer
 		for _, node := range nodes {
