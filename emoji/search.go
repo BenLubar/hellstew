@@ -6,6 +6,8 @@ import (
 )
 
 // SearchResult is a result from the Search function.
+//
+// Either Emoji or ImageURL will return a non-empty string, but not both.
 type SearchResult struct {
 	emoji *emoji
 	score int
@@ -14,6 +16,11 @@ type SearchResult struct {
 // Emoji is the Unicode emoji.
 func (s SearchResult) Emoji() string {
 	return s.emoji.emoji
+}
+
+// ImageURL is the URL of an image representing this emoji.
+func (s SearchResult) ImageURL() string {
+	return s.emoji.imageURL
 }
 
 // Aliases is a slice of textual shortcodes that can be used between colons to
@@ -55,6 +62,12 @@ func (s searchResults) Less(i, j int) bool {
 // Search returns a list of possible emoji for a query. The query is the text
 // between the colon (:) and the user's cursor.
 func Search(query string, max int) []SearchResult {
+	return defaultConfig.Search(query, max)
+}
+
+// Search returns a list of possible emoji for a query. The query is the text
+// between the colon (:) and the user's cursor.
+func (conf *Config) Search(query string, max int) []SearchResult {
 	if query == "" || max <= 0 {
 		return nil
 	}
@@ -63,10 +76,10 @@ func Search(query string, max int) []SearchResult {
 
 	results := make(searchResults, 0, max)
 
-	results = searchName(results, query, 3000)
-	results = searchDescription(results, query, 2000)
-	results = searchSet(results, query, 1000, byTag, tags)
-	results = searchSet(results, query, 0, byCategory, categories)
+	results = conf.searchName(results, query, 3000)
+	results = conf.searchDescription(results, query, 2000)
+	results = conf.searchSet(results, query, 1000, conf.byTag, conf.tags, byTag, tags)
+	results = conf.searchSet(results, query, 0, conf.byCategory, conf.categories, byCategory, categories)
 
 	if len(results) < cap(results) {
 		sort.Sort(results)
@@ -75,43 +88,67 @@ func Search(query string, max int) []SearchResult {
 	return results
 }
 
-func searchName(results searchResults, query string, bonus int) searchResults {
+func (conf *Config) searchName(results searchResults, query string, bonus int) searchResults {
+	for name, e := range conf.byName {
+		if result, ok := match(query, strings.Trim(name, ":"), e, bonus); ok {
+			results = addResult(results, result)
+		}
+	}
 	for name, e := range byName {
-		result, ok := match(query, strings.Trim(name, ":"), e, bonus)
-		if !ok {
+		if conf.overrides(e) {
 			continue
 		}
 
-		results = addResult(results, result)
+		if result, ok := match(query, strings.Trim(name, ":"), e, bonus); ok {
+			results = addResult(results, result)
+		}
 	}
 
 	return results
 }
 
-func searchDescription(results searchResults, query string, bonus int) searchResults {
+func (conf *Config) searchDescription(results searchResults, query string, bonus int) searchResults {
+	for _, e := range conf.emoji {
+		if result, ok := match(query, e.description, e, bonus); ok {
+			results = addResult(results, result)
+		}
+	}
+
 	for i := range allEmoji {
 		e := &allEmoji[i]
-		result, ok := match(query, e.description, e, bonus)
-		if !ok {
+
+		if conf.overrides(e) {
 			continue
 		}
 
-		results = addResult(results, result)
+		if result, ok := match(query, e.description, e, bonus); ok {
+			results = addResult(results, result)
+		}
 	}
 
 	return results
 }
 
-func searchSet(results searchResults, query string, bonus int, by [][]*emoji, names []string) searchResults {
-	for i, es := range by {
-		result, ok := match(query, names[i], es[0], bonus)
-		if !ok {
-			continue
+func (conf *Config) searchSet(results searchResults, query string, bonus int, byLocal [][]*emoji, namesLocal []string, by [][]*emoji, names []string) searchResults {
+	for i, es := range byLocal {
+		if result, ok := match(query, namesLocal[i], es[0], bonus); ok {
+			results = addResult(results, result)
+			for _, e := range es[1:] {
+				results = addResult(results, SearchResult{e, result.score})
+			}
 		}
+	}
 
-		results = addResult(results, result)
-		for _, e := range es[1:] {
-			results = addResult(results, SearchResult{e, result.score})
+	for i, es := range by {
+		if result, ok := match(query, names[i], es[0], bonus); ok {
+			if !conf.overrides(es[0]) {
+				results = addResult(results, result)
+			}
+			for _, e := range es[1:] {
+				if !conf.overrides(e) {
+					results = addResult(results, SearchResult{e, result.score})
+				}
+			}
 		}
 	}
 

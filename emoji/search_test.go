@@ -109,10 +109,32 @@ var searchTests = [...]searchTest{
 }
 
 func TestSearch(t *testing.T) {
+	t.Run("Global", func(t *testing.T) {
+		testSearch(t, emoji.Search)
+	})
+	t.Run("Config", func(t *testing.T) {
+		testSearch(t, testConfig.Search)
+	})
+	t.Run("EmptyConfig", func(t *testing.T) {
+		var conf emoji.Config
+		testSearch(t, conf.Search)
+	})
+	t.Run("ConfigSpecific", func(t *testing.T) {
+		results := testConfig.Search("wtf", 5)
+		if len(results) != 2 {
+			t.Fatalf("unexpected len(results) == %d", len(results))
+		}
+		if results[0].ImageURL() != "http://thedailywtf.com/favicon.ico" {
+			t.Errorf("unexpected results[0].ImageURL() == %q", results[0].ImageURL())
+		}
+	})
+}
+
+func testSearch(t *testing.T, search func(string, int) []emoji.SearchResult) {
 	for _, tt := range searchTests {
 		tt := tt
 		t.Run(fmt.Sprintf("%s_%d", tt.query, tt.max), func(t *testing.T) {
-			results := emoji.Search(tt.query, tt.max)
+			results := search(tt.query, tt.max)
 			fail := len(results) != len(tt.expected)
 			for i := 0; !fail && i < len(results); i++ {
 				fail = results[i].Description() != tt.expected[i]

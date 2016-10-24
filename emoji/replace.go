@@ -17,6 +17,12 @@ var skipElement = map[atom.Atom]bool{
 // Replace finds Unicode emoji and emoji shortcodes (such as :tophat:) and
 // replaces them with Unicode emoji with tooltips.
 func Replace(nodes ...*html.Node) []*html.Node {
+	return defaultConfig.Replace(nodes...)
+}
+
+// Replace finds Unicode emoji and emoji shortcodes (such as :tophat:) and
+// replaces them with Unicode emoji with tooltips.
+func (conf *Config) Replace(nodes ...*html.Node) []*html.Node {
 	result := make([]*html.Node, 0, len(nodes))
 
 	for _, node := range nodes {
@@ -27,9 +33,9 @@ func Replace(nodes ...*html.Node) []*html.Node {
 				break
 			}
 
-			result = append(result, replaceElement(node)...)
+			result = append(result, conf.replaceElement(node)...)
 		case html.TextNode:
-			result = append(result, replaceText(node)...)
+			result = append(result, conf.replaceText(node)...)
 		default:
 			result = append(result, node)
 		}
@@ -38,10 +44,10 @@ func Replace(nodes ...*html.Node) []*html.Node {
 	return result
 }
 
-func replaceElement(node *html.Node) []*html.Node {
+func (conf *Config) replaceElement(node *html.Node) []*html.Node {
 	result := node
 	for child := node.FirstChild; child != nil; child = child.NextSibling {
-		if out := Replace(child); len(out) != 1 || out[0] != child || result != node {
+		if out := conf.Replace(child); len(out) != 1 || out[0] != child || result != node {
 			if result == node {
 				result = shallowClone(node)
 
@@ -57,8 +63,13 @@ func replaceElement(node *html.Node) []*html.Node {
 	return []*html.Node{result}
 }
 
-func replaceText(node *html.Node) []*html.Node {
-	matches := stateMachineMatch(node.Data)
+func (conf *Config) replaceText(node *html.Node) []*html.Node {
+	var matches [][2]int
+	if conf.state == nil {
+		matches = startState.match(node.Data)
+	} else {
+		matches = conf.state.match(node.Data)
+	}
 	if len(matches) == 0 {
 		return []*html.Node{node}
 	}
@@ -73,27 +84,12 @@ func replaceText(node *html.Node) []*html.Node {
 				})
 			}
 		}
-		e := byName[node.Data[match[0]:match[1]]]
-		abbr := &html.Node{
-			Type:     html.ElementNode,
-			Data:     "abbr",
-			DataAtom: atom.Abbr,
-			Attr: []html.Attribute{
-				{
-					Key: "title",
-					Val: e.description,
-				},
-				{
-					Key: "class",
-					Val: "emoji",
-				},
-			},
+		name := node.Data[match[0]:match[1]]
+		e, ok := conf.byName[name]
+		if !ok {
+			e = byName[name]
 		}
-		abbr.AppendChild(&html.Node{
-			Type: html.TextNode,
-			Data: e.emoji,
-		})
-		result = append(result, abbr)
+		result = append(result, emojiToNode(e, name))
 		if i+1 == len(matches) {
 			if match[1] != len(node.Data) {
 				result = append(result, &html.Node{
@@ -132,25 +128,51 @@ func deepClone(node *html.Node) *html.Node {
 	return result
 }
 
-func stateMachineMatch(str string) [][2]int {
-	var matches [][2]int
-
-	for i := 0; i < len(str); i++ {
-		term := -1
-		for j, s := i, startState; ; j++ {
-			if s.term {
-				term = j
-			}
-			if j == len(str) || s.next[str[j]] == nil {
-				break
-			}
-			s = s.next[str[j]]
+func emojiToNode(e *emoji, name string) *html.Node {
+	if e.emoji != "" {
+		abbr := &html.Node{
+			Type:     html.ElementNode,
+			Data:     "abbr",
+			DataAtom: atom.Abbr,
+			Attr: []html.Attribute{
+				{
+					Key: "title",
+					Val: e.description,
+				},
+				{
+					Key: "class",
+					Val: "emoji",
+				},
+			},
 		}
-		if term != -1 {
-			matches = append(matches, [2]int{i, term})
-			i = term - 1
-		}
+		abbr.AppendChild(&html.Node{
+			Type: html.TextNode,
+			Data: e.emoji,
+		})
+		return abbr
 	}
-
-	return matches
+	img := &html.Node{
+		Type:     html.ElementNode,
+		Data:     "img",
+		DataAtom: atom.Img,
+		Attr: []html.Attribute{
+			{
+				Key: "src",
+				Val: e.imageURL,
+			},
+			{
+				Key: "alt",
+				Val: name,
+			},
+			{
+				Key: "title",
+				Val: e.description,
+			},
+			{
+				Key: "class",
+				Val: "emoji",
+			},
+		},
+	}
+	return img
 }

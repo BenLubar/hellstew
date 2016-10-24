@@ -71,6 +71,35 @@ var replaceTests = [...]replaceTest{
 }
 
 func TestReplace(t *testing.T) {
+	t.Run("Global", func(t *testing.T) {
+		testReplace(t, emoji.Replace)
+	})
+	t.Run("Config", func(t *testing.T) {
+		testReplace(t, testConfig.Replace)
+	})
+	t.Run("EmptyConfig", func(t *testing.T) {
+		var conf emoji.Config
+		testReplace(t, conf.Replace)
+	})
+	t.Run("ConfigSpecific", func(t *testing.T) {
+		nodes := testConfig.Replace(&html.Node{
+			Type: html.TextNode,
+			Data: ":wtf:",
+		})
+
+		if len(nodes) != 1 {
+			t.Fatalf("unexpected len(nodes) == %d", len(nodes))
+		}
+		if nodes[0].Type != html.ElementNode {
+			t.Errorf("unexpected nodes[0].Type == %d", nodes[0].Type)
+		}
+		if nodes[0].Data != "img" {
+			t.Errorf("unexpected nodes[0].Data == %q", nodes[0].Data)
+		}
+	})
+}
+
+func testReplace(t *testing.T, replace func(...*html.Node) []*html.Node) {
 	for _, tt := range replaceTests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
@@ -83,7 +112,7 @@ func TestReplace(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			nodes := emoji.Replace(input...)
+			nodes := replace(input...)
 
 			var buf bytes.Buffer
 			for _, n := range nodes {
