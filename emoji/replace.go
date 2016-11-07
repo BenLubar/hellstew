@@ -7,7 +7,6 @@ import (
 )
 
 var skipElement = map[atom.Atom]bool{
-	atom.Abbr:   true,
 	atom.Script: true,
 	atom.Style:  true,
 	atom.Pre:    true,
@@ -15,14 +14,18 @@ var skipElement = map[atom.Atom]bool{
 }
 
 // Replace finds Unicode emoji and emoji shortcodes (such as :tophat:) and
-// replaces them with Unicode emoji with tooltips.
+// replaces them with Unicode emoji with tooltips. Replace is idempotent.
 func Replace(nodes ...*html.Node) []*html.Node {
 	return defaultConfig.Replace(nodes...)
 }
 
 // Replace finds Unicode emoji and emoji shortcodes (such as :tophat:) and
-// replaces them with Unicode emoji with tooltips.
+// replaces them with Unicode emoji with tooltips. Replace is idempotent.
 func (conf *Config) Replace(nodes ...*html.Node) []*html.Node {
+	return conf.replace(true, nodes...)
+}
+
+func (conf *Config) replace(tooltip bool, nodes ...*html.Node) []*html.Node {
 	result := make([]*html.Node, 0, len(nodes))
 
 	for _, node := range nodes {
@@ -33,9 +36,9 @@ func (conf *Config) Replace(nodes ...*html.Node) []*html.Node {
 				break
 			}
 
-			result = append(result, conf.replaceElement(node)...)
+			result = append(result, conf.replaceElement(tooltip, node)...)
 		case html.TextNode:
-			result = append(result, conf.replaceText(node)...)
+			result = append(result, conf.replaceText(tooltip, node)...)
 		default:
 			result = append(result, node)
 		}
@@ -44,10 +47,24 @@ func (conf *Config) Replace(nodes ...*html.Node) []*html.Node {
 	return result
 }
 
-func (conf *Config) replaceElement(node *html.Node) []*html.Node {
+func (conf *Config) replaceElement(tooltip bool, node *html.Node) []*html.Node {
+	if tooltip {
+		for _, a := range node.Attr {
+			if a.Namespace == "" && a.Key == "title" {
+				tooltip = false
+				break
+			}
+		}
+	}
+	for _, a := range node.Attr {
+		if a.Namespace == "" && a.Key == "class" && a.Val == "emoji" {
+			return []*html.Node{deepClone(node)}
+		}
+	}
+
 	result := node
 	for child := node.FirstChild; child != nil; child = child.NextSibling {
-		if out := conf.Replace(child); len(out) != 1 || out[0] != child || result != node {
+		if out := conf.replace(tooltip, child); len(out) != 1 || out[0] != child || result != node {
 			if result == node {
 				result = shallowClone(node)
 
@@ -63,7 +80,7 @@ func (conf *Config) replaceElement(node *html.Node) []*html.Node {
 	return []*html.Node{result}
 }
 
-func (conf *Config) replaceText(node *html.Node) []*html.Node {
+func (conf *Config) replaceText(tooltip bool, node *html.Node) []*html.Node {
 	var matches [][2]int
 	if conf.state == nil {
 		matches = startState.match(node.Data)
@@ -71,7 +88,7 @@ func (conf *Config) replaceText(node *html.Node) []*html.Node {
 		matches = conf.state.match(node.Data)
 	}
 	if len(matches) == 0 {
-		return []*html.Node{node}
+		return []*html.Node{shallowClone(node)}
 	}
 
 	result := make([]*html.Node, 0, len(matches)*2+1)
@@ -89,7 +106,7 @@ func (conf *Config) replaceText(node *html.Node) []*html.Node {
 		if !ok {
 			e = byName[name]
 		}
-		result = append(result, emojiToNode(e, name))
+		result = append(result, emojiToNode(tooltip, e, name))
 		if i+1 == len(matches) {
 			if match[1] != len(node.Data) {
 				result = append(result, &html.Node{
@@ -128,28 +145,33 @@ func deepClone(node *html.Node) *html.Node {
 	return result
 }
 
-func emojiToNode(e *emoji, name string) *html.Node {
+func emojiToNode(tooltip bool, e *emoji, name string) *html.Node {
 	if e.emoji != "" {
-		abbr := &html.Node{
+		node := &html.Node{
 			Type:     html.ElementNode,
-			Data:     "abbr",
-			DataAtom: atom.Abbr,
+			Data:     "span",
+			DataAtom: atom.Span,
 			Attr: []html.Attribute{
-				{
-					Key: "title",
-					Val: e.description,
-				},
 				{
 					Key: "class",
 					Val: "emoji",
 				},
 			},
 		}
-		abbr.AppendChild(&html.Node{
+		if tooltip {
+			node.Data = "abbr"
+			node.DataAtom = atom.Abbr
+			node.Attr = append(node.Attr, html.Attribute{
+				Key: "title",
+				Val: e.description,
+			})
+		}
+
+		node.AppendChild(&html.Node{
 			Type: html.TextNode,
 			Data: e.emoji,
 		})
-		return abbr
+		return node
 	}
 	img := &html.Node{
 		Type:     html.ElementNode,
@@ -165,14 +187,16 @@ func emojiToNode(e *emoji, name string) *html.Node {
 				Val: name,
 			},
 			{
-				Key: "title",
-				Val: e.description,
-			},
-			{
 				Key: "class",
 				Val: "emoji",
 			},
 		},
+	}
+	if tooltip {
+		img.Attr = append(img.Attr, html.Attribute{
+			Key: "title",
+			Val: e.description,
+		})
 	}
 	return img
 }

@@ -36,22 +36,22 @@ var replaceTests = [...]replaceTest{
 	{
 		name:   "Colons",
 		input:  `:horse_racing:`,
-		output: `<abbr title="horse racing" class="emoji">🏇</abbr>`,
+		output: `<abbr class="emoji" title="horse racing">🏇</abbr>`,
 	},
 	{
 		name:   "Unicode",
 		input:  `🏇`,
-		output: `<abbr title="horse racing" class="emoji">🏇</abbr>`,
+		output: `<abbr class="emoji" title="horse racing">🏇</abbr>`,
 	},
 	{
 		name:   "Mixed",
 		input:  `<em>To the 🍿 thread!</em> :musical_note:`,
-		output: `<em>To the <abbr title="popcorn" class="emoji">🍿</abbr> thread!</em> <abbr title="musical note" class="emoji">🎵</abbr>`,
+		output: `<em>To the <abbr class="emoji" title="popcorn">🍿</abbr> thread!</em> <abbr class="emoji" title="musical note">🎵</abbr>`,
 	},
 	{
 		name:   "Garbage",
 		input:  `:po:popcor:corn:n:`,
-		output: `:po:popcor<abbr title="ear of corn" class="emoji">🌽</abbr>n:`,
+		output: `:po:popcor<abbr class="emoji" title="ear of corn">🌽</abbr>n:`,
 	},
 	{
 		name:   "Code",
@@ -61,12 +61,12 @@ var replaceTests = [...]replaceTest{
 	{
 		name:   "Attribute",
 		input:  `<a href=":book:">:book:</a>`,
-		output: `<a href=":book:"><abbr title="open book" class="emoji">📖</abbr></a>`,
+		output: `<a href=":book:"><abbr class="emoji" title="open book">📖</abbr></a>`,
 	},
 	{
 		name:   "Nested",
 		input:  `<p><a href="https://www.google.com/"><img src="https://www.google.com/favicon.ico" alt="Google"/></a> :mag: Look it up:exclamation:</p>`,
-		output: `<p><a href="https://www.google.com/"><img src="https://www.google.com/favicon.ico" alt="Google"/></a> <abbr title="left-pointing magnifying glass" class="emoji">🔍</abbr> Look it up<abbr title="exclamation mark" class="emoji">❗️</abbr></p>`,
+		output: `<p><a href="https://www.google.com/"><img src="https://www.google.com/favicon.ico" alt="Google"/></a> <abbr class="emoji" title="left-pointing magnifying glass">🔍</abbr> Look it up<abbr class="emoji" title="exclamation mark">❗️</abbr></p>`,
 	},
 }
 
@@ -124,6 +124,20 @@ func testReplace(t *testing.T, replace func(...*html.Node) []*html.Node) {
 
 			if output := buf.String(); tt.output != output {
 				t.Errorf("input %q\nexpected %q\nactual   %q", tt.input, tt.output, output)
+			}
+
+			nodes = replace(nodes...)
+
+			buf.Reset()
+			for _, n := range nodes {
+				err = html.Render(&buf, n)
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
+
+			if output := buf.String(); tt.output != output {
+				t.Errorf("output 1: %q\noutput 2: %q", tt.output, output)
 			}
 		})
 	}
