@@ -109,6 +109,13 @@ var $subslice = function(slice, low, high, max) {
   return s;
 };
 
+var $substring = function(str, low, high) {
+  if (low < 0 || high < low || high > str.length) {
+    $throwRuntimeError("slice bounds out of range");
+  }
+  return str.substring(low, high);
+};
+
 var $sliceToArray = function(slice) {
   if (slice.$length === 0) {
     return [];
@@ -3399,7 +3406,7 @@ $packages["unicode/utf8"] = (function() {
 		if (start < 0) {
 			start = 0;
 		}
-		_tuple = DecodeRuneInString(s.substring(start, end));
+		_tuple = DecodeRuneInString($substring(s, start, end));
 		r = _tuple[0];
 		size = _tuple[1];
 		if (!(((start + size >> 0) === end))) {
@@ -4446,7 +4453,7 @@ $packages["bufio"] = (function() {
 			n = $copyString($subslice(b.buf, b.n), s);
 			b.n = b.n + (n) >> 0;
 			nn = nn + (n) >> 0;
-			s = s.substring(n);
+			s = $substring(s, n);
 			_r = b.flush(); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 			_r;
 		/* } */ $s = 1; continue; case 2:
@@ -4918,7 +4925,7 @@ $packages["syscall"] = (function() {
 			while (true) {
 				if (!(j < s.length)) { break; }
 				if (s.charCodeAt(j) === 61) {
-					key = s.substring(0, j);
+					key = $substring(s, 0, j);
 					_tuple = (_entry = env[$String.keyFor(key)], _entry !== undefined ? [_entry.v, true] : [0, false]);
 					ok = _tuple[1];
 					if (!ok) {
@@ -4965,7 +4972,7 @@ $packages["syscall"] = (function() {
 		while (true) {
 			if (!(i$1 < s.length)) { break; }
 			if (s.charCodeAt(i$1) === 61) {
-				_tmp$4 = s.substring((i$1 + 1 >> 0));
+				_tmp$4 = $substring(s, (i$1 + 1 >> 0));
 				_tmp$5 = true;
 				value = _tmp$4;
 				found = _tmp$5;
@@ -5663,7 +5670,7 @@ $packages["time"] = (function() {
 			localLoc.name = "UTC";
 			return;
 		}
-		localLoc.name = s.substring((i + 1 >> 0), j);
+		localLoc.name = $substring(s, (i + 1 >> 0), j);
 		localLoc.zone = new sliceType([new zone.ptr(localLoc.name, $imul(($parseInt(d.getTimezoneOffset()) >> 0), -60), false)]);
 	};
 	indexByte = function(s, c) {
@@ -5689,20 +5696,20 @@ $packages["time"] = (function() {
 			c = (layout.charCodeAt(i) >> 0);
 			_1 = c;
 			if (_1 === (74)) {
-				if (layout.length >= (i + 3 >> 0) && layout.substring(i, (i + 3 >> 0)) === "Jan") {
-					if (layout.length >= (i + 7 >> 0) && layout.substring(i, (i + 7 >> 0)) === "January") {
-						_tmp = layout.substring(0, i);
+				if (layout.length >= (i + 3 >> 0) && $substring(layout, i, (i + 3 >> 0)) === "Jan") {
+					if (layout.length >= (i + 7 >> 0) && $substring(layout, i, (i + 7 >> 0)) === "January") {
+						_tmp = $substring(layout, 0, i);
 						_tmp$1 = 257;
-						_tmp$2 = layout.substring((i + 7 >> 0));
+						_tmp$2 = $substring(layout, (i + 7 >> 0));
 						prefix = _tmp;
 						std = _tmp$1;
 						suffix = _tmp$2;
 						return [prefix, std, suffix];
 					}
-					if (!startsWithLowerCase(layout.substring((i + 3 >> 0)))) {
-						_tmp$3 = layout.substring(0, i);
+					if (!startsWithLowerCase($substring(layout, (i + 3 >> 0)))) {
+						_tmp$3 = $substring(layout, 0, i);
 						_tmp$4 = 258;
-						_tmp$5 = layout.substring((i + 3 >> 0));
+						_tmp$5 = $substring(layout, (i + 3 >> 0));
 						prefix = _tmp$3;
 						std = _tmp$4;
 						suffix = _tmp$5;
@@ -5711,30 +5718,30 @@ $packages["time"] = (function() {
 				}
 			} else if (_1 === (77)) {
 				if (layout.length >= (i + 3 >> 0)) {
-					if (layout.substring(i, (i + 3 >> 0)) === "Mon") {
-						if (layout.length >= (i + 6 >> 0) && layout.substring(i, (i + 6 >> 0)) === "Monday") {
-							_tmp$6 = layout.substring(0, i);
+					if ($substring(layout, i, (i + 3 >> 0)) === "Mon") {
+						if (layout.length >= (i + 6 >> 0) && $substring(layout, i, (i + 6 >> 0)) === "Monday") {
+							_tmp$6 = $substring(layout, 0, i);
 							_tmp$7 = 261;
-							_tmp$8 = layout.substring((i + 6 >> 0));
+							_tmp$8 = $substring(layout, (i + 6 >> 0));
 							prefix = _tmp$6;
 							std = _tmp$7;
 							suffix = _tmp$8;
 							return [prefix, std, suffix];
 						}
-						if (!startsWithLowerCase(layout.substring((i + 3 >> 0)))) {
-							_tmp$9 = layout.substring(0, i);
+						if (!startsWithLowerCase($substring(layout, (i + 3 >> 0)))) {
+							_tmp$9 = $substring(layout, 0, i);
 							_tmp$10 = 262;
-							_tmp$11 = layout.substring((i + 3 >> 0));
+							_tmp$11 = $substring(layout, (i + 3 >> 0));
 							prefix = _tmp$9;
 							std = _tmp$10;
 							suffix = _tmp$11;
 							return [prefix, std, suffix];
 						}
 					}
-					if (layout.substring(i, (i + 3 >> 0)) === "MST") {
-						_tmp$12 = layout.substring(0, i);
+					if ($substring(layout, i, (i + 3 >> 0)) === "MST") {
+						_tmp$12 = $substring(layout, 0, i);
 						_tmp$13 = 21;
-						_tmp$14 = layout.substring((i + 3 >> 0));
+						_tmp$14 = $substring(layout, (i + 3 >> 0));
 						prefix = _tmp$12;
 						std = _tmp$13;
 						suffix = _tmp$14;
@@ -5743,9 +5750,9 @@ $packages["time"] = (function() {
 				}
 			} else if (_1 === (48)) {
 				if (layout.length >= (i + 2 >> 0) && 49 <= layout.charCodeAt((i + 1 >> 0)) && layout.charCodeAt((i + 1 >> 0)) <= 54) {
-					_tmp$15 = layout.substring(0, i);
+					_tmp$15 = $substring(layout, 0, i);
 					_tmp$16 = (x = layout.charCodeAt((i + 1 >> 0)) - 49 << 24 >>> 24, ((x < 0 || x >= std0x.length) ? $throwRuntimeError("index out of range") : std0x[x]));
-					_tmp$17 = layout.substring((i + 2 >> 0));
+					_tmp$17 = $substring(layout, (i + 2 >> 0));
 					prefix = _tmp$15;
 					std = _tmp$16;
 					suffix = _tmp$17;
@@ -5753,86 +5760,86 @@ $packages["time"] = (function() {
 				}
 			} else if (_1 === (49)) {
 				if (layout.length >= (i + 2 >> 0) && (layout.charCodeAt((i + 1 >> 0)) === 53)) {
-					_tmp$18 = layout.substring(0, i);
+					_tmp$18 = $substring(layout, 0, i);
 					_tmp$19 = 522;
-					_tmp$20 = layout.substring((i + 2 >> 0));
+					_tmp$20 = $substring(layout, (i + 2 >> 0));
 					prefix = _tmp$18;
 					std = _tmp$19;
 					suffix = _tmp$20;
 					return [prefix, std, suffix];
 				}
-				_tmp$21 = layout.substring(0, i);
+				_tmp$21 = $substring(layout, 0, i);
 				_tmp$22 = 259;
-				_tmp$23 = layout.substring((i + 1 >> 0));
+				_tmp$23 = $substring(layout, (i + 1 >> 0));
 				prefix = _tmp$21;
 				std = _tmp$22;
 				suffix = _tmp$23;
 				return [prefix, std, suffix];
 			} else if (_1 === (50)) {
-				if (layout.length >= (i + 4 >> 0) && layout.substring(i, (i + 4 >> 0)) === "2006") {
-					_tmp$24 = layout.substring(0, i);
+				if (layout.length >= (i + 4 >> 0) && $substring(layout, i, (i + 4 >> 0)) === "2006") {
+					_tmp$24 = $substring(layout, 0, i);
 					_tmp$25 = 273;
-					_tmp$26 = layout.substring((i + 4 >> 0));
+					_tmp$26 = $substring(layout, (i + 4 >> 0));
 					prefix = _tmp$24;
 					std = _tmp$25;
 					suffix = _tmp$26;
 					return [prefix, std, suffix];
 				}
-				_tmp$27 = layout.substring(0, i);
+				_tmp$27 = $substring(layout, 0, i);
 				_tmp$28 = 263;
-				_tmp$29 = layout.substring((i + 1 >> 0));
+				_tmp$29 = $substring(layout, (i + 1 >> 0));
 				prefix = _tmp$27;
 				std = _tmp$28;
 				suffix = _tmp$29;
 				return [prefix, std, suffix];
 			} else if (_1 === (95)) {
 				if (layout.length >= (i + 2 >> 0) && (layout.charCodeAt((i + 1 >> 0)) === 50)) {
-					if (layout.length >= (i + 5 >> 0) && layout.substring((i + 1 >> 0), (i + 5 >> 0)) === "2006") {
-						_tmp$30 = layout.substring(0, (i + 1 >> 0));
+					if (layout.length >= (i + 5 >> 0) && $substring(layout, (i + 1 >> 0), (i + 5 >> 0)) === "2006") {
+						_tmp$30 = $substring(layout, 0, (i + 1 >> 0));
 						_tmp$31 = 273;
-						_tmp$32 = layout.substring((i + 5 >> 0));
+						_tmp$32 = $substring(layout, (i + 5 >> 0));
 						prefix = _tmp$30;
 						std = _tmp$31;
 						suffix = _tmp$32;
 						return [prefix, std, suffix];
 					}
-					_tmp$33 = layout.substring(0, i);
+					_tmp$33 = $substring(layout, 0, i);
 					_tmp$34 = 264;
-					_tmp$35 = layout.substring((i + 2 >> 0));
+					_tmp$35 = $substring(layout, (i + 2 >> 0));
 					prefix = _tmp$33;
 					std = _tmp$34;
 					suffix = _tmp$35;
 					return [prefix, std, suffix];
 				}
 			} else if (_1 === (51)) {
-				_tmp$36 = layout.substring(0, i);
+				_tmp$36 = $substring(layout, 0, i);
 				_tmp$37 = 523;
-				_tmp$38 = layout.substring((i + 1 >> 0));
+				_tmp$38 = $substring(layout, (i + 1 >> 0));
 				prefix = _tmp$36;
 				std = _tmp$37;
 				suffix = _tmp$38;
 				return [prefix, std, suffix];
 			} else if (_1 === (52)) {
-				_tmp$39 = layout.substring(0, i);
+				_tmp$39 = $substring(layout, 0, i);
 				_tmp$40 = 525;
-				_tmp$41 = layout.substring((i + 1 >> 0));
+				_tmp$41 = $substring(layout, (i + 1 >> 0));
 				prefix = _tmp$39;
 				std = _tmp$40;
 				suffix = _tmp$41;
 				return [prefix, std, suffix];
 			} else if (_1 === (53)) {
-				_tmp$42 = layout.substring(0, i);
+				_tmp$42 = $substring(layout, 0, i);
 				_tmp$43 = 527;
-				_tmp$44 = layout.substring((i + 1 >> 0));
+				_tmp$44 = $substring(layout, (i + 1 >> 0));
 				prefix = _tmp$42;
 				std = _tmp$43;
 				suffix = _tmp$44;
 				return [prefix, std, suffix];
 			} else if (_1 === (80)) {
 				if (layout.length >= (i + 2 >> 0) && (layout.charCodeAt((i + 1 >> 0)) === 77)) {
-					_tmp$45 = layout.substring(0, i);
+					_tmp$45 = $substring(layout, 0, i);
 					_tmp$46 = 531;
-					_tmp$47 = layout.substring((i + 2 >> 0));
+					_tmp$47 = $substring(layout, (i + 2 >> 0));
 					prefix = _tmp$45;
 					std = _tmp$46;
 					suffix = _tmp$47;
@@ -5840,101 +5847,101 @@ $packages["time"] = (function() {
 				}
 			} else if (_1 === (112)) {
 				if (layout.length >= (i + 2 >> 0) && (layout.charCodeAt((i + 1 >> 0)) === 109)) {
-					_tmp$48 = layout.substring(0, i);
+					_tmp$48 = $substring(layout, 0, i);
 					_tmp$49 = 532;
-					_tmp$50 = layout.substring((i + 2 >> 0));
+					_tmp$50 = $substring(layout, (i + 2 >> 0));
 					prefix = _tmp$48;
 					std = _tmp$49;
 					suffix = _tmp$50;
 					return [prefix, std, suffix];
 				}
 			} else if (_1 === (45)) {
-				if (layout.length >= (i + 7 >> 0) && layout.substring(i, (i + 7 >> 0)) === "-070000") {
-					_tmp$51 = layout.substring(0, i);
+				if (layout.length >= (i + 7 >> 0) && $substring(layout, i, (i + 7 >> 0)) === "-070000") {
+					_tmp$51 = $substring(layout, 0, i);
 					_tmp$52 = 28;
-					_tmp$53 = layout.substring((i + 7 >> 0));
+					_tmp$53 = $substring(layout, (i + 7 >> 0));
 					prefix = _tmp$51;
 					std = _tmp$52;
 					suffix = _tmp$53;
 					return [prefix, std, suffix];
 				}
-				if (layout.length >= (i + 9 >> 0) && layout.substring(i, (i + 9 >> 0)) === "-07:00:00") {
-					_tmp$54 = layout.substring(0, i);
+				if (layout.length >= (i + 9 >> 0) && $substring(layout, i, (i + 9 >> 0)) === "-07:00:00") {
+					_tmp$54 = $substring(layout, 0, i);
 					_tmp$55 = 31;
-					_tmp$56 = layout.substring((i + 9 >> 0));
+					_tmp$56 = $substring(layout, (i + 9 >> 0));
 					prefix = _tmp$54;
 					std = _tmp$55;
 					suffix = _tmp$56;
 					return [prefix, std, suffix];
 				}
-				if (layout.length >= (i + 5 >> 0) && layout.substring(i, (i + 5 >> 0)) === "-0700") {
-					_tmp$57 = layout.substring(0, i);
+				if (layout.length >= (i + 5 >> 0) && $substring(layout, i, (i + 5 >> 0)) === "-0700") {
+					_tmp$57 = $substring(layout, 0, i);
 					_tmp$58 = 27;
-					_tmp$59 = layout.substring((i + 5 >> 0));
+					_tmp$59 = $substring(layout, (i + 5 >> 0));
 					prefix = _tmp$57;
 					std = _tmp$58;
 					suffix = _tmp$59;
 					return [prefix, std, suffix];
 				}
-				if (layout.length >= (i + 6 >> 0) && layout.substring(i, (i + 6 >> 0)) === "-07:00") {
-					_tmp$60 = layout.substring(0, i);
+				if (layout.length >= (i + 6 >> 0) && $substring(layout, i, (i + 6 >> 0)) === "-07:00") {
+					_tmp$60 = $substring(layout, 0, i);
 					_tmp$61 = 30;
-					_tmp$62 = layout.substring((i + 6 >> 0));
+					_tmp$62 = $substring(layout, (i + 6 >> 0));
 					prefix = _tmp$60;
 					std = _tmp$61;
 					suffix = _tmp$62;
 					return [prefix, std, suffix];
 				}
-				if (layout.length >= (i + 3 >> 0) && layout.substring(i, (i + 3 >> 0)) === "-07") {
-					_tmp$63 = layout.substring(0, i);
+				if (layout.length >= (i + 3 >> 0) && $substring(layout, i, (i + 3 >> 0)) === "-07") {
+					_tmp$63 = $substring(layout, 0, i);
 					_tmp$64 = 29;
-					_tmp$65 = layout.substring((i + 3 >> 0));
+					_tmp$65 = $substring(layout, (i + 3 >> 0));
 					prefix = _tmp$63;
 					std = _tmp$64;
 					suffix = _tmp$65;
 					return [prefix, std, suffix];
 				}
 			} else if (_1 === (90)) {
-				if (layout.length >= (i + 7 >> 0) && layout.substring(i, (i + 7 >> 0)) === "Z070000") {
-					_tmp$66 = layout.substring(0, i);
+				if (layout.length >= (i + 7 >> 0) && $substring(layout, i, (i + 7 >> 0)) === "Z070000") {
+					_tmp$66 = $substring(layout, 0, i);
 					_tmp$67 = 23;
-					_tmp$68 = layout.substring((i + 7 >> 0));
+					_tmp$68 = $substring(layout, (i + 7 >> 0));
 					prefix = _tmp$66;
 					std = _tmp$67;
 					suffix = _tmp$68;
 					return [prefix, std, suffix];
 				}
-				if (layout.length >= (i + 9 >> 0) && layout.substring(i, (i + 9 >> 0)) === "Z07:00:00") {
-					_tmp$69 = layout.substring(0, i);
+				if (layout.length >= (i + 9 >> 0) && $substring(layout, i, (i + 9 >> 0)) === "Z07:00:00") {
+					_tmp$69 = $substring(layout, 0, i);
 					_tmp$70 = 26;
-					_tmp$71 = layout.substring((i + 9 >> 0));
+					_tmp$71 = $substring(layout, (i + 9 >> 0));
 					prefix = _tmp$69;
 					std = _tmp$70;
 					suffix = _tmp$71;
 					return [prefix, std, suffix];
 				}
-				if (layout.length >= (i + 5 >> 0) && layout.substring(i, (i + 5 >> 0)) === "Z0700") {
-					_tmp$72 = layout.substring(0, i);
+				if (layout.length >= (i + 5 >> 0) && $substring(layout, i, (i + 5 >> 0)) === "Z0700") {
+					_tmp$72 = $substring(layout, 0, i);
 					_tmp$73 = 22;
-					_tmp$74 = layout.substring((i + 5 >> 0));
+					_tmp$74 = $substring(layout, (i + 5 >> 0));
 					prefix = _tmp$72;
 					std = _tmp$73;
 					suffix = _tmp$74;
 					return [prefix, std, suffix];
 				}
-				if (layout.length >= (i + 6 >> 0) && layout.substring(i, (i + 6 >> 0)) === "Z07:00") {
-					_tmp$75 = layout.substring(0, i);
+				if (layout.length >= (i + 6 >> 0) && $substring(layout, i, (i + 6 >> 0)) === "Z07:00") {
+					_tmp$75 = $substring(layout, 0, i);
 					_tmp$76 = 25;
-					_tmp$77 = layout.substring((i + 6 >> 0));
+					_tmp$77 = $substring(layout, (i + 6 >> 0));
 					prefix = _tmp$75;
 					std = _tmp$76;
 					suffix = _tmp$77;
 					return [prefix, std, suffix];
 				}
-				if (layout.length >= (i + 3 >> 0) && layout.substring(i, (i + 3 >> 0)) === "Z07") {
-					_tmp$78 = layout.substring(0, i);
+				if (layout.length >= (i + 3 >> 0) && $substring(layout, i, (i + 3 >> 0)) === "Z07") {
+					_tmp$78 = $substring(layout, 0, i);
 					_tmp$79 = 24;
-					_tmp$80 = layout.substring((i + 3 >> 0));
+					_tmp$80 = $substring(layout, (i + 3 >> 0));
 					prefix = _tmp$78;
 					std = _tmp$79;
 					suffix = _tmp$80;
@@ -5954,9 +5961,9 @@ $packages["time"] = (function() {
 							std$1 = 33;
 						}
 						std$1 = std$1 | ((((j - ((i + 1 >> 0)) >> 0)) << 16 >> 0));
-						_tmp$81 = layout.substring(0, i);
+						_tmp$81 = $substring(layout, 0, i);
 						_tmp$82 = std$1;
-						_tmp$83 = layout.substring(j);
+						_tmp$83 = $substring(layout, j);
 						prefix = _tmp$81;
 						std = _tmp$82;
 						suffix = _tmp$83;
@@ -6000,8 +6007,8 @@ $packages["time"] = (function() {
 			if (!(_i < _ref.$length)) { break; }
 			i = _i;
 			v = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
-			if (val.length >= v.length && match(val.substring(0, v.length), v)) {
-				return [i, val.substring(v.length), $ifaceNil];
+			if (val.length >= v.length && match($substring(val, 0, v.length), v)) {
+				return [i, $substring(val, v.length), $ifaceNil];
 			}
 			_i++;
 		}
@@ -6040,7 +6047,7 @@ $packages["time"] = (function() {
 		neg = false;
 		if (!(s === "") && ((s.charCodeAt(0) === 45) || (s.charCodeAt(0) === 43))) {
 			neg = s.charCodeAt(0) === 45;
-			s = s.substring(1);
+			s = $substring(s, 1);
 		}
 		_tuple$1 = leadingInt(s);
 		q = _tuple$1[0];
@@ -6169,7 +6176,7 @@ $packages["time"] = (function() {
 				} else if (_1 === (273)) {
 					b = appendInt(b, year, 4);
 				} else if (_1 === (258)) {
-					b = $appendSlice(b, new Month(month).String().substring(0, 3));
+					b = $appendSlice(b, $substring(new Month(month).String(), 0, 3));
 				} else if (_1 === (257)) {
 					m = new Month(month).String();
 					b = $appendSlice(b, m);
@@ -6178,7 +6185,7 @@ $packages["time"] = (function() {
 				} else if (_1 === (260)) {
 					b = appendInt(b, (month >> 0), 2);
 				} else if (_1 === (262)) {
-					b = $appendSlice(b, new Weekday(absWeekday(abs)).String().substring(0, 3));
+					b = $appendSlice(b, $substring(new Weekday(absWeekday(abs)).String(), 0, 3));
 				} else if (_1 === (261)) {
 					s = new Weekday(absWeekday(abs)).String();
 					b = $appendSlice(b, s);
@@ -6306,15 +6313,15 @@ $packages["time"] = (function() {
 			if (fixed) {
 				return [0, s, errBad];
 			}
-			return [((s.charCodeAt(0) - 48 << 24 >>> 24) >> 0), s.substring(1), $ifaceNil];
+			return [((s.charCodeAt(0) - 48 << 24 >>> 24) >> 0), $substring(s, 1), $ifaceNil];
 		}
-		return [($imul(((s.charCodeAt(0) - 48 << 24 >>> 24) >> 0), 10)) + ((s.charCodeAt(1) - 48 << 24 >>> 24) >> 0) >> 0, s.substring(2), $ifaceNil];
+		return [($imul(((s.charCodeAt(0) - 48 << 24 >>> 24) >> 0), 10)) + ((s.charCodeAt(1) - 48 << 24 >>> 24) >> 0) >> 0, $substring(s, 2), $ifaceNil];
 	};
 	cutspace = function(s) {
 		var $ptr, s;
 		while (true) {
 			if (!(s.length > 0 && (s.charCodeAt(0) === 32))) { break; }
-			s = s.substring(1);
+			s = $substring(s, 1);
 		}
 		return s;
 	};
@@ -6333,8 +6340,8 @@ $packages["time"] = (function() {
 			if ((value.length === 0) || !((value.charCodeAt(0) === prefix.charCodeAt(0)))) {
 				return [value, errBad];
 			}
-			prefix = prefix.substring(1);
-			value = value.substring(1);
+			prefix = $substring(prefix, 1);
+			value = $substring(value, 1);
 		}
 		return [value, $ifaceNil];
 	};
@@ -6373,7 +6380,7 @@ $packages["time"] = (function() {
 			prefix = _tuple$1[0];
 			std = _tuple$1[1];
 			suffix = _tuple$1[2];
-			stdstr = layout.substring(prefix.length, (layout.length - suffix.length >> 0));
+			stdstr = $substring(layout, prefix.length, (layout.length - suffix.length >> 0));
 			_tuple$2 = skip(value, prefix);
 			value = _tuple$2[0];
 			err = _tuple$2[1];
@@ -6397,8 +6404,8 @@ $packages["time"] = (function() {
 						err = errBad;
 						break;
 					}
-					_tmp$2 = value.substring(0, 2);
-					_tmp$3 = value.substring(2);
+					_tmp$2 = $substring(value, 0, 2);
+					_tmp$3 = $substring(value, 2);
 					p = _tmp$2;
 					value = _tmp$3;
 					_tuple$3 = atoi(p);
@@ -6414,8 +6421,8 @@ $packages["time"] = (function() {
 						err = errBad;
 						break;
 					}
-					_tmp$4 = value.substring(0, 4);
-					_tmp$5 = value.substring(4);
+					_tmp$4 = $substring(value, 0, 4);
+					_tmp$5 = $substring(value, 4);
 					p = _tmp$4;
 					value = _tmp$5;
 					_tuple$4 = atoi(p);
@@ -6449,7 +6456,7 @@ $packages["time"] = (function() {
 					err = _tuple$9[2];
 				} else if ((_1 === (263)) || (_1 === (264)) || (_1 === (265))) {
 					if ((std === 264) && value.length > 0 && (value.charCodeAt(0) === 32)) {
-						value = value.substring(1);
+						value = $substring(value, 1);
 					}
 					_tuple$10 = getnum(value, std === 265);
 					day = _tuple$10[0];
@@ -6506,15 +6513,15 @@ $packages["time"] = (function() {
 						nsec = _tuple$16[0];
 						rangeErrString = _tuple$16[1];
 						err = _tuple$16[2];
-						value = value.substring(n);
+						value = $substring(value, n);
 					}
 				} else if (_1 === (531)) {
 					if (value.length < 2) {
 						err = errBad;
 						break;
 					}
-					_tmp$6 = value.substring(0, 2);
-					_tmp$7 = value.substring(2);
+					_tmp$6 = $substring(value, 0, 2);
+					_tmp$7 = $substring(value, 2);
 					p = _tmp$6;
 					value = _tmp$7;
 					_2 = p;
@@ -6530,8 +6537,8 @@ $packages["time"] = (function() {
 						err = errBad;
 						break;
 					}
-					_tmp$8 = value.substring(0, 2);
-					_tmp$9 = value.substring(2);
+					_tmp$8 = $substring(value, 0, 2);
+					_tmp$9 = $substring(value, 2);
 					p = _tmp$8;
 					value = _tmp$9;
 					_3 = p;
@@ -6544,7 +6551,7 @@ $packages["time"] = (function() {
 					}
 				} else if ((_1 === (22)) || (_1 === (25)) || (_1 === (23)) || (_1 === (24)) || (_1 === (26)) || (_1 === (27)) || (_1 === (29)) || (_1 === (30)) || (_1 === (28)) || (_1 === (31))) {
 					if (((std === 22) || (std === 24) || (std === 25)) && value.length >= 1 && (value.charCodeAt(0) === 90)) {
-						value = value.substring(1);
+						value = $substring(value, 1);
 						z = $pkg.UTC;
 						break;
 					}
@@ -6565,11 +6572,11 @@ $packages["time"] = (function() {
 							err = errBad;
 							break;
 						}
-						_tmp$14 = value.substring(0, 1);
-						_tmp$15 = value.substring(1, 3);
-						_tmp$16 = value.substring(4, 6);
+						_tmp$14 = $substring(value, 0, 1);
+						_tmp$15 = $substring(value, 1, 3);
+						_tmp$16 = $substring(value, 4, 6);
 						_tmp$17 = "00";
-						_tmp$18 = value.substring(6);
+						_tmp$18 = $substring(value, 6);
 						sign = _tmp$14;
 						hour$1 = _tmp$15;
 						min$1 = _tmp$16;
@@ -6580,11 +6587,11 @@ $packages["time"] = (function() {
 							err = errBad;
 							break;
 						}
-						_tmp$19 = value.substring(0, 1);
-						_tmp$20 = value.substring(1, 3);
+						_tmp$19 = $substring(value, 0, 1);
+						_tmp$20 = $substring(value, 1, 3);
 						_tmp$21 = "00";
 						_tmp$22 = "00";
-						_tmp$23 = value.substring(3);
+						_tmp$23 = $substring(value, 3);
 						sign = _tmp$19;
 						hour$1 = _tmp$20;
 						min$1 = _tmp$21;
@@ -6599,11 +6606,11 @@ $packages["time"] = (function() {
 							err = errBad;
 							break;
 						}
-						_tmp$24 = value.substring(0, 1);
-						_tmp$25 = value.substring(1, 3);
-						_tmp$26 = value.substring(4, 6);
-						_tmp$27 = value.substring(7, 9);
-						_tmp$28 = value.substring(9);
+						_tmp$24 = $substring(value, 0, 1);
+						_tmp$25 = $substring(value, 1, 3);
+						_tmp$26 = $substring(value, 4, 6);
+						_tmp$27 = $substring(value, 7, 9);
+						_tmp$28 = $substring(value, 9);
 						sign = _tmp$24;
 						hour$1 = _tmp$25;
 						min$1 = _tmp$26;
@@ -6614,11 +6621,11 @@ $packages["time"] = (function() {
 							err = errBad;
 							break;
 						}
-						_tmp$29 = value.substring(0, 1);
-						_tmp$30 = value.substring(1, 3);
-						_tmp$31 = value.substring(3, 5);
-						_tmp$32 = value.substring(5, 7);
-						_tmp$33 = value.substring(7);
+						_tmp$29 = $substring(value, 0, 1);
+						_tmp$30 = $substring(value, 1, 3);
+						_tmp$31 = $substring(value, 3, 5);
+						_tmp$32 = $substring(value, 5, 7);
+						_tmp$33 = $substring(value, 7);
 						sign = _tmp$29;
 						hour$1 = _tmp$30;
 						min$1 = _tmp$31;
@@ -6629,11 +6636,11 @@ $packages["time"] = (function() {
 							err = errBad;
 							break;
 						}
-						_tmp$34 = value.substring(0, 1);
-						_tmp$35 = value.substring(1, 3);
-						_tmp$36 = value.substring(3, 5);
+						_tmp$34 = $substring(value, 0, 1);
+						_tmp$35 = $substring(value, 1, 3);
+						_tmp$36 = $substring(value, 3, 5);
 						_tmp$37 = "00";
-						_tmp$38 = value.substring(5);
+						_tmp$38 = $substring(value, 5);
 						sign = _tmp$34;
 						hour$1 = _tmp$35;
 						min$1 = _tmp$36;
@@ -6668,9 +6675,9 @@ $packages["time"] = (function() {
 						err = errBad;
 					}
 				} else if (_1 === (21)) {
-					if (value.length >= 3 && value.substring(0, 3) === "UTC") {
+					if (value.length >= 3 && $substring(value, 0, 3) === "UTC") {
 						z = $pkg.UTC;
-						value = value.substring(3);
+						value = $substring(value, 3);
 						break;
 					}
 					_tuple$20 = parseTimeZone(value);
@@ -6680,8 +6687,8 @@ $packages["time"] = (function() {
 						err = errBad;
 						break;
 					}
-					_tmp$42 = value.substring(0, n$1);
-					_tmp$43 = value.substring(n$1);
+					_tmp$42 = $substring(value, 0, n$1);
+					_tmp$43 = $substring(value, n$1);
 					zoneName = _tmp$42;
 					value = _tmp$43;
 				} else if (_1 === (32)) {
@@ -6694,7 +6701,7 @@ $packages["time"] = (function() {
 					nsec = _tuple$21[0];
 					rangeErrString = _tuple$21[1];
 					err = _tuple$21[2];
-					value = value.substring(ndigit);
+					value = $substring(value, ndigit);
 				} else if (_1 === (33)) {
 					if (value.length < 2 || !((value.charCodeAt(0) === 46)) || value.charCodeAt(1) < 48 || 57 < value.charCodeAt(1)) {
 						break;
@@ -6708,7 +6715,7 @@ $packages["time"] = (function() {
 					nsec = _tuple$22[0];
 					rangeErrString = _tuple$22[1];
 					err = _tuple$22[2];
-					value = value.substring((1 + i >> 0));
+					value = $substring(value, (1 + i >> 0));
 				}
 			}
 			if (!(rangeErrString === "")) {
@@ -6770,8 +6777,8 @@ $packages["time"] = (function() {
 				$s = -1; return [t$1, $ifaceNil];
 				return [t$1, $ifaceNil];
 			}
-			if (zoneName.length > 3 && zoneName.substring(0, 3) === "GMT") {
-				_tuple$25 = atoi(zoneName.substring(3));
+			if (zoneName.length > 3 && $substring(zoneName, 0, 3) === "GMT") {
+				_tuple$25 = atoi($substring(zoneName, 3));
 				offset$1 = _tuple$25[0];
 				offset$1 = $imul(offset$1, (3600));
 			}
@@ -6795,14 +6802,14 @@ $packages["time"] = (function() {
 			ok = _tmp$1;
 			return [length, ok];
 		}
-		if (value.length >= 4 && (value.substring(0, 4) === "ChST" || value.substring(0, 4) === "MeST")) {
+		if (value.length >= 4 && ($substring(value, 0, 4) === "ChST" || $substring(value, 0, 4) === "MeST")) {
 			_tmp$2 = 4;
 			_tmp$3 = true;
 			length = _tmp$2;
 			ok = _tmp$3;
 			return [length, ok];
 		}
-		if (value.substring(0, 3) === "GMT") {
+		if ($substring(value, 0, 3) === "GMT") {
 			length = parseGMT(value);
 			_tmp$4 = length;
 			_tmp$5 = true;
@@ -6861,7 +6868,7 @@ $packages["time"] = (function() {
 	};
 	parseGMT = function(value) {
 		var $ptr, _tuple$1, err, rem, sign, value, x;
-		value = value.substring(3);
+		value = $substring(value, 3);
 		if (value.length === 0) {
 			return 3;
 		}
@@ -6869,7 +6876,7 @@ $packages["time"] = (function() {
 		if (!((sign === 45)) && !((sign === 43))) {
 			return 3;
 		}
-		_tuple$1 = leadingInt(value.substring(1));
+		_tuple$1 = leadingInt($substring(value, 1));
 		x = _tuple$1[0];
 		rem = _tuple$1[1];
 		err = _tuple$1[2];
@@ -6893,7 +6900,7 @@ $packages["time"] = (function() {
 			err = errBad;
 			return [ns, rangeErrString, err];
 		}
-		_tuple$1 = atoi(value.substring(1, nbytes));
+		_tuple$1 = atoi($substring(value, 1, nbytes));
 		ns = _tuple$1[0];
 		err = _tuple$1[1];
 		if (!($interfaceIsEqual(err, $ifaceNil))) {
@@ -6946,7 +6953,7 @@ $packages["time"] = (function() {
 			i = i + (1) >> 0;
 		}
 		_tmp$6 = x;
-		_tmp$7 = s.substring(i);
+		_tmp$7 = $substring(s, i);
 		_tmp$8 = $ifaceNil;
 		x = _tmp$6;
 		rem = _tmp$7;
@@ -8971,14 +8978,14 @@ $packages["os"] = (function() {
 		i = name.length - 1 >> 0;
 		while (true) {
 			if (!(i > 0 && (name.charCodeAt(i) === 47))) { break; }
-			name = name.substring(0, i);
+			name = $substring(name, 0, i);
 			i = i - (1) >> 0;
 		}
 		i = i - (1) >> 0;
 		while (true) {
 			if (!(i >= 0)) { break; }
 			if (name.charCodeAt(i) === 47) {
-				name = name.substring((i + 1 >> 0));
+				name = $substring(name, (i + 1 >> 0));
 				break;
 			}
 			i = i - (1) >> 0;
@@ -10399,11 +10406,11 @@ $packages["strconv"] = (function() {
 				buf = $appendSlice(buf, "\\x");
 				buf = $append(buf, "0123456789abcdef".charCodeAt((s.charCodeAt(0) >>> 4 << 24 >>> 24)));
 				buf = $append(buf, "0123456789abcdef".charCodeAt(((s.charCodeAt(0) & 15) >>> 0)));
-				s = s.substring(width);
+				s = $substring(s, width);
 				continue;
 			}
 			buf = appendEscapedRune(buf, r, width, quote, ASCIIonly, graphicOnly);
-			s = s.substring(width);
+			s = $substring(s, width);
 		}
 		buf = $append(buf, quote);
 		return buf;
@@ -10512,7 +10519,7 @@ $packages["strconv"] = (function() {
 			_tuple = utf8.DecodeRuneInString(s);
 			r = _tuple[0];
 			wid = _tuple[1];
-			s = s.substring(wid);
+			s = $substring(s, wid);
 			if (wid > 1) {
 				if (r === 65279) {
 					return false;
@@ -10571,7 +10578,7 @@ $packages["strconv"] = (function() {
 			size = _tuple[1];
 			_tmp = r;
 			_tmp$1 = true;
-			_tmp$2 = s.substring(size);
+			_tmp$2 = $substring(s, size);
 			_tmp$3 = $ifaceNil;
 			value = _tmp;
 			multibyte = _tmp$1;
@@ -10581,7 +10588,7 @@ $packages["strconv"] = (function() {
 		} else if (!((c === 92))) {
 			_tmp$4 = (s.charCodeAt(0) >> 0);
 			_tmp$5 = false;
-			_tmp$6 = s.substring(1);
+			_tmp$6 = $substring(s, 1);
 			_tmp$7 = $ifaceNil;
 			value = _tmp$4;
 			multibyte = _tmp$5;
@@ -10594,7 +10601,7 @@ $packages["strconv"] = (function() {
 			return [value, multibyte, tail, err];
 		}
 		c$1 = s.charCodeAt(1);
-		s = s.substring(2);
+		s = $substring(s, 2);
 		switch (0) { default:
 			_1 = c$1;
 			if (_1 === (97)) {
@@ -10639,7 +10646,7 @@ $packages["strconv"] = (function() {
 					v = (v << 4 >> 0) | x;
 					j = j + (1) >> 0;
 				}
-				s = s.substring(n);
+				s = $substring(s, n);
 				if (c$1 === 120) {
 					value = v;
 					break;
@@ -10667,7 +10674,7 @@ $packages["strconv"] = (function() {
 					v$1 = ((v$1 << 3 >> 0)) | x$1;
 					j$1 = j$1 + (1) >> 0;
 				}
-				s = s.substring(2);
+				s = $substring(s, 2);
 				if (v$1 > 255) {
 					err = $pkg.ErrSyntax;
 					return [value, multibyte, tail, err];
@@ -10700,7 +10707,7 @@ $packages["strconv"] = (function() {
 		if (!((quote === s.charCodeAt((n - 1 >> 0))))) {
 			return ["", $pkg.ErrSyntax];
 		}
-		s = s.substring(1, (n - 1 >> 0));
+		s = $substring(s, 1, (n - 1 >> 0));
 		if (quote === 96) {
 			if (contains(s, 96)) {
 				return ["", $pkg.ErrSyntax];
@@ -12367,7 +12374,7 @@ $packages["reflect"] = (function() {
 				if (!(i < tag.length && (tag.charCodeAt(i) === 32))) { break; }
 				i = i + (1) >> 0;
 			}
-			tag = tag.substring(i);
+			tag = $substring(tag, i);
 			if (tag === "") {
 				break;
 			}
@@ -12379,8 +12386,8 @@ $packages["reflect"] = (function() {
 			if ((i + 1 >> 0) >= tag.length || !((tag.charCodeAt(i) === 58)) || !((tag.charCodeAt((i + 1 >> 0)) === 34))) {
 				break;
 			}
-			name$1 = tag.substring(0, i);
-			tag = tag.substring((i + 1 >> 0));
+			name$1 = $substring(tag, 0, i);
+			tag = $substring(tag, (i + 1 >> 0));
 			i = 1;
 			while (true) {
 				if (!(i < tag.length && !((tag.charCodeAt(i) === 34)))) { break; }
@@ -12392,8 +12399,8 @@ $packages["reflect"] = (function() {
 			if (i >= tag.length) {
 				break;
 			}
-			qvalue = tag.substring(0, (i + 1 >> 0));
-			tag = tag.substring((i + 1 >> 0));
+			qvalue = $substring(tag, 0, (i + 1 >> 0));
+			tag = $substring(tag, (i + 1 >> 0));
 			if (name$1 === "js") {
 				_tuple = strconv.Unquote(qvalue);
 				value = _tuple[0];
@@ -12702,7 +12709,7 @@ $packages["reflect"] = (function() {
 				if (i < 0 || j < i || j > str.length) {
 					$panic(new $String("reflect.Value.Slice: string slice index out of bounds"));
 				}
-				_r = ValueOf(new $String(str.substring(i, j))); /* */ $s = 7; case 7: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+				_r = ValueOf(new $String($substring(str, i, j))); /* */ $s = 7; case 7: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 				$s = -1; return _r;
 				return _r;
 			/* } else { */ case 5:
@@ -12819,7 +12826,7 @@ $packages["reflect"] = (function() {
 		t = this;
 		s = t.nameOff(t.str).name();
 		if (!((((t.tflag & 2) >>> 0) === 0))) {
-			return s.substring(1);
+			return $substring(s, 1);
 		}
 		return s;
 	};
@@ -13025,7 +13032,7 @@ $packages["reflect"] = (function() {
 			}
 			i = i - (1) >> 0;
 		}
-		return s.substring((i + 1 >> 0));
+		return $substring(s, (i + 1 >> 0));
 	};
 	rtype.prototype.Name = function() { return this.$val.Name(); };
 	rtype.ptr.prototype.ChanDir = function() {
@@ -13285,7 +13292,7 @@ $packages["reflect"] = (function() {
 				if (!(i < tag.length && (tag.charCodeAt(i) === 32))) { break; }
 				i = i + (1) >> 0;
 			}
-			tag = tag.substring(i);
+			tag = $substring(tag, i);
 			if (tag === "") {
 				break;
 			}
@@ -13297,8 +13304,8 @@ $packages["reflect"] = (function() {
 			if ((i === 0) || (i + 1 >> 0) >= tag.length || !((tag.charCodeAt(i) === 58)) || !((tag.charCodeAt((i + 1 >> 0)) === 34))) {
 				break;
 			}
-			name$1 = tag.substring(0, i);
-			tag = tag.substring((i + 1 >> 0));
+			name$1 = $substring(tag, 0, i);
+			tag = $substring(tag, (i + 1 >> 0));
 			i = 1;
 			while (true) {
 				if (!(i < tag.length && !((tag.charCodeAt(i) === 34)))) { break; }
@@ -13310,8 +13317,8 @@ $packages["reflect"] = (function() {
 			if (i >= tag.length) {
 				break;
 			}
-			qvalue = tag.substring(0, (i + 1 >> 0));
-			tag = tag.substring((i + 1 >> 0));
+			qvalue = $substring(tag, 0, (i + 1 >> 0));
+			tag = $substring(tag, (i + 1 >> 0));
 			if (key === name$1) {
 				_tuple = strconv.Unquote(qvalue);
 				value$1 = _tuple[0];
@@ -15552,7 +15559,7 @@ $packages["fmt"] = (function() {
 				i = _i;
 				n = n - (1) >> 0;
 				if (n < 0) {
-					return s.substring(0, i);
+					return $substring(s, 0, i);
 				}
 				_i += _rune[1];
 			}
@@ -16933,7 +16940,7 @@ $packages["fmt"] = (function() {
 			return [newArgNum, newi, found];
 		}
 		p.reordered = true;
-		_tuple = parseArgNumber(format.substring(i));
+		_tuple = parseArgNumber($substring(format, i));
 		index = _tuple[0];
 		wid = _tuple[1];
 		ok = _tuple[2];
@@ -16990,7 +16997,7 @@ $packages["fmt"] = (function() {
 				i = i + (1) >> 0;
 			}
 			if (i > lasti) {
-				(p.$ptr_buf || (p.$ptr_buf = new ptrType$1(function() { return this.$target.buf; }, function($v) { this.$target.buf = $v; }, p))).WriteString(format.substring(lasti, i));
+				(p.$ptr_buf || (p.$ptr_buf = new ptrType$1(function() { return this.$target.buf; }, function($v) { this.$target.buf = $v; }, p))).WriteString($substring(format, lasti, i));
 			}
 			if (i >= end) {
 				/* break; */ $s = 2; continue;
@@ -17125,7 +17132,7 @@ $packages["fmt"] = (function() {
 				(p.$ptr_buf || (p.$ptr_buf = new ptrType$1(function() { return this.$target.buf; }, function($v) { this.$target.buf = $v; }, p))).WriteString("%!(NOVERB)");
 				/* break; */ $s = 2; continue;
 			}
-			_tuple$7 = utf8.DecodeRuneInString(format.substring(i));
+			_tuple$7 = utf8.DecodeRuneInString($substring(format, i));
 			verb = _tuple$7[0];
 			w = _tuple$7[1];
 			i = i + (w) >> 0;
@@ -17544,13 +17551,13 @@ $packages["golang.org/x/net/html/atom"] = (function() {
 		if ((start + n >>> 0) > 1582) {
 			return "";
 		}
-		return "abbradiogrouparamalignmarkbdialogaccept-charsetbodyaccesskeygenavaluealtdetailsampatternobreversedfnoembedirnamediagroupingasyncanvasidefaultfooterowspanoframesetitleaudionblurubyautofocusandboxmplaceholderautoplaybasefontimeupdatebdoncancelabelooptgrouplaintextrackindisabledivarbgsoundlowbrbigblinkblockquotebuttonabortranslatecodefercolgroupostercolorcolspannotation-xmlcommandraggablegendcontrolsmallcoordsortedcrossoriginsourcefieldsetfigcaptionafterprintfigurequiredforeignObjectforeignobjectformactionautocompleteerrorformenctypemustmatchallengeformmethodformnovalidatetimeterformtargetheightmlhgroupreloadhiddenhigh1hreflanghttp-equivideoncanplaythrough2iframeimageimglyph3isindexismappletitemscopeditemtypemarqueematheaderspacermaxlength4minlength5mtextareadonlymultiplemutedonclickoncloseamlesspellcheckedoncontextmenuitemidoncuechangeondblclickondragendondragenterondragleaveondragoverondragstarticleondropzonemptiedondurationchangeonendedonerroronfocusrcdocitempropenoscriptonhashchangeoninputmodeloninvalidonkeydownloadonkeypressrclangonkeyupublicontenteditableonlanguagechangeonloadeddatalistingonloadedmetadatabindexonloadstartonmessageonmousedownonmousemoveonmouseoutputonmouseoveronmouseuponmousewheelonofflineononlineonpagehidesclassectionbeforeunloaddresshapeonpageshowidth6onpausemaponplayingonpopstateonprogresstrikeytypeonratechangeonresetonresizestrongonscrollonseekedonseekingonselectedonshowraponsortableonstalledonstorageonsubmitemrefacenteronsuspendontoggleonunloadonvolumechangeonwaitingoptimumanifestepromptoptionbeforeprintstylesummarysupsvgsystemplate".substring(start, (start + n >>> 0));
+		return $substring("abbradiogrouparamalignmarkbdialogaccept-charsetbodyaccesskeygenavaluealtdetailsampatternobreversedfnoembedirnamediagroupingasyncanvasidefaultfooterowspanoframesetitleaudionblurubyautofocusandboxmplaceholderautoplaybasefontimeupdatebdoncancelabelooptgrouplaintextrackindisabledivarbgsoundlowbrbigblinkblockquotebuttonabortranslatecodefercolgroupostercolorcolspannotation-xmlcommandraggablegendcontrolsmallcoordsortedcrossoriginsourcefieldsetfigcaptionafterprintfigurequiredforeignObjectforeignobjectformactionautocompleteerrorformenctypemustmatchallengeformmethodformnovalidatetimeterformtargetheightmlhgroupreloadhiddenhigh1hreflanghttp-equivideoncanplaythrough2iframeimageimglyph3isindexismappletitemscopeditemtypemarqueematheaderspacermaxlength4minlength5mtextareadonlymultiplemutedonclickoncloseamlesspellcheckedoncontextmenuitemidoncuechangeondblclickondragendondragenterondragleaveondragoverondragstarticleondropzonemptiedondurationchangeonendedonerroronfocusrcdocitempropenoscriptonhashchangeoninputmodeloninvalidonkeydownloadonkeypressrclangonkeyupublicontenteditableonlanguagechangeonloadeddatalistingonloadedmetadatabindexonloadstartonmessageonmousedownonmousemoveonmouseoutputonmouseoveronmouseuponmousewheelonofflineononlineonpagehidesclassectionbeforeunloaddresshapeonpageshowidth6onpausemaponplayingonpopstateonprogresstrikeytypeonratechangeonresetonresizestrongonscrollonseekedonseekingonselectedonshowraponsortableonstalledonstorageonsubmitemrefacenteronsuspendontoggleonunloadonvolumechangeonwaitingoptimumanifestepromptoptionbeforeprintstylesummarysupsvgsystemplate", start, (start + n >>> 0));
 	};
 	$ptrType(Atom).prototype.String = function() { return new Atom(this.$get()).String(); };
 	Atom.prototype.string = function() {
 		var $ptr, a;
 		a = this.$val;
-		return "abbradiogrouparamalignmarkbdialogaccept-charsetbodyaccesskeygenavaluealtdetailsampatternobreversedfnoembedirnamediagroupingasyncanvasidefaultfooterowspanoframesetitleaudionblurubyautofocusandboxmplaceholderautoplaybasefontimeupdatebdoncancelabelooptgrouplaintextrackindisabledivarbgsoundlowbrbigblinkblockquotebuttonabortranslatecodefercolgroupostercolorcolspannotation-xmlcommandraggablegendcontrolsmallcoordsortedcrossoriginsourcefieldsetfigcaptionafterprintfigurequiredforeignObjectforeignobjectformactionautocompleteerrorformenctypemustmatchallengeformmethodformnovalidatetimeterformtargetheightmlhgroupreloadhiddenhigh1hreflanghttp-equivideoncanplaythrough2iframeimageimglyph3isindexismappletitemscopeditemtypemarqueematheaderspacermaxlength4minlength5mtextareadonlymultiplemutedonclickoncloseamlesspellcheckedoncontextmenuitemidoncuechangeondblclickondragendondragenterondragleaveondragoverondragstarticleondropzonemptiedondurationchangeonendedonerroronfocusrcdocitempropenoscriptonhashchangeoninputmodeloninvalidonkeydownloadonkeypressrclangonkeyupublicontenteditableonlanguagechangeonloadeddatalistingonloadedmetadatabindexonloadstartonmessageonmousedownonmousemoveonmouseoutputonmouseoveronmouseuponmousewheelonofflineononlineonpagehidesclassectionbeforeunloaddresshapeonpageshowidth6onpausemaponplayingonpopstateonprogresstrikeytypeonratechangeonresetonresizestrongonscrollonseekedonseekingonselectedonshowraponsortableonstalledonstorageonsubmitemrefacenteronsuspendontoggleonunloadonvolumechangeonwaitingoptimumanifestepromptoptionbeforeprintstylesummarysupsvgsystemplate".substring((a >>> 8 >>> 0), ((a >>> 8 >>> 0) + ((a & 255) >>> 0) >>> 0));
+		return $substring("abbradiogrouparamalignmarkbdialogaccept-charsetbodyaccesskeygenavaluealtdetailsampatternobreversedfnoembedirnamediagroupingasyncanvasidefaultfooterowspanoframesetitleaudionblurubyautofocusandboxmplaceholderautoplaybasefontimeupdatebdoncancelabelooptgrouplaintextrackindisabledivarbgsoundlowbrbigblinkblockquotebuttonabortranslatecodefercolgroupostercolorcolspannotation-xmlcommandraggablegendcontrolsmallcoordsortedcrossoriginsourcefieldsetfigcaptionafterprintfigurequiredforeignObjectforeignobjectformactionautocompleteerrorformenctypemustmatchallengeformmethodformnovalidatetimeterformtargetheightmlhgroupreloadhiddenhigh1hreflanghttp-equivideoncanplaythrough2iframeimageimglyph3isindexismappletitemscopeditemtypemarqueematheaderspacermaxlength4minlength5mtextareadonlymultiplemutedonclickoncloseamlesspellcheckedoncontextmenuitemidoncuechangeondblclickondragendondragenterondragleaveondragoverondragstarticleondropzonemptiedondurationchangeonendedonerroronfocusrcdocitempropenoscriptonhashchangeoninputmodeloninvalidonkeydownloadonkeypressrclangonkeyupublicontenteditableonlanguagechangeonloadeddatalistingonloadedmetadatabindexonloadstartonmessageonmousedownonmousemoveonmouseoutputonmouseoveronmouseuponmousewheelonofflineononlineonpagehidesclassectionbeforeunloaddresshapeonpageshowidth6onpausemaponplayingonpopstateonprogresstrikeytypeonratechangeonresetonresizestrongonscrollonseekedonseekingonselectedonshowraponsortableonstalledonstorageonsubmitemrefacenteronsuspendontoggleonunloadonvolumechangeonwaitingoptimumanifestepromptoptionbeforeprintstylesummarysupsvgsystemplate", (a >>> 8 >>> 0), ((a >>> 8 >>> 0) + ((a & 255) >>> 0) >>> 0));
 	};
 	$ptrType(Atom).prototype.string = function() { return new Atom(this.$get()).string(); };
 	fnv = function(h, s) {
@@ -17667,7 +17674,7 @@ $packages["strings"] = (function() {
 				break;
 			}
 			n = n + (1) >> 0;
-			s = s.substring((pos + sep.length >> 0));
+			s = $substring(s, (pos + sep.length >> 0));
 		}
 		return n;
 	};
@@ -17700,7 +17707,7 @@ $packages["strings"] = (function() {
 			return [n, err];
 		}
 		r.prevRune = -1;
-		n = $copyString(b, r.s.substring($flatten64(r.i)));
+		n = $copyString(b, $substring(r.s, $flatten64(r.i)));
 		r.i = (x$2 = r.i, x$3 = new $Int64(0, n), new $Int64(x$2.$high + x$3.$high, x$2.$low + x$3.$low));
 		return [n, err];
 	};
@@ -17724,7 +17731,7 @@ $packages["strings"] = (function() {
 			err = _tmp$3;
 			return [n, err];
 		}
-		n = $copyString(b, r.s.substring($flatten64(off)));
+		n = $copyString(b, $substring(r.s, $flatten64(off)));
 		if (n < b.$length) {
 			err = io.EOF;
 		}
@@ -17782,7 +17789,7 @@ $packages["strings"] = (function() {
 			err = _tmp$5;
 			return [ch, size, err];
 		}
-		_tuple = utf8.DecodeRuneInString(r.s.substring($flatten64(r.i)));
+		_tuple = utf8.DecodeRuneInString($substring(r.s, $flatten64(r.i)));
 		ch = _tuple[0];
 		size = _tuple[1];
 		r.i = (x$5 = r.i, x$6 = new $Int64(0, size), new $Int64(x$5.$high + x$6.$high, x$5.$low + x$6.$low));
@@ -17837,7 +17844,7 @@ $packages["strings"] = (function() {
 			$s = -1; return [n, err];
 			return [n, err];
 		}
-		s = r.s.substring($flatten64(r.i));
+		s = $substring(r.s, $flatten64(r.i));
 		_r = io.WriteString(w, s); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 		_tuple = _r;
 		m = _tuple[0];
@@ -17926,7 +17933,7 @@ $packages["strings"] = (function() {
 	$pkg.IndexAny = IndexAny;
 	HasPrefix = function(s, prefix) {
 		var $ptr, prefix, s;
-		return s.length >= prefix.length && s.substring(0, prefix.length) === prefix;
+		return s.length >= prefix.length && $substring(s, 0, prefix.length) === prefix;
 	};
 	$pkg.HasPrefix = HasPrefix;
 	Map = function(mapping, s) {
@@ -17950,7 +17957,7 @@ $packages["strings"] = (function() {
 					/* continue; */ $s = 1; continue;
 				}
 				b = $makeSlice(sliceType, maxbytes);
-				nbytes = $copyString(b, s.substring(0, i));
+				nbytes = $copyString(b, $substring(s, 0, i));
 			}
 			if (r >= 0) {
 				wid = 1;
@@ -17994,8 +18001,8 @@ $packages["strings"] = (function() {
 			$s = -1; return "";
 			return "";
 		}
-		$s = -1; return s.substring(i);
-		return s.substring(i);
+		$s = -1; return $substring(s, i);
+		return $substring(s, i);
 		/* */ } return; } if ($f === undefined) { $f = { $blk: TrimLeftFunc }; } $f.$ptr = $ptr; $f._r = _r; $f.f = f; $f.i = i; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	$pkg.TrimLeftFunc = TrimLeftFunc;
@@ -18005,14 +18012,14 @@ $packages["strings"] = (function() {
 		_r = lastIndexFunc(s, f, false); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 		i = _r;
 		if (i >= 0 && s.charCodeAt(i) >= 128) {
-			_tuple = utf8.DecodeRuneInString(s.substring(i));
+			_tuple = utf8.DecodeRuneInString($substring(s, i));
 			wid = _tuple[1];
 			i = i + (wid) >> 0;
 		} else {
 			i = i + (1) >> 0;
 		}
-		$s = -1; return s.substring(0, i);
-		return s.substring(0, i);
+		$s = -1; return $substring(s, 0, i);
+		return $substring(s, 0, i);
 		/* */ } return; } if ($f === undefined) { $f = { $blk: TrimRightFunc }; } $f.$ptr = $ptr; $f._r = _r; $f._tuple = _tuple; $f.f = f; $f.i = i; $f.s = s; $f.wid = wid; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	$pkg.TrimRightFunc = TrimRightFunc;
@@ -18035,7 +18042,7 @@ $packages["strings"] = (function() {
 			wid = 1;
 			r = (s.charCodeAt(start) >> 0);
 			if (r >= 128) {
-				_tuple = utf8.DecodeRuneInString(s.substring(start));
+				_tuple = utf8.DecodeRuneInString($substring(s, start));
 				r = _tuple[0];
 				wid = _tuple[1];
 			}
@@ -18058,7 +18065,7 @@ $packages["strings"] = (function() {
 		i = s.length;
 		/* while (true) { */ case 1:
 			/* if (!(i > 0)) { break; } */ if(!(i > 0)) { $s = 2; continue; }
-			_tuple = utf8.DecodeLastRuneInString(s.substring(0, i));
+			_tuple = utf8.DecodeLastRuneInString($substring(s, 0, i));
 			r = _tuple[0];
 			size = _tuple[1];
 			i = i - (size) >> 0;
@@ -18127,19 +18134,19 @@ $packages["strings"] = (function() {
 			j = start;
 			if (old.length === 0) {
 				if (i > 0) {
-					_tuple = utf8.DecodeRuneInString(s.substring(start));
+					_tuple = utf8.DecodeRuneInString($substring(s, start));
 					wid = _tuple[1];
 					j = j + (wid) >> 0;
 				}
 			} else {
-				j = j + (Index(s.substring(start), old)) >> 0;
+				j = j + (Index($substring(s, start), old)) >> 0;
 			}
-			w = w + ($copyString($subslice(t, w), s.substring(start, j))) >> 0;
+			w = w + ($copyString($subslice(t, w), $substring(s, start, j))) >> 0;
 			w = w + ($copyString($subslice(t, w), new$1)) >> 0;
 			start = j + old.length >> 0;
 			i = i + (1) >> 0;
 		}
-		w = w + ($copyString($subslice(t, w), s.substring(start))) >> 0;
+		w = w + ($copyString($subslice(t, w), $substring(s, start))) >> 0;
 		return $bytesToString($subslice(t, 0, w));
 	};
 	$pkg.Replace = Replace;
@@ -18153,7 +18160,7 @@ $packages["strings"] = (function() {
 			tr = _tmp$1;
 			if (s.charCodeAt(0) < 128) {
 				_tmp$2 = (s.charCodeAt(0) >> 0);
-				_tmp$3 = s.substring(1);
+				_tmp$3 = $substring(s, 1);
 				sr = _tmp$2;
 				s = _tmp$3;
 			} else {
@@ -18161,13 +18168,13 @@ $packages["strings"] = (function() {
 				r = _tuple[0];
 				size = _tuple[1];
 				_tmp$4 = r;
-				_tmp$5 = s.substring(size);
+				_tmp$5 = $substring(s, size);
 				sr = _tmp$4;
 				s = _tmp$5;
 			}
 			if (t.charCodeAt(0) < 128) {
 				_tmp$6 = (t.charCodeAt(0) >> 0);
-				_tmp$7 = t.substring(1);
+				_tmp$7 = $substring(t, 1);
 				tr = _tmp$6;
 				t = _tmp$7;
 			} else {
@@ -18175,7 +18182,7 @@ $packages["strings"] = (function() {
 				r$1 = _tuple$1[0];
 				size$1 = _tuple$1[1];
 				_tmp$8 = r$1;
-				_tmp$9 = t.substring(size$1);
+				_tmp$9 = $substring(t, size$1);
 				tr = _tmp$8;
 				t = _tmp$9;
 			}
@@ -18517,7 +18524,7 @@ $packages["golang.org/x/net/html"] = (function() {
 					j = maxLen;
 					while (true) {
 						if (!(j > 1)) { break; }
-						x$4 = (_entry$2 = entity[$String.keyFor(entityName.substring(0, j))], _entry$2 !== undefined ? _entry$2.v : 0);
+						x$4 = (_entry$2 = entity[$String.keyFor($substring(entityName, 0, j))], _entry$2 !== undefined ? _entry$2.v : 0);
 						if (!((x$4 === 0))) {
 							_tmp$14 = dst + utf8.EncodeRune($subslice(b, dst), x$4) >> 0;
 							_tmp$15 = (src + j >> 0) + 1 >> 0;
@@ -18595,7 +18602,7 @@ $packages["golang.org/x/net/html"] = (function() {
 		i = strings.IndexAny(s, "&'<>\"\r");
 		/* while (true) { */ case 1:
 			/* if (!(!((i === -1)))) { break; } */ if(!(!((i === -1)))) { $s = 2; continue; }
-			_r = w.WriteString(s.substring(0, i)); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_r = w.WriteString($substring(s, 0, i)); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 			_tuple = _r;
 			err = _tuple[1];
 			if (!($interfaceIsEqual(err, $ifaceNil))) {
@@ -18619,7 +18626,7 @@ $packages["golang.org/x/net/html"] = (function() {
 			} else {
 				$panic(new $String("unrecognized escape character"));
 			}
-			s = s.substring((i + 1 >> 0));
+			s = $substring(s, (i + 1 >> 0));
 			_r$1 = w.WriteString(esc); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 			_tuple$1 = _r$1;
 			err$1 = _tuple$1[1];
@@ -18683,8 +18690,8 @@ $packages["golang.org/x/net/html"] = (function() {
 			_1 = a.Key;
 			if (_1 === ("xlink:actuate") || _1 === ("xlink:arcrole") || _1 === ("xlink:href") || _1 === ("xlink:role") || _1 === ("xlink:show") || _1 === ("xlink:title") || _1 === ("xlink:type") || _1 === ("xml:base") || _1 === ("xml:lang") || _1 === ("xml:space") || _1 === ("xmlns:xlink")) {
 				j = strings.Index(a.Key, ":");
-				((i < 0 || i >= aa.$length) ? $throwRuntimeError("index out of range") : aa.$array[aa.$offset + i]).Namespace = a.Key.substring(0, j);
-				((i < 0 || i >= aa.$length) ? $throwRuntimeError("index out of range") : aa.$array[aa.$offset + i]).Key = a.Key.substring((j + 1 >> 0));
+				((i < 0 || i >= aa.$length) ? $throwRuntimeError("index out of range") : aa.$array[aa.$offset + i]).Namespace = $substring(a.Key, 0, j);
+				((i < 0 || i >= aa.$length) ? $throwRuntimeError("index out of range") : aa.$array[aa.$offset + i]).Key = $substring(a.Key, (j + 1 >> 0));
 			}
 			_i++;
 		}
@@ -19361,7 +19368,7 @@ $packages["golang.org/x/net/html"] = (function() {
 				_r = strings.TrimLeft(p.tok.Data, " \t\r\n\f"); /* */ $s = 8; case 8: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 				s = _r;
 				if (s.length < p.tok.Data.length) {
-					p.addText(p.tok.Data.substring(0, (p.tok.Data.length - s.length >> 0)));
+					p.addText($substring(p.tok.Data, 0, (p.tok.Data.length - s.length >> 0)));
 					if (s === "") {
 						$s = -1; return true;
 						return true;
@@ -19449,7 +19456,7 @@ $packages["golang.org/x/net/html"] = (function() {
 				_r = strings.TrimLeft(p.tok.Data, " \t\r\n\f"); /* */ $s = 8; case 8: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 				s = _r;
 				if (s.length < p.tok.Data.length) {
-					p.addText(p.tok.Data.substring(0, (p.tok.Data.length - s.length >> 0)));
+					p.addText($substring(p.tok.Data, 0, (p.tok.Data.length - s.length >> 0)));
 					if (s === "") {
 						$s = -1; return true;
 						return true;
@@ -19560,10 +19567,10 @@ $packages["golang.org/x/net/html"] = (function() {
 				if ((_2 === (155139)) || (_2 === (282119))) {
 					if (n.FirstChild === ptrType.nil) {
 						if (!(d === "") && (d.charCodeAt(0) === 13)) {
-							d = d.substring(1);
+							d = $substring(d, 1);
 						}
 						if (!(d === "") && (d.charCodeAt(0) === 10)) {
-							d = d.substring(1);
+							d = $substring(d, 1);
 						}
 					}
 				}
@@ -20141,10 +20148,10 @@ $packages["golang.org/x/net/html"] = (function() {
 			n = (p.$ptr_oe || (p.$ptr_oe = new ptrType$1(function() { return this.$target.oe; }, function($v) { this.$target.oe = $v; }, p))).top();
 			if ((n.DataAtom === 194056) && n.FirstChild === ptrType.nil) {
 				if (!(d === "") && (d.charCodeAt(0) === 13)) {
-					d = d.substring(1);
+					d = $substring(d, 1);
 				}
 				if (!(d === "") && (d.charCodeAt(0) === 10)) {
-					d = d.substring(1);
+					d = $substring(d, 1);
 				}
 			}
 			if (d === "") {
@@ -20387,7 +20394,7 @@ $packages["golang.org/x/net/html"] = (function() {
 				_r = strings.TrimLeft(p.tok.Data, " \t\r\n\f"); /* */ $s = 8; case 8: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 				s = _r;
 				if (s.length < p.tok.Data.length) {
-					p.addText(p.tok.Data.substring(0, (p.tok.Data.length - s.length >> 0)));
+					p.addText($substring(p.tok.Data, 0, (p.tok.Data.length - s.length >> 0)));
 					if (s === "") {
 						$s = -1; return true;
 						return true;
@@ -23741,7 +23748,13 @@ $packages["github.com/BenLubar/hellstew/emoji"] = (function() {
 		by.$set($append(by.$get(), new sliceType$1([e])));
 	};
 	Config.ptr.prototype.Replace = function(nodes) {
-		var $ptr, _1, _entry, _i, _ref, conf, node, nodes, result;
+		var $ptr, conf, nodes;
+		conf = this;
+		return conf.replace(true, nodes);
+	};
+	Config.prototype.Replace = function(nodes) { return this.$val.Replace(nodes); };
+	Config.ptr.prototype.replace = function(tooltip, nodes) {
+		var $ptr, _1, _entry, _i, _ref, conf, node, nodes, result, tooltip;
 		conf = this;
 		result = $makeSlice(sliceType$3, 0, nodes.$length);
 		_ref = nodes;
@@ -23756,9 +23769,9 @@ $packages["github.com/BenLubar/hellstew/emoji"] = (function() {
 						result = $append(result, node);
 						break;
 					}
-					result = $appendSlice(result, conf.replaceElement(node));
+					result = $appendSlice(result, conf.replaceElement(tooltip, node));
 				} else if (_1 === (1)) {
-					result = $appendSlice(result, conf.replaceText(node));
+					result = $appendSlice(result, conf.replaceText(tooltip, node));
 				} else {
 					result = $append(result, node);
 				}
@@ -23767,15 +23780,38 @@ $packages["github.com/BenLubar/hellstew/emoji"] = (function() {
 		}
 		return result;
 	};
-	Config.prototype.Replace = function(nodes) { return this.$val.Replace(nodes); };
-	Config.ptr.prototype.replaceElement = function(node) {
-		var $ptr, _i, _ref, child, conf, node, o, out, prev, result;
+	Config.prototype.replace = function(tooltip, nodes) { return this.$val.replace(tooltip, nodes); };
+	Config.ptr.prototype.replaceElement = function(tooltip, node) {
+		var $ptr, _i, _i$1, _i$2, _ref, _ref$1, _ref$2, a, a$1, child, conf, node, o, out, prev, result, tooltip;
 		conf = this;
+		if (tooltip) {
+			_ref = node.Attr;
+			_i = 0;
+			while (true) {
+				if (!(_i < _ref.$length)) { break; }
+				a = $clone(((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]), html.Attribute);
+				if (a.Namespace === "" && a.Key === "title") {
+					tooltip = false;
+					break;
+				}
+				_i++;
+			}
+		}
+		_ref$1 = node.Attr;
+		_i$1 = 0;
+		while (true) {
+			if (!(_i$1 < _ref$1.$length)) { break; }
+			a$1 = $clone(((_i$1 < 0 || _i$1 >= _ref$1.$length) ? $throwRuntimeError("index out of range") : _ref$1.$array[_ref$1.$offset + _i$1]), html.Attribute);
+			if (a$1.Namespace === "" && a$1.Key === "class" && a$1.Val === "emoji") {
+				return new sliceType$3([deepClone(node)]);
+			}
+			_i$1++;
+		}
 		result = node;
 		child = node.FirstChild;
 		while (true) {
 			if (!(!(child === ptrType$4.nil))) { break; }
-			out = conf.Replace(new sliceType$3([child]));
+			out = conf.replace(tooltip, new sliceType$3([child]));
 			if (!((out.$length === 1)) || !((0 >= out.$length ? $throwRuntimeError("index out of range") : out.$array[out.$offset + 0]) === child) || !(result === node)) {
 				if (result === node) {
 					result = shallowClone(node);
@@ -23786,22 +23822,22 @@ $packages["github.com/BenLubar/hellstew/emoji"] = (function() {
 						prev = prev.NextSibling;
 					}
 				}
-				_ref = out;
-				_i = 0;
+				_ref$2 = out;
+				_i$2 = 0;
 				while (true) {
-					if (!(_i < _ref.$length)) { break; }
-					o = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
+					if (!(_i$2 < _ref$2.$length)) { break; }
+					o = ((_i$2 < 0 || _i$2 >= _ref$2.$length) ? $throwRuntimeError("index out of range") : _ref$2.$array[_ref$2.$offset + _i$2]);
 					result.AppendChild(o);
-					_i++;
+					_i$2++;
 				}
 			}
 			child = child.NextSibling;
 		}
 		return new sliceType$3([result]);
 	};
-	Config.prototype.replaceElement = function(node) { return this.$val.replaceElement(node); };
-	Config.ptr.prototype.replaceText = function(node) {
-		var $ptr, _entry, _entry$1, _i, _ref, _tuple, conf, e, i, match$1, matches, name, next, node, ok, result, x;
+	Config.prototype.replaceElement = function(tooltip, node) { return this.$val.replaceElement(tooltip, node); };
+	Config.ptr.prototype.replaceText = function(tooltip, node) {
+		var $ptr, _entry, _entry$1, _i, _ref, _tuple, conf, e, i, match$1, matches, name, next, node, ok, result, tooltip, x;
 		conf = this;
 		matches = sliceType$4.nil;
 		if (conf.state === ptrType$1.nil) {
@@ -23810,7 +23846,7 @@ $packages["github.com/BenLubar/hellstew/emoji"] = (function() {
 			matches = conf.state.match(node.Data);
 		}
 		if (matches.$length === 0) {
-			return new sliceType$3([node]);
+			return new sliceType$3([shallowClone(node)]);
 		}
 		result = $makeSlice(sliceType$3, 0, (($imul(matches.$length, 2)) + 1 >> 0));
 		_ref = matches;
@@ -23821,32 +23857,32 @@ $packages["github.com/BenLubar/hellstew/emoji"] = (function() {
 			match$1 = $clone(((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]), arrayType$1);
 			if (i === 0) {
 				if (!((match$1[0] === 0))) {
-					result = $append(result, new html.Node.ptr(ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, 1, 0, node.Data.substring(0, match$1[0]), "", sliceType$5.nil));
+					result = $append(result, new html.Node.ptr(ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, 1, 0, $substring(node.Data, 0, match$1[0]), "", sliceType$5.nil));
 				}
 			}
-			name = node.Data.substring(match$1[0], match$1[1]);
+			name = $substring(node.Data, match$1[0], match$1[1]);
 			_tuple = (_entry = conf.byName[$String.keyFor(name)], _entry !== undefined ? [_entry.v, true] : [ptrType.nil, false]);
 			e = _tuple[0];
 			ok = _tuple[1];
 			if (!ok) {
 				e = (_entry$1 = byName[$String.keyFor(name)], _entry$1 !== undefined ? _entry$1.v : ptrType.nil);
 			}
-			result = $append(result, emojiToNode(e, name));
+			result = $append(result, emojiToNode(tooltip, e, name));
 			if ((i + 1 >> 0) === matches.$length) {
 				if (!((match$1[1] === node.Data.length))) {
-					result = $append(result, new html.Node.ptr(ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, 1, 0, node.Data.substring(match$1[1]), "", sliceType$5.nil));
+					result = $append(result, new html.Node.ptr(ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, 1, 0, $substring(node.Data, match$1[1]), "", sliceType$5.nil));
 				}
 			} else {
 				next = $clone((x = i + 1 >> 0, ((x < 0 || x >= matches.$length) ? $throwRuntimeError("index out of range") : matches.$array[matches.$offset + x])), arrayType$1);
 				if (!((match$1[1] === next[0]))) {
-					result = $append(result, new html.Node.ptr(ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, 1, 0, node.Data.substring(match$1[1], next[0]), "", sliceType$5.nil));
+					result = $append(result, new html.Node.ptr(ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, 1, 0, $substring(node.Data, match$1[1], next[0]), "", sliceType$5.nil));
 				}
 			}
 			_i++;
 		}
 		return result;
 	};
-	Config.prototype.replaceText = function(node) { return this.$val.replaceText(node); };
+	Config.prototype.replaceText = function(tooltip, node) { return this.$val.replaceText(tooltip, node); };
 	shallowClone = function(node) {
 		var $ptr, node, result;
 		result = new html.Node.ptr(ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, node.Type, node.DataAtom, node.Data, node.Namespace, $makeSlice(sliceType$5, node.Attr.$length));
@@ -23864,14 +23900,22 @@ $packages["github.com/BenLubar/hellstew/emoji"] = (function() {
 		}
 		return result;
 	};
-	emojiToNode = function(e, name) {
-		var $ptr, abbr, e, img, name;
+	emojiToNode = function(tooltip, e, name) {
+		var $ptr, e, img, name, node, tooltip;
 		if (!(e.emoji === "")) {
-			abbr = new html.Node.ptr(ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, 3, 4, "abbr", "", new sliceType$5([new html.Attribute.ptr("", "title", e.description), new html.Attribute.ptr("", "class", "emoji")]));
-			abbr.AppendChild(new html.Node.ptr(ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, 1, 0, e.emoji, "", sliceType$5.nil));
-			return abbr;
+			node = new html.Node.ptr(ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, 3, 38148, "span", "", new sliceType$5([new html.Attribute.ptr("", "class", "emoji")]));
+			if (tooltip) {
+				node.Data = "abbr";
+				node.DataAtom = 4;
+				node.Attr = $append(node.Attr, new html.Attribute.ptr("", "title", e.description));
+			}
+			node.AppendChild(new html.Node.ptr(ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, 1, 0, e.emoji, "", sliceType$5.nil));
+			return node;
 		}
-		img = new html.Node.ptr(ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, 3, 172291, "img", "", new sliceType$5([new html.Attribute.ptr("", "src", e.imageURL), new html.Attribute.ptr("", "alt", name), new html.Attribute.ptr("", "title", e.description), new html.Attribute.ptr("", "class", "emoji")]));
+		img = new html.Node.ptr(ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, ptrType$4.nil, 3, 172291, "img", "", new sliceType$5([new html.Attribute.ptr("", "src", e.imageURL), new html.Attribute.ptr("", "alt", name), new html.Attribute.ptr("", "class", "emoji")]));
+		if (tooltip) {
+			img.Attr = $append(img.Attr, new html.Attribute.ptr("", "title", e.description));
+		}
 		return img;
 	};
 	SearchResult.ptr.prototype.Emoji = function() {
@@ -24242,11 +24286,11 @@ $packages["github.com/BenLubar/hellstew/emoji"] = (function() {
 				return;
 			}
 			if ((x = s.next, x$1 = name.charCodeAt(0), ((x$1 < 0 || x$1 >= x.length) ? $throwRuntimeError("index out of range") : x[x$1])) === ptrType$1.nil) {
-				(x$2 = s.next, x$3 = name.charCodeAt(0), ((x$3 < 0 || x$3 >= x$2.length) ? $throwRuntimeError("index out of range") : x$2[x$3] = makeState(name.substring(1))));
+				(x$2 = s.next, x$3 = name.charCodeAt(0), ((x$3 < 0 || x$3 >= x$2.length) ? $throwRuntimeError("index out of range") : x$2[x$3] = makeState($substring(name, 1))));
 				return;
 			}
 			s = (x$4 = s.next, x$5 = name.charCodeAt(0), ((x$5 < 0 || x$5 >= x$4.length) ? $throwRuntimeError("index out of range") : x$4[x$5]));
-			name = name.substring(1);
+			name = $substring(name, 1);
 		}
 	};
 	state.prototype.addInPlace = function(name) { return this.$val.addInPlace(name); };
@@ -24258,9 +24302,9 @@ $packages["github.com/BenLubar/hellstew/emoji"] = (function() {
 		}
 		clone = $clone(s, state);
 		if (!((x = clone.next, x$1 = name.charCodeAt(0), ((x$1 < 0 || x$1 >= x.length) ? $throwRuntimeError("index out of range") : x[x$1])) === ptrType$1.nil)) {
-			(x$4 = clone.next, x$5 = name.charCodeAt(0), ((x$5 < 0 || x$5 >= x$4.length) ? $throwRuntimeError("index out of range") : x$4[x$5] = (x$2 = clone.next, x$3 = name.charCodeAt(0), ((x$3 < 0 || x$3 >= x$2.length) ? $throwRuntimeError("index out of range") : x$2[x$3])).add(name.substring(1))));
+			(x$4 = clone.next, x$5 = name.charCodeAt(0), ((x$5 < 0 || x$5 >= x$4.length) ? $throwRuntimeError("index out of range") : x$4[x$5] = (x$2 = clone.next, x$3 = name.charCodeAt(0), ((x$3 < 0 || x$3 >= x$2.length) ? $throwRuntimeError("index out of range") : x$2[x$3])).add($substring(name, 1))));
 		} else {
-			(x$6 = clone.next, x$7 = name.charCodeAt(0), ((x$7 < 0 || x$7 >= x$6.length) ? $throwRuntimeError("index out of range") : x$6[x$7] = makeState(name.substring(1))));
+			(x$6 = clone.next, x$7 = name.charCodeAt(0), ((x$7 < 0 || x$7 >= x$6.length) ? $throwRuntimeError("index out of range") : x$6[x$7] = makeState($substring(name, 1))));
 		}
 		return clone;
 	};
@@ -24309,7 +24353,7 @@ $packages["github.com/BenLubar/hellstew/emoji"] = (function() {
 		return matches;
 	};
 	state.prototype.match = function(str) { return this.$val.match(str); };
-	ptrType$5.methods = [{prop: "overrides", name: "overrides", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([ptrType], [$Bool], false)}, {prop: "AddEmoji", name: "AddEmoji", pkg: "", typ: $funcType([$String, $String, sliceType, $String, sliceType], [], false)}, {prop: "AddImage", name: "AddImage", pkg: "", typ: $funcType([$String, $String, sliceType, $String, sliceType], [], false)}, {prop: "validateAliases", name: "validateAliases", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([sliceType], [], false)}, {prop: "addEmoji", name: "addEmoji", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([ptrType, sliceType, $String, sliceType], [], false)}, {prop: "addName", name: "addName", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([$String, ptrType], [], false)}, {prop: "Replace", name: "Replace", pkg: "", typ: $funcType([sliceType$3], [sliceType$3], true)}, {prop: "replaceElement", name: "replaceElement", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([ptrType$4], [sliceType$3], false)}, {prop: "replaceText", name: "replaceText", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([ptrType$4], [sliceType$3], false)}, {prop: "Search", name: "Search", pkg: "", typ: $funcType([$String, $Int], [sliceType$6], false)}, {prop: "searchName", name: "searchName", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([searchResults, $String, $Int], [searchResults], false)}, {prop: "searchDescription", name: "searchDescription", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([searchResults, $String, $Int], [searchResults], false)}, {prop: "searchSet", name: "searchSet", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([searchResults, $String, $Int, sliceType$2, sliceType, sliceType$2, sliceType], [searchResults], false)}];
+	ptrType$5.methods = [{prop: "overrides", name: "overrides", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([ptrType], [$Bool], false)}, {prop: "AddEmoji", name: "AddEmoji", pkg: "", typ: $funcType([$String, $String, sliceType, $String, sliceType], [], false)}, {prop: "AddImage", name: "AddImage", pkg: "", typ: $funcType([$String, $String, sliceType, $String, sliceType], [], false)}, {prop: "validateAliases", name: "validateAliases", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([sliceType], [], false)}, {prop: "addEmoji", name: "addEmoji", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([ptrType, sliceType, $String, sliceType], [], false)}, {prop: "addName", name: "addName", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([$String, ptrType], [], false)}, {prop: "Replace", name: "Replace", pkg: "", typ: $funcType([sliceType$3], [sliceType$3], true)}, {prop: "replace", name: "replace", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([$Bool, sliceType$3], [sliceType$3], true)}, {prop: "replaceElement", name: "replaceElement", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([$Bool, ptrType$4], [sliceType$3], false)}, {prop: "replaceText", name: "replaceText", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([$Bool, ptrType$4], [sliceType$3], false)}, {prop: "Search", name: "Search", pkg: "", typ: $funcType([$String, $Int], [sliceType$6], false)}, {prop: "searchName", name: "searchName", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([searchResults, $String, $Int], [searchResults], false)}, {prop: "searchDescription", name: "searchDescription", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([searchResults, $String, $Int], [searchResults], false)}, {prop: "searchSet", name: "searchSet", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([searchResults, $String, $Int, sliceType$2, sliceType, sliceType$2, sliceType], [searchResults], false)}];
 	SearchResult.methods = [{prop: "Emoji", name: "Emoji", pkg: "", typ: $funcType([], [$String], false)}, {prop: "ImageURL", name: "ImageURL", pkg: "", typ: $funcType([], [$String], false)}, {prop: "Aliases", name: "Aliases", pkg: "", typ: $funcType([], [sliceType], false)}, {prop: "Description", name: "Description", pkg: "", typ: $funcType([], [$String], false)}, {prop: "Score", name: "Score", pkg: "", typ: $funcType([], [$Int], false)}];
 	searchResults.methods = [{prop: "Len", name: "Len", pkg: "", typ: $funcType([], [$Int], false)}, {prop: "Swap", name: "Swap", pkg: "", typ: $funcType([$Int, $Int], [], false)}, {prop: "Less", name: "Less", pkg: "", typ: $funcType([$Int, $Int], [$Bool], false)}];
 	ptrType$1.methods = [{prop: "addInPlace", name: "addInPlace", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([$String], [], false)}, {prop: "add", name: "add", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([$String], [ptrType$1], false)}, {prop: "match", name: "match", pkg: "github.com/BenLubar/hellstew/emoji", typ: $funcType([$String], [sliceType$4], false)}];
@@ -24331,7 +24375,7 @@ $packages["github.com/BenLubar/hellstew/emoji"] = (function() {
 		tags = new sliceType(["911", "accessibility", "airport", "alphabet", "amazed", "america", "angel", "angry", "announcement", "annoyed", "applause", "approve", "archery", "attack", "aubergine", "autumn", "award", "bag", "bags", "bang", "bath", "bawling", "beach", "beach_umbrella", "beauty", "bicep", "bicycle", "billiards", "birthday", "blind", "block", "blonde", "blow", "blush", "boom", "bottle", "boy", "breakfast", "british", "bubbly", "bug", "bunny", "burger", "burma", "burn", "bury", "business", "cafe", "calendar", "call", "camping", "canada", "celebration", "chicken", "child", "china", "chocolates", "chop", "christmas", "cigarette", "classy", "cloud", "cold", "college", "comment", "confused", "console", "contest", "controller", "cool", "couple", "crap", "cream", "crown", "cruise", "crush", "cry", "cut", "cutlery", "dad", "danger", "date", "dead", "deaf", "desert", "design", "desktop", "dessert", "devil", "diamond", "dice", "dining", "dinner", "directory", "disapprove", "document", "dog", "dollar", "drama", "dress", "drink", "drinks", "earphones", "education", "email", "emergency", "engaged", "envelope", "environment", "espresso", "evil", "exercise", "explode", "fast", "father", "feet", "festival", "film", "finish", "flag", "flex", "flight", "flirt", "flower", "flowers", "forbidden", "formal", "fortune", "france", "french", "fresh", "fruit", "funeral", "gambling", "game", "gasp", "geek", "germany", "girls", "glasses", "global", "globe", "gold", "goodbye", "graduation", "graph", "green", "group", "gym", "haha", "halloween", "halt", "happy", "hat", "health", "hear", "heart", "helmet", "help", "highfive", "home", "hooray", "hope", "horns", "horror", "hospital", "hot", "hurt", "hush", "idea", "ignore", "ill", "impressed", "incoming", "information", "international", "investigate", "italy", "ivory", "japan", "joy", "karl", "keeling", "king", "kiss", "korea", "laboratory", "launch", "law", "leaf", "letter", "letters", "library", "lick", "light", "lightning", "limit", "lipstick", "listen", "location", "lock", "look", "loop", "love", "luck", "mad", "makeup", "manicure", "marathon", "marriage", "meat", "medicine", "meh", "metrics", "milestone", "milk", "mobile", "money", "monkey", "monster", "morning", "movie", "music", "mustache", "mute", "needle", "nervous", "newborn", "night", "noodle", "note", "notification", "number", "numbers", "off", "ok", "oops", "orbit", "paint", "pants", "parents", "party", "password", "pasta", "peace", "perfect", "pet", "phew", "phone", "photo", "piano", "pirate", "plant", "play", "please", "pleased", "podcast", "poison", "police", "pool", "power", "praise", "prank", "present", "press", "pride", "private", "prosper", "proud", "queen", "rain", "respect", "restroom", "retro", "return", "rich", "rock", "royal", "running", "russia", "sad", "save", "scared", "schedule", "science", "score", "screen", "sea", "search", "security", "see", "semaphore", "shiny", "ship", "shipping", "shirt", "shocked", "shoe", "shoot", "shower", "shuffle", "sick", "signal", "silence", "silly", "sing", "skating", "skyline", "sleeping", "sleuth", "slow", "smartphone", "smell", "smile", "smug", "sneaker", "sound", "spa", "space", "spain", "speechless", "speed", "spicy", "spock", "sport", "sports", "spring", "star", "stats", "stone", "stop", "strong", "struggling", "stunned", "subscription", "summer", "surprise", "sweat", "sweet", "swirl", "sync", "tag", "target", "taste", "team", "tear", "tears", "tempura", "thanks", "thanksgiving", "theater", "thinking", "thunder", "time", "tired", "toast", "toilet", "tongue", "tool", "tracks", "trademark", "train", "trash", "travel", "turkey", "ufo", "united", "university", "upset", "user", "users", "vacation", "victory", "video", "volume", "watch", "water", "wc", "weapon", "weather", "wedding", "whew", "whine", "wifi", "wind", "winner", "winter", "wip", "wish", "wood", "workout", "world", "wow", "yes", "zoom", "zzz"]);
 		byTag = new sliceType$2([new sliceType$1([allEmoji[527]]), new sliceType$1([allEmoji[919]]), new sliceType$1([allEmoji[917]]), new sliceType$1([allEmoji[932]]), new sliceType$1([allEmoji[62]]), new sliceType$1([allEmoji[1308]]), new sliceType$1([allEmoji[8]]), new sliceType$1([allEmoji[39], allEmoji[71], allEmoji[878]]), new sliceType$1([allEmoji[1038]]), new sliceType$1([allEmoji[38]]), new sliceType$1([allEmoji[90]]), new sliceType$1([allEmoji[91]]), new sliceType$1([allEmoji[461]]), new sliceType$1([allEmoji[93]]), new sliceType$1([allEmoji[395]]), new sliceType$1([allEmoji[319]]), new sliceType$1([allEmoji[491]]), new sliceType$1([allEmoji[226], allEmoji[228]]), new sliceType$1([allEmoji[722]]), new sliceType$1([allEmoji[886]]), new sliceType$1([allEmoji[710]]), new sliceType$1([allEmoji[60]]), new sliceType$1([allEmoji[210], allEmoji[332]]), new sliceType$1([allEmoji[720]]), new sliceType$1([allEmoji[112], allEmoji[160]]), new sliceType$1([allEmoji[106]]), new sliceType$1([allEmoji[526]]), new sliceType$1([allEmoji[455]]), new sliceType$1([allEmoji[723], allEmoji[724]]), new sliceType$1([allEmoji[250]]), new sliceType$1([allEmoji[875]]), new sliceType$1([allEmoji[143]]), new sliceType$1([allEmoji[373]]), new sliceType$1([allEmoji[13]]), new sliceType$1([allEmoji[690]]), new sliceType$1([allEmoji[441]]), new sliceType$1([allEmoji[128]]), new sliceType$1([allEmoji[405], allEmoji[443]]), new sliceType$1([allEmoji[1307]]), new sliceType$1([allEmoji[441]]), new sliceType$1([allEmoji[267]]), new sliceType$1([allEmoji[165], allEmoji[166], allEmoji[238]]), new sliceType$1([allEmoji[406]]), new sliceType$1([allEmoji[1225]]), new sliceType$1([allEmoji[366]]), new sliceType$1([allEmoji[92]]), new sliceType$1([allEmoji[229]]), new sliceType$1([allEmoji[444]]), new sliceType$1([allEmoji[758]]), new sliceType$1([allEmoji[629], allEmoji[649]]), new sliceType$1([allEmoji[583]]), new sliceType$1([allEmoji[320]]), new sliceType$1([allEmoji[441], allEmoji[600]]), new sliceType$1([allEmoji[402]]), new sliceType$1([allEmoji[122], allEmoji[123], allEmoji[124], allEmoji[180]]), new sliceType$1([allEmoji[1120]]), new sliceType$1([allEmoji[818]]), new sliceType$1([allEmoji[691]]), new sliceType$1([allEmoji[142], allEmoji[370], allEmoji[723]]), new sliceType$1([allEmoji[695]]), new sliceType$1([allEmoji[221]]), new sliceType$1([allEmoji[358]]), new sliceType$1([allEmoji[368]]), new sliceType$1([allEmoji[222]]), new sliceType$1([allEmoji[1040]]), new sliceType$1([allEmoji[888]]), new sliceType$1([allEmoji[508]]), new sliceType$1([allEmoji[491]]), new sliceType$1([allEmoji[508]]), new sliceType$1([allEmoji[26]]), new sliceType$1([allEmoji[172], allEmoji[173]]), new sliceType$1([allEmoji[69]]), new sliceType$1([allEmoji[677]]), new sliceType$1([allEmoji[143]]), new sliceType$1([allEmoji[556]]), new sliceType$1([allEmoji[16]]), new sliceType$1([allEmoji[60]]), new sliceType$1([allEmoji[691], allEmoji[783]]), new sliceType$1([allEmoji[446]]), new sliceType$1([allEmoji[125]]), new sliceType$1([allEmoji[75], allEmoji[76]]), new sliceType$1([allEmoji[171], allEmoji[172], allEmoji[173]]), new sliceType$1([allEmoji[75]]), new sliceType$1([allEmoji[251]]), new sliceType$1([allEmoji[286]]), new sliceType$1([allEmoji[497]]), new sliceType$1([allEmoji[630]]), new sliceType$1([allEmoji[427]]), new sliceType$1([allEmoji[70], allEmoji[71]]), new sliceType$1([allEmoji[679]]), new sliceType$1([allEmoji[510]]), new sliceType$1([allEmoji[447]]), new sliceType$1([allEmoji[447]]), new sliceType$1([allEmoji[764]]), new sliceType$1([allEmoji[92]]), new sliceType$1([allEmoji[748], allEmoji[750], allEmoji[797]]), new sliceType$1([allEmoji[300]]), new sliceType$1([allEmoji[672], allEmoji[677]]), new sliceType$1([allEmoji[496]]), new sliceType$1([allEmoji[164]]), new sliceType$1([allEmoji[436], allEmoji[439]]), new sliceType$1([allEmoji[437]]), new sliceType$1([allEmoji[501]]), new sliceType$1([allEmoji[222]]), new sliceType$1([allEmoji[736]]), new sliceType$1([allEmoji[527], allEmoji[872]]), new sliceType$1([allEmoji[232]]), new sliceType$1([allEmoji[736]]), new sliceType$1([allEmoji[901]]), new sliceType$1([allEmoji[444]]), new sliceType$1([allEmoji[70], allEmoji[71]]), new sliceType$1([allEmoji[169], allEmoji[170]]), new sliceType$1([allEmoji[367]]), new sliceType$1([allEmoji[373]]), new sliceType$1([allEmoji[125]]), new sliceType$1([allEmoji[214]]), new sliceType$1([allEmoji[600]]), new sliceType$1([allEmoji[499], allEmoji[646], allEmoji[929]]), new sliceType$1([allEmoji[790]]), new sliceType$1([allEmoji[1157], allEmoji[1307], allEmoji[1308]]), new sliceType$1([allEmoji[106]]), new sliceType$1([allEmoji[548], allEmoji[549]]), new sliceType$1([allEmoji[9], allEmoji[17]]), new sliceType$1([allEmoji[324], allEmoji[325], allEmoji[327]]), new sliceType$1([allEmoji[328]]), new sliceType$1([allEmoji[875]]), new sliceType$1([allEmoji[208]]), new sliceType$1([allEmoji[699]]), new sliceType$1([allEmoji[1150]]), new sliceType$1([allEmoji[1150]]), new sliceType$1([allEmoji[941]]), new sliceType$1([allEmoji[381], allEmoji[386], allEmoji[389], allEmoji[391]]), new sliceType$1([allEmoji[696]]), new sliceType$1([allEmoji[510]]), new sliceType$1([allEmoji[78]]), new sliceType$1([allEmoji[62]]), new sliceType$1([allEmoji[25]]), new sliceType$1([allEmoji[1157]]), new sliceType$1([allEmoji[126]]), new sliceType$1([allEmoji[25], allEmoji[230]]), new sliceType$1([allEmoji[908]]), new sliceType$1([allEmoji[334], allEmoji[335], allEmoji[336]]), new sliceType$1([allEmoji[489]]), new sliceType$1([allEmoji[95]]), new sliceType$1([allEmoji[222]]), new sliceType$1([allEmoji[753], allEmoji[754]]), new sliceType$1([allEmoji[443], allEmoji[901]]), new sliceType$1([allEmoji[121]]), new sliceType$1([allEmoji[468], allEmoji[469]]), new sliceType$1([allEmoji[4], allEmoji[7]]), new sliceType$1([allEmoji[74], allEmoji[331]]), new sliceType$1([allEmoji[150], allEmoji[151]]), new sliceType$1([allEmoji[0], allEmoji[4], allEmoji[5], allEmoji[7]]), new sliceType$1([allEmoji[221]]), new sliceType$1([allEmoji[706], allEmoji[707]]), new sliceType$1([allEmoji[115]]), new sliceType$1([allEmoji[817]]), new sliceType$1([allEmoji[137]]), new sliceType$1([allEmoji[872]]), new sliceType$1([allEmoji[103]]), new sliceType$1([allEmoji[180]]), new sliceType$1([allEmoji[89]]), new sliceType$1([allEmoji[107]]), new sliceType$1([allEmoji[70], allEmoji[71]]), new sliceType$1([allEmoji[50], allEmoji[86]]), new sliceType$1([allEmoji[707]]), new sliceType$1([allEmoji[6]]), new sliceType$1([allEmoji[66]]), new sliceType$1([allEmoji[63], allEmoji[252]]), new sliceType$1([allEmoji[667]]), new sliceType$1([allEmoji[250]]), new sliceType$1([allEmoji[64]]), new sliceType$1([allEmoji[49]]), new sliceType$1([allEmoji[629]]), new sliceType$1([allEmoji[149]]), new sliceType$1([allEmoji[334], allEmoji[335], allEmoji[336], allEmoji[908]]), new sliceType$1([allEmoji[704]]), new sliceType$1([allEmoji[1182]]), new sliceType$1([allEmoji[1183]]), new sliceType$1([allEmoji[1185]]), new sliceType$1([allEmoji[4], allEmoji[5]]), new sliceType$1([allEmoji[572]]), new sliceType$1([allEmoji[1122]]), new sliceType$1([allEmoji[223]]), new sliceType$1([allEmoji[113]]), new sliceType$1([allEmoji[1280]]), new sliceType$1([allEmoji[704]]), new sliceType$1([allEmoji[557]]), new sliceType$1([allEmoji[135]]), new sliceType$1([allEmoji[318]]), new sliceType$1([allEmoji[732]]), new sliceType$1([allEmoji[934]]), new sliceType$1([allEmoji[776]]), new sliceType$1([allEmoji[14]]), new sliceType$1([allEmoji[667]]), new sliceType$1([allEmoji[365]]), new sliceType$1([allEmoji[873]]), new sliceType$1([allEmoji[213]]), new sliceType$1([allEmoji[115]]), new sliceType$1([allEmoji[784], allEmoji[785]]), new sliceType$1([allEmoji[713]]), new sliceType$1([allEmoji[118]]), new sliceType$1([allEmoji[986]]), new sliceType$1([allEmoji[16], allEmoji[805], allEmoji[817]]), new sliceType$1([allEmoji[315]]), new sliceType$1([allEmoji[38]]), new sliceType$1([allEmoji[212]]), new sliceType$1([allEmoji[112]]), new sliceType$1([allEmoji[169], allEmoji[170], allEmoji[488]]), new sliceType$1([allEmoji[144], allEmoji[232], allEmoji[620]]), new sliceType$1([allEmoji[402]]), new sliceType$1([allEmoji[706]]), new sliceType$1([allEmoji[30], allEmoji[32]]), new sliceType$1([allEmoji[752], allEmoji[753], allEmoji[754]]), new sliceType$1([allEmoji[790]]), new sliceType$1([allEmoji[445]]), new sliceType$1([allEmoji[628]]), new sliceType$1([allEmoji[673]]), new sliceType$1([allEmoji[250], allEmoji[251], allEmoji[252]]), new sliceType$1([allEmoji[72]]), new sliceType$1([allEmoji[660]]), new sliceType$1([allEmoji[929]]), new sliceType$1([allEmoji[501], allEmoji[991]]), new sliceType$1([allEmoji[125]]), new sliceType$1([allEmoji[29], allEmoji[252], allEmoji[850]]), new sliceType$1([allEmoji[707]]), new sliceType$1([allEmoji[37], allEmoji[52], allEmoji[57]]), new sliceType$1([allEmoji[122]]), new sliceType$1([allEmoji[350]]), new sliceType$1([allEmoji[413]]), new sliceType$1([allEmoji[797]]), new sliceType$1([allEmoji[1036]]), new sliceType$1([allEmoji[955]]), new sliceType$1([allEmoji[954]]), new sliceType$1([allEmoji[850], allEmoji[1035]]), new sliceType$1([allEmoji[91]]), new sliceType$1([allEmoji[51]]), new sliceType$1([allEmoji[558]]), new sliceType$1([allEmoji[497]]), new sliceType$1([allEmoji[207]]), new sliceType$1([allEmoji[180]]), new sliceType$1([allEmoji[428], allEmoji[724], allEmoji[728]]), new sliceType$1([allEmoji[713]]), new sliceType$1([allEmoji[410]]), new sliceType$1([allEmoji[102], allEmoji[298]]), new sliceType$1([allEmoji[892]]), new sliceType$1([allEmoji[234], allEmoji[235], allEmoji[237]]), new sliceType$1([allEmoji[57]]), new sliceType$1([allEmoji[649]]), new sliceType$1([allEmoji[643], allEmoji[644]]), new sliceType$1([allEmoji[503]]), new sliceType$1([allEmoji[76]]), new sliceType$1([allEmoji[312]]), new sliceType$1([allEmoji[508]]), new sliceType$1([allEmoji[107]]), new sliceType$1([allEmoji[5], allEmoji[13]]), new sliceType$1([allEmoji[654], allEmoji[655]]), new sliceType$1([allEmoji[75]]), new sliceType$1([allEmoji[135]]), new sliceType$1([allEmoji[455]]), new sliceType$1([allEmoji[94], allEmoji[665]]), new sliceType$1([allEmoji[90]]), new sliceType$1([allEmoji[21], allEmoji[22]]), new sliceType$1([allEmoji[723]]), new sliceType$1([allEmoji[767], allEmoji[768]]), new sliceType$1([allEmoji[791]]), new sliceType$1([allEmoji[801]]), new sliceType$1([allEmoji[108]]), new sliceType$1([allEmoji[10]]), new sliceType$1([allEmoji[223]]), new sliceType$1([allEmoji[233], allEmoji[377]]), new sliceType$1([allEmoji[146], allEmoji[147]]), new sliceType$1([allEmoji[921]]), new sliceType$1([allEmoji[78]]), new sliceType$1([allEmoji[982]]), new sliceType$1([allEmoji[24]]), new sliceType$1([allEmoji[506]]), new sliceType$1([allEmoji[143], allEmoji[223]]), new sliceType$1([allEmoji[219]]), new sliceType$1([allEmoji[1256]]), new sliceType$1([allEmoji[36], allEmoji[56], allEmoji[60], allEmoji[87], allEmoji[158]]), new sliceType$1([allEmoji[639]]), new sliceType$1([allEmoji[51]]), new sliceType$1([allEmoji[757], allEmoji[758]]), new sliceType$1([allEmoji[704]]), new sliceType$1([allEmoji[892]]), new sliceType$1([allEmoji[630]]), new sliceType$1([allEmoji[278], allEmoji[332], allEmoji[380]]), new sliceType$1([allEmoji[803]]), new sliceType$1([allEmoji[800], allEmoji[801], allEmoji[802]]), new sliceType$1([allEmoji[118]]), new sliceType$1([allEmoji[564]]), new sliceType$1([allEmoji[354]]), new sliceType$1([allEmoji[554], allEmoji[557], allEmoji[560]]), new sliceType$1([allEmoji[739]]), new sliceType$1([allEmoji[208]]), new sliceType$1([allEmoji[50], allEmoji[51]]), new sliceType$1([allEmoji[215], allEmoji[216]]), new sliceType$1([allEmoji[689]]), new sliceType$1([allEmoji[485]]), new sliceType$1([allEmoji[985]]), new sliceType$1([allEmoji[64], allEmoji[65]]), new sliceType$1([allEmoji[664]]), new sliceType$1([allEmoji[29], allEmoji[53], allEmoji[63]]), new sliceType$1([allEmoji[21]]), new sliceType$1([allEmoji[500]]), new sliceType$1([allEmoji[464]]), new sliceType$1([allEmoji[594]]), new sliceType$1([allEmoji[68]]), new sliceType$1([allEmoji[140], allEmoji[141]]), new sliceType$1([allEmoji[266], allEmoji[273]]), new sliceType$1([allEmoji[628]]), new sliceType$1([allEmoji[116]]), new sliceType$1([allEmoji[0]]), new sliceType$1([allEmoji[28], allEmoji[48]]), new sliceType$1([allEmoji[219]]), new sliceType$1([allEmoji[115], allEmoji[1031], allEmoji[1036]]), new sliceType$1([allEmoji[162], allEmoji[163]]), new sliceType$1([allEmoji[558]]), new sliceType$1([allEmoji[1282]]), new sliceType$1([allEmoji[53]]), new sliceType$1([allEmoji[292]]), new sliceType$1([allEmoji[396]]), new sliceType$1([allEmoji[108]]), new sliceType$1([allEmoji[219]]), new sliceType$1([allEmoji[448], allEmoji[449], allEmoji[450], allEmoji[451], allEmoji[452]]), new sliceType$1([allEmoji[327]]), new sliceType$1([allEmoji[353]]), new sliceType$1([allEmoji[752]]), new sliceType$1([allEmoji[721]]), new sliceType$1([allEmoji[103], allEmoji[150], allEmoji[151]]), new sliceType$1([allEmoji[106]]), new sliceType$1([allEmoji[44]]), new sliceType$1([allEmoji[55]]), new sliceType$1([allEmoji[678]]), new sliceType$1([allEmoji[349], allEmoji[440]]), new sliceType$1([allEmoji[49]]), new sliceType$1([allEmoji[57]]), new sliceType$1([allEmoji[430]]), new sliceType$1([allEmoji[911]]), new sliceType$1([allEmoji[988]]), new sliceType$1([allEmoji[740]]), new sliceType$1([allEmoji[493]]), new sliceType$1([allEmoji[114]]), new sliceType$1([allEmoji[121]]), new sliceType$1([allEmoji[56], allEmoji[87]]), new sliceType$1([allEmoji[3]]), new sliceType$1([allEmoji[404]]), new sliceType$1([allEmoji[146], allEmoji[147]]), new sliceType$1([allEmoji[297]]), new sliceType$1([allEmoji[496]]), new sliceType$1([allEmoji[1041]]), new sliceType$1([allEmoji[365]]), new sliceType$1([allEmoji[627], allEmoji[662], allEmoji[663]]), new sliceType$1([allEmoji[47], allEmoji[58]]), new sliceType$1([allEmoji[400]]), new sliceType$1([allEmoji[921], allEmoji[927]]), new sliceType$1([allEmoji[14]]), new sliceType$1([allEmoji[681], allEmoji[682]]), new sliceType$1([allEmoji[214]]), new sliceType$1([allEmoji[1001]]), new sliceType$1([allEmoji[538], allEmoji[539], allEmoji[542]]), new sliceType$1([allEmoji[670]]), new sliceType$1([allEmoji[566]]), new sliceType$1([allEmoji[1300]]), new sliceType$1([allEmoji[77]]), new sliceType$1([allEmoji[1308]]), new sliceType$1([allEmoji[222]]), new sliceType$1([allEmoji[46]]), new sliceType$1([allEmoji[120]]), new sliceType$1([allEmoji[121]]), new sliceType$1([allEmoji[440]]), new sliceType$1([allEmoji[102]]), new sliceType$1([allEmoji[646]]), new sliceType$1([allEmoji[1031], allEmoji[1033], allEmoji[1034], allEmoji[1035]]), new sliceType$1([allEmoji[118]]), new sliceType$1([allEmoji[378], allEmoji[379]]), new sliceType$1([allEmoji[709]]), new sliceType$1([allEmoji[689]]), new sliceType$1([allEmoji[233], allEmoji[356], allEmoji[358], allEmoji[368], allEmoji[377]]), new sliceType$1([allEmoji[144], allEmoji[232]]), new sliceType$1([allEmoji[15]]), new sliceType$1([allEmoji[46]]), new sliceType$1([allEmoji[930]]), new sliceType$1([allEmoji[373]]), new sliceType$1([allEmoji[489], allEmoji[491]]), new sliceType$1([allEmoji[368], allEmoji[370], allEmoji[371]]), new sliceType$1([allEmoji[561], allEmoji[898]]), new sliceType$1([allEmoji[107]]), new sliceType$1([allEmoji[309], allEmoji[310]]), new sliceType$1([allEmoji[106], allEmoji[169], allEmoji[170], allEmoji[379], allEmoji[468], allEmoji[469]]), new sliceType$1([allEmoji[334], allEmoji[335], allEmoji[336], allEmoji[908]]), new sliceType$1([allEmoji[49]]), new sliceType$1([allEmoji[938]]), new sliceType$1([allEmoji[803]]), new sliceType$1([allEmoji[67]])]);
 		byName = $makeMap($String.keyFor, [{ k: "\xF0\x9F\x98\x80", v: allEmoji[0] }, { k: ":grinning:", v: allEmoji[0] }, { k: "\xF0\x9F\x98\xAC", v: allEmoji[1] }, { k: ":grimacing:", v: allEmoji[1] }, { k: "\xF0\x9F\x98\x81", v: allEmoji[2] }, { k: ":grin:", v: allEmoji[2] }, { k: "\xF0\x9F\x98\x82", v: allEmoji[3] }, { k: ":joy:", v: allEmoji[3] }, { k: "\xF0\x9F\x98\x83", v: allEmoji[4] }, { k: ":smiley:", v: allEmoji[4] }, { k: "\xF0\x9F\x98\x84", v: allEmoji[5] }, { k: ":smile:", v: allEmoji[5] }, { k: "\xF0\x9F\x98\x85", v: allEmoji[6] }, { k: ":sweat_smile:", v: allEmoji[6] }, { k: "\xF0\x9F\x98\x86", v: allEmoji[7] }, { k: ":laughing:", v: allEmoji[7] }, { k: ":satisfied:", v: allEmoji[7] }, { k: "\xF0\x9F\x98\x87", v: allEmoji[8] }, { k: ":innocent:", v: allEmoji[8] }, { k: "\xF0\x9F\x98\x89", v: allEmoji[9] }, { k: ":wink:", v: allEmoji[9] }, { k: "\xF0\x9F\x98\x8A", v: allEmoji[10] }, { k: ":blush:", v: allEmoji[10] }, { k: "\xF0\x9F\x99\x82", v: allEmoji[11] }, { k: ":slightly_smiling_face:", v: allEmoji[11] }, { k: "\xF0\x9F\x99\x83", v: allEmoji[12] }, { k: ":upside_down_face:", v: allEmoji[12] }, { k: "\xE2\x98\xBA\xEF\xB8\x8F", v: allEmoji[13] }, { k: ":relaxed:", v: allEmoji[13] }, { k: "\xF0\x9F\x98\x8B", v: allEmoji[14] }, { k: ":yum:", v: allEmoji[14] }, { k: "\xF0\x9F\x98\x8C", v: allEmoji[15] }, { k: ":relieved:", v: allEmoji[15] }, { k: "\xF0\x9F\x98\x8D", v: allEmoji[16] }, { k: ":heart_eyes:", v: allEmoji[16] }, { k: "\xF0\x9F\x98\x98", v: allEmoji[17] }, { k: ":kissing_heart:", v: allEmoji[17] }, { k: "\xF0\x9F\x98\x97", v: allEmoji[18] }, { k: ":kissing:", v: allEmoji[18] }, { k: "\xF0\x9F\x98\x99", v: allEmoji[19] }, { k: ":kissing_smiling_eyes:", v: allEmoji[19] }, { k: "\xF0\x9F\x98\x9A", v: allEmoji[20] }, { k: ":kissing_closed_eyes:", v: allEmoji[20] }, { k: "\xF0\x9F\x98\x9C", v: allEmoji[21] }, { k: ":stuck_out_tongue_winking_eye:", v: allEmoji[21] }, { k: "\xF0\x9F\x98\x9D", v: allEmoji[22] }, { k: ":stuck_out_tongue_closed_eyes:", v: allEmoji[22] }, { k: "\xF0\x9F\x98\x9B", v: allEmoji[23] }, { k: ":stuck_out_tongue:", v: allEmoji[23] }, { k: "\xF0\x9F\xA4\x91", v: allEmoji[24] }, { k: ":money_mouth_face:", v: allEmoji[24] }, { k: "\xF0\x9F\xA4\x93", v: allEmoji[25] }, { k: ":nerd_face:", v: allEmoji[25] }, { k: "\xF0\x9F\x98\x8E", v: allEmoji[26] }, { k: ":sunglasses:", v: allEmoji[26] }, { k: "\xF0\x9F\xA4\x97", v: allEmoji[27] }, { k: ":hugs:", v: allEmoji[27] }, { k: "\xF0\x9F\x98\x8F", v: allEmoji[28] }, { k: ":smirk:", v: allEmoji[28] }, { k: "\xF0\x9F\x98\xB6", v: allEmoji[29] }, { k: ":no_mouth:", v: allEmoji[29] }, { k: "\xF0\x9F\x98\x90", v: allEmoji[30] }, { k: ":neutral_face:", v: allEmoji[30] }, { k: "\xF0\x9F\x98\x91", v: allEmoji[31] }, { k: ":expressionless:", v: allEmoji[31] }, { k: "\xF0\x9F\x98\x92", v: allEmoji[32] }, { k: ":unamused:", v: allEmoji[32] }, { k: "\xF0\x9F\x99\x84", v: allEmoji[33] }, { k: ":roll_eyes:", v: allEmoji[33] }, { k: "\xF0\x9F\xA4\x94", v: allEmoji[34] }, { k: ":thinking:", v: allEmoji[34] }, { k: "\xF0\x9F\x98\xB3", v: allEmoji[35] }, { k: ":flushed:", v: allEmoji[35] }, { k: "\xF0\x9F\x98\x9E", v: allEmoji[36] }, { k: ":disappointed:", v: allEmoji[36] }, { k: "\xF0\x9F\x98\x9F", v: allEmoji[37] }, { k: ":worried:", v: allEmoji[37] }, { k: "\xF0\x9F\x98\xA0", v: allEmoji[38] }, { k: ":angry:", v: allEmoji[38] }, { k: "\xF0\x9F\x98\xA1", v: allEmoji[39] }, { k: ":rage:", v: allEmoji[39] }, { k: ":pout:", v: allEmoji[39] }, { k: "\xF0\x9F\x98\x94", v: allEmoji[40] }, { k: ":pensive:", v: allEmoji[40] }, { k: "\xF0\x9F\x98\x95", v: allEmoji[41] }, { k: ":confused:", v: allEmoji[41] }, { k: "\xF0\x9F\x99\x81", v: allEmoji[42] }, { k: ":slightly_frowning_face:", v: allEmoji[42] }, { k: "\xE2\x98\xB9\xEF\xB8\x8F", v: allEmoji[43] }, { k: ":frowning_face:", v: allEmoji[43] }, { k: "\xF0\x9F\x98\xA3", v: allEmoji[44] }, { k: ":persevere:", v: allEmoji[44] }, { k: "\xF0\x9F\x98\x96", v: allEmoji[45] }, { k: ":confounded:", v: allEmoji[45] }, { k: "\xF0\x9F\x98\xAB", v: allEmoji[46] }, { k: ":tired_face:", v: allEmoji[46] }, { k: "\xF0\x9F\x98\xA9", v: allEmoji[47] }, { k: ":weary:", v: allEmoji[47] }, { k: "\xF0\x9F\x98\xA4", v: allEmoji[48] }, { k: ":triumph:", v: allEmoji[48] }, { k: "\xF0\x9F\x98\xAE", v: allEmoji[49] }, { k: ":open_mouth:", v: allEmoji[49] }, { k: "\xF0\x9F\x98\xB1", v: allEmoji[50] }, { k: ":scream:", v: allEmoji[50] }, { k: "\xF0\x9F\x98\xA8", v: allEmoji[51] }, { k: ":fearful:", v: allEmoji[51] }, { k: "\xF0\x9F\x98\xB0", v: allEmoji[52] }, { k: ":cold_sweat:", v: allEmoji[52] }, { k: "\xF0\x9F\x98\xAF", v: allEmoji[53] }, { k: ":hushed:", v: allEmoji[53] }, { k: "\xF0\x9F\x98\xA6", v: allEmoji[54] }, { k: ":frowning:", v: allEmoji[54] }, { k: "\xF0\x9F\x98\xA7", v: allEmoji[55] }, { k: ":anguished:", v: allEmoji[55] }, { k: "\xF0\x9F\x98\xA2", v: allEmoji[56] }, { k: ":cry:", v: allEmoji[56] }, { k: "\xF0\x9F\x98\xA5", v: allEmoji[57] }, { k: ":disappointed_relieved:", v: allEmoji[57] }, { k: "\xF0\x9F\x98\xAA", v: allEmoji[58] }, { k: ":sleepy:", v: allEmoji[58] }, { k: "\xF0\x9F\x98\x93", v: allEmoji[59] }, { k: ":sweat:", v: allEmoji[59] }, { k: "\xF0\x9F\x98\xAD", v: allEmoji[60] }, { k: ":sob:", v: allEmoji[60] }, { k: "\xF0\x9F\x98\xB5", v: allEmoji[61] }, { k: ":dizzy_face:", v: allEmoji[61] }, { k: "\xF0\x9F\x98\xB2", v: allEmoji[62] }, { k: ":astonished:", v: allEmoji[62] }, { k: "\xF0\x9F\xA4\x90", v: allEmoji[63] }, { k: ":zipper_mouth_face:", v: allEmoji[63] }, { k: "\xF0\x9F\x98\xB7", v: allEmoji[64] }, { k: ":mask:", v: allEmoji[64] }, { k: "\xF0\x9F\xA4\x92", v: allEmoji[65] }, { k: ":face_with_thermometer:", v: allEmoji[65] }, { k: "\xF0\x9F\xA4\x95", v: allEmoji[66] }, { k: ":face_with_head_bandage:", v: allEmoji[66] }, { k: "\xF0\x9F\x98\xB4", v: allEmoji[67] }, { k: ":sleeping:", v: allEmoji[67] }, { k: "\xF0\x9F\x92\xA4", v: allEmoji[68] }, { k: ":zzz:", v: allEmoji[68] }, { k: "\xF0\x9F\x92\xA9", v: allEmoji[69] }, { k: ":hankey:", v: allEmoji[69] }, { k: ":poop:", v: allEmoji[69] }, { k: ":shit:", v: allEmoji[69] }, { k: "\xF0\x9F\x98\x88", v: allEmoji[70] }, { k: ":smiling_imp:", v: allEmoji[70] }, { k: "\xF0\x9F\x91\xBF", v: allEmoji[71] }, { k: ":imp:", v: allEmoji[71] }, { k: "\xF0\x9F\x91\xB9", v: allEmoji[72] }, { k: ":japanese_ogre:", v: allEmoji[72] }, { k: "\xF0\x9F\x91\xBA", v: allEmoji[73] }, { k: ":japanese_goblin:", v: allEmoji[73] }, { k: "\xF0\x9F\x91\xBB", v: allEmoji[74] }, { k: ":ghost:", v: allEmoji[74] }, { k: "\xF0\x9F\x92\x80", v: allEmoji[75] }, { k: ":skull:", v: allEmoji[75] }, { k: "\xE2\x98\xA0\xEF\xB8\x8F", v: allEmoji[76] }, { k: ":skull_and_crossbones:", v: allEmoji[76] }, { k: "\xF0\x9F\x91\xBD", v: allEmoji[77] }, { k: ":alien:", v: allEmoji[77] }, { k: "\xF0\x9F\x91\xBE", v: allEmoji[78] }, { k: ":space_invader:", v: allEmoji[78] }, { k: "\xF0\x9F\xA4\x96", v: allEmoji[79] }, { k: ":robot:", v: allEmoji[79] }, { k: "\xF0\x9F\x98\xBA", v: allEmoji[80] }, { k: ":smiley_cat:", v: allEmoji[80] }, { k: "\xF0\x9F\x98\xB8", v: allEmoji[81] }, { k: ":smile_cat:", v: allEmoji[81] }, { k: "\xF0\x9F\x98\xB9", v: allEmoji[82] }, { k: ":joy_cat:", v: allEmoji[82] }, { k: "\xF0\x9F\x98\xBB", v: allEmoji[83] }, { k: ":heart_eyes_cat:", v: allEmoji[83] }, { k: "\xF0\x9F\x98\xBC", v: allEmoji[84] }, { k: ":smirk_cat:", v: allEmoji[84] }, { k: "\xF0\x9F\x98\xBD", v: allEmoji[85] }, { k: ":kissing_cat:", v: allEmoji[85] }, { k: "\xF0\x9F\x99\x80", v: allEmoji[86] }, { k: ":scream_cat:", v: allEmoji[86] }, { k: "\xF0\x9F\x98\xBF", v: allEmoji[87] }, { k: ":crying_cat_face:", v: allEmoji[87] }, { k: "\xF0\x9F\x98\xBE", v: allEmoji[88] }, { k: ":pouting_cat:", v: allEmoji[88] }, { k: "\xF0\x9F\x99\x8C", v: allEmoji[89] }, { k: ":raised_hands:", v: allEmoji[89] }, { k: "\xF0\x9F\x91\x8F", v: allEmoji[90] }, { k: ":clap:", v: allEmoji[90] }, { k: "\xF0\x9F\x91\x8D", v: allEmoji[91] }, { k: ":+1:", v: allEmoji[91] }, { k: ":thumbsup:", v: allEmoji[91] }, { k: "\xF0\x9F\x91\x8E", v: allEmoji[92] }, { k: ":-1:", v: allEmoji[92] }, { k: ":thumbsdown:", v: allEmoji[92] }, { k: "\xF0\x9F\x91\x8A", v: allEmoji[93] }, { k: ":facepunch:", v: allEmoji[93] }, { k: ":punch:", v: allEmoji[93] }, { k: "\xE2\x9C\x8A", v: allEmoji[94] }, { k: ":fist:", v: allEmoji[94] }, { k: "\xF0\x9F\x91\x8B", v: allEmoji[95] }, { k: ":wave:", v: allEmoji[95] }, { k: "\xF0\x9F\x91\x88", v: allEmoji[96] }, { k: ":point_left:", v: allEmoji[96] }, { k: "\xF0\x9F\x91\x89", v: allEmoji[97] }, { k: ":point_right:", v: allEmoji[97] }, { k: "\xF0\x9F\x91\x86", v: allEmoji[98] }, { k: ":point_up_2:", v: allEmoji[98] }, { k: "\xF0\x9F\x91\x87", v: allEmoji[99] }, { k: ":point_down:", v: allEmoji[99] }, { k: "\xF0\x9F\x91\x8C", v: allEmoji[100] }, { k: ":ok_hand:", v: allEmoji[100] }, { k: "\xE2\x98\x9D\xEF\xB8\x8F", v: allEmoji[101] }, { k: ":point_up:", v: allEmoji[101] }, { k: "\xE2\x9C\x8C\xEF\xB8\x8F", v: allEmoji[102] }, { k: ":v:", v: allEmoji[102] }, { k: "\xE2\x9C\x8B", v: allEmoji[103] }, { k: ":hand:", v: allEmoji[103] }, { k: ":raised_hand:", v: allEmoji[103] }, { k: "\xF0\x9F\x96\x90", v: allEmoji[104] }, { k: ":raised_hand_with_fingers_splayed:", v: allEmoji[104] }, { k: "\xF0\x9F\x91\x90", v: allEmoji[105] }, { k: ":open_hands:", v: allEmoji[105] }, { k: "\xF0\x9F\x92\xAA", v: allEmoji[106] }, { k: ":muscle:", v: allEmoji[106] }, { k: "\xF0\x9F\x99\x8F", v: allEmoji[107] }, { k: ":pray:", v: allEmoji[107] }, { k: "\xF0\x9F\x96\x96", v: allEmoji[108] }, { k: ":vulcan_salute:", v: allEmoji[108] }, { k: "\xF0\x9F\xA4\x98", v: allEmoji[109] }, { k: ":metal:", v: allEmoji[109] }, { k: "\xF0\x9F\x96\x95", v: allEmoji[110] }, { k: ":middle_finger:", v: allEmoji[110] }, { k: ":fu:", v: allEmoji[110] }, { k: "\xE2\x9C\x8D\xEF\xB8\x8F", v: allEmoji[111] }, { k: ":writing_hand:", v: allEmoji[111] }, { k: "\xF0\x9F\x92\x85", v: allEmoji[112] }, { k: ":nail_care:", v: allEmoji[112] }, { k: "\xF0\x9F\x91\x84", v: allEmoji[113] }, { k: ":lips:", v: allEmoji[113] }, { k: "\xF0\x9F\x91\x85", v: allEmoji[114] }, { k: ":tongue:", v: allEmoji[114] }, { k: "\xF0\x9F\x91\x82", v: allEmoji[115] }, { k: ":ear:", v: allEmoji[115] }, { k: "\xF0\x9F\x91\x83", v: allEmoji[116] }, { k: ":nose:", v: allEmoji[116] }, { k: "\xF0\x9F\x91\x81", v: allEmoji[117] }, { k: ":eye:", v: allEmoji[117] }, { k: "\xF0\x9F\x91\x80", v: allEmoji[118] }, { k: ":eyes:", v: allEmoji[118] }, { k: "\xF0\x9F\x97\xA3", v: allEmoji[119] }, { k: ":speaking_head:", v: allEmoji[119] }, { k: "\xF0\x9F\x91\xA4", v: allEmoji[120] }, { k: ":bust_in_silhouette:", v: allEmoji[120] }, { k: "\xF0\x9F\x91\xA5", v: allEmoji[121] }, { k: ":busts_in_silhouette:", v: allEmoji[121] }, { k: "\xF0\x9F\x91\xB6", v: allEmoji[122] }, { k: ":baby:", v: allEmoji[122] }, { k: "\xF0\x9F\x91\xA6", v: allEmoji[123] }, { k: ":boy:", v: allEmoji[123] }, { k: "\xF0\x9F\x91\xA7", v: allEmoji[124] }, { k: ":girl:", v: allEmoji[124] }, { k: "\xF0\x9F\x91\xA8", v: allEmoji[125] }, { k: ":man:", v: allEmoji[125] }, { k: "\xF0\x9F\x91\xA9", v: allEmoji[126] }, { k: ":woman:", v: allEmoji[126] }, { k: "\xF0\x9F\x91\xB1\xE2\x80\x8D\xE2\x99\x80\xEF\xB8\x8F", v: allEmoji[127] }, { k: ":blonde_woman:", v: allEmoji[127] }, { k: "\xF0\x9F\x91\xB1", v: allEmoji[128] }, { k: ":blonde_man:", v: allEmoji[128] }, { k: ":person_with_blond_hair:", v: allEmoji[128] }, { k: "\xF0\x9F\x91\xB4", v: allEmoji[129] }, { k: ":older_man:", v: allEmoji[129] }, { k: "\xF0\x9F\x91\xB5", v: allEmoji[130] }, { k: ":older_woman:", v: allEmoji[130] }, { k: "\xF0\x9F\x91\xB2", v: allEmoji[131] }, { k: ":man_with_gua_pi_mao:", v: allEmoji[131] }, { k: "\xF0\x9F\x91\xB3\xE2\x80\x8D\xE2\x99\x80\xEF\xB8\x8F", v: allEmoji[132] }, { k: ":woman_with_turban:", v: allEmoji[132] }, { k: "\xF0\x9F\x91\xB3", v: allEmoji[133] }, { k: ":man_with_turban:", v: allEmoji[133] }, { k: "\xF0\x9F\x91\xAE\xE2\x80\x8D\xE2\x99\x80\xEF\xB8\x8F", v: allEmoji[134] }, { k: ":policewoman:", v: allEmoji[134] }, { k: "\xF0\x9F\x91\xAE", v: allEmoji[135] }, { k: ":policeman:", v: allEmoji[135] }, { k: ":cop:", v: allEmoji[135] }, { k: "\xF0\x9F\x91\xB7\xE2\x80\x8D\xE2\x99\x80\xEF\xB8\x8F", v: allEmoji[136] }, { k: ":construction_worker_woman:", v: allEmoji[136] }, { k: "\xF0\x9F\x91\xB7", v: allEmoji[137] }, { k: ":construction_worker_man:", v: allEmoji[137] }, { k: ":construction_worker:", v: allEmoji[137] }, { k: "\xF0\x9F\x92\x82\xE2\x80\x8D\xE2\x99\x80\xEF\xB8\x8F", v: allEmoji[138] }, { k: ":guardswoman:", v: allEmoji[138] }, { k: "\xF0\x9F\x92\x82", v: allEmoji[139] }, { k: ":guardsman:", v: allEmoji[139] }, { k: "\xF0\x9F\x95\xB5\xEF\xB8\x8F\xE2\x80\x8D\xE2\x99\x80\xEF\xB8\x8F", v: allEmoji[140] }, { k: ":female_detective:", v: allEmoji[140] }, { k: "\xF0\x9F\x95\xB5\xEF\xB8\x8F", v: allEmoji[141] }, { k: ":male_detective:", v: allEmoji[141] }, { k: ":detective:", v: allEmoji[141] }, { k: "\xF0\x9F\x8E\x85", v: allEmoji[142] }, { k: ":santa:", v: allEmoji[142] }, { k: "\xF0\x9F\x91\xB8", v: allEmoji[143] }, { k: ":princess:", v: allEmoji[143] }, { k: "\xF0\x9F\x91\xB0", v: allEmoji[144] }, { k: ":bride_with_veil:", v: allEmoji[144] }, { k: "\xF0\x9F\x91\xBC", v: allEmoji[145] }, { k: ":angel:", v: allEmoji[145] }, { k: "\xF0\x9F\x99\x87\xE2\x80\x8D\xE2\x99\x80\xEF\xB8\x8F", v: allEmoji[146] }, { k: ":bowing_woman:", v: allEmoji[146] }, { k: "\xF0\x9F\x99\x87", v: allEmoji[147] }, { k: ":bowing_man:", v: allEmoji[147] }, { k: ":bow:", v: allEmoji[147] }, { k: "\xF0\x9F\x92\x81", v: allEmoji[148] }, { k: ":tipping_hand_woman:", v: allEmoji[148] }, { k: ":information_desk_person:", v: allEmoji[148] }, { k: "\xF0\x9F\x92\x81\xE2\x80\x8D\xE2\x99\x82\xEF\xB8\x8F", v: allEmoji[149] }, { k: ":tipping_hand_man:", v: allEmoji[149] }, { k: "\xF0\x9F\x99\x85", v: allEmoji[150] }, { k: ":no_good_woman:", v: allEmoji[150] }, { k: ":no_good:", v: allEmoji[150] }, { k: ":ng_woman:", v: allEmoji[150] }, { k: "\xF0\x9F\x99\x85\xE2\x80\x8D\xE2\x99\x82\xEF\xB8\x8F", v: allEmoji[151] }, { k: ":no_good_man:", v: allEmoji[151] }, { k: ":ng_man:", v: allEmoji[151] }, { k: "\xF0\x9F\x99\x86", v: allEmoji[152] }, { k: ":ok_woman:", v: allEmoji[152] }, { k: "\xF0\x9F\x99\x86\xE2\x80\x8D\xE2\x99\x82\xEF\xB8\x8F", v: allEmoji[153] }, { k: ":ok_man:", v: allEmoji[153] }, { k: "\xF0\x9F\x99\x8B", v: allEmoji[154] }, { k: ":raising_hand_woman:", v: allEmoji[154] }, { k: ":raising_hand:", v: allEmoji[154] }, { k: "\xF0\x9F\x99\x8B\xE2\x80\x8D\xE2\x99\x82\xEF\xB8\x8F", v: allEmoji[155] }, { k: ":raising_hand_man:", v: allEmoji[155] }, { k: "\xF0\x9F\x99\x8E", v: allEmoji[156] }, { k: ":pouting_woman:", v: allEmoji[156] }, { k: ":person_with_pouting_face:", v: allEmoji[156] }, { k: "\xF0\x9F\x99\x8E\xE2\x80\x8D\xE2\x99\x82\xEF\xB8\x8F", v: allEmoji[157] }, { k: ":pouting_man:", v: allEmoji[157] }, { k: "\xF0\x9F\x99\x8D", v: allEmoji[158] }, { k: ":frowning_woman:", v: allEmoji[158] }, { k: ":person_frowning:", v: allEmoji[158] }, { k: "\xF0\x9F\x99\x8D\xE2\x80\x8D\xE2\x99\x82\xEF\xB8\x8F", v: allEmoji[159] }, { k: ":frowning_man:", v: allEmoji[159] }, { k: "\xF0\x9F\x92\x87", v: allEmoji[160] }, { k: ":haircut_woman:", v: allEmoji[160] }, { k: ":haircut:", v: allEmoji[160] }, { k: "\xF0\x9F\x92\x87\xE2\x80\x8D\xE2\x99\x82\xEF\xB8\x8F", v: allEmoji[161] }, { k: ":haircut_man:", v: allEmoji[161] }, { k: "\xF0\x9F\x92\x86", v: allEmoji[162] }, { k: ":massage_woman:", v: allEmoji[162] }, { k: ":massage:", v: allEmoji[162] }, { k: "\xF0\x9F\x92\x86\xE2\x80\x8D\xE2\x99\x82\xEF\xB8\x8F", v: allEmoji[163] }, { k: ":massage_man:", v: allEmoji[163] }, { k: "\xF0\x9F\x92\x83", v: allEmoji[164] }, { k: ":dancer:", v: allEmoji[164] }, { k: "\xF0\x9F\x91\xAF", v: allEmoji[165] }, { k: ":dancing_women:", v: allEmoji[165] }, { k: ":dancers:", v: allEmoji[165] }, { k: "\xF0\x9F\x91\xAF\xE2\x80\x8D\xE2\x99\x82\xEF\xB8\x8F", v: allEmoji[166] }, { k: ":dancing_men:", v: allEmoji[166] }, { k: "\xF0\x9F\x9A\xB6\xE2\x80\x8D\xE2\x99\x80\xEF\xB8\x8F", v: allEmoji[167] }, { k: ":walking_woman:", v: allEmoji[167] }, { k: "\xF0\x9F\x9A\xB6", v: allEmoji[168] }, { k: ":walking_man:", v: allEmoji[168] }, { k: ":walking:", v: allEmoji[168] }, { k: "\xF0\x9F\x8F\x83\xE2\x80\x8D\xE2\x99\x80\xEF\xB8\x8F", v: allEmoji[169] }, { k: ":running_woman:", v: allEmoji[169] }, { k: "\xF0\x9F\x8F\x83", v: allEmoji[170] }, { k: ":running_man:", v: allEmoji[170] }, { k: ":runner:", v: allEmoji[170] }, { k: ":running:", v: allEmoji[170] }, { k: "\xF0\x9F\x91\xAB", v: allEmoji[171] }, { k: ":couple:", v: allEmoji[171] }, { k: "\xF0\x9F\x91\xAD", v: allEmoji[172] }, { k: ":two_women_holding_hands:", v: allEmoji[172] }, { k: "\xF0\x9F\x91\xAC", v: allEmoji[173] }, { k: ":two_men_holding_hands:", v: allEmoji[173] }, { k: "\xF0\x9F\x92\x91", v: allEmoji[174] }, { k: ":couple_with_heart_woman_man:", v: allEmoji[174] }, { k: ":couple_with_heart:", v: allEmoji[174] }, { k: "\xF0\x9F\x91\xA9\xE2\x80\x8D\xE2\x9D\xA4\xEF\xB8\x8F\xE2\x80\x8D\xF0\x9F\x91\xA9", v: allEmoji[175] }, { k: ":couple_with_heart_woman_woman:", v: allEmoji[175] }, { k: "\xF0\x9F\x91\xA8\xE2\x80\x8D\xE2\x9D\xA4\xEF\xB8\x8F\xE2\x80\x8D\xF0\x9F\x91\xA8", v: allEmoji[176] }, { k: ":couple_with_heart_man_man:", v: allEmoji[176] }, { k: "\xF0\x9F\x92\x8F", v: allEmoji[177] }, { k: ":couplekiss_man_woman:", v: allEmoji[177] }, { k: "\xF0\x9F\x91\xA9\xE2\x80\x8D\xE2\x9D\xA4\xEF\xB8\x8F\xE2\x80\x8D\xF0\x9F\x92\x8B\xE2\x80\x8D\xF0\x9F\x91\xA9", v: allEmoji[178] }, { k: ":couplekiss_woman_woman:", v: allEmoji[178] }, { k: "\xF0\x9F\x91\xA8\xE2\x80\x8D\xE2\x9D\xA4\xEF\xB8\x8F\xE2\x80\x8D\xF0\x9F\x92\x8B\xE2\x80\x8D\xF0\x9F\x91\xA8", v: allEmoji[179] }, { k: ":couplekiss_man_man:", v: allEmoji[179] }, { k: "\xF0\x9F\x91\xAA", v: allEmoji[180] }, { k: ":family_man_woman_boy:", v: allEmoji[180] }, { k: ":family:", v: allEmoji[180] }, { k: "\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA7", v: allEmoji[181] }, { k: ":family_man_woman_girl:", v: allEmoji[181] }, { k: "\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA7\xE2\x80\x8D\xF0\x9F\x91\xA6", v: allEmoji[182] }, { k: ":family_man_woman_girl_boy:", v: allEmoji[182] }, { k: "\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA6\xE2\x80\x8D\xF0\x9F\x91\xA6", v: allEmoji[183] }, { k: ":family_man_woman_boy_boy:", v: allEmoji[183] }, { k: "\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA7\xE2\x80\x8D\xF0\x9F\x91\xA7", v: allEmoji[184] }, { k: ":family_man_woman_girl_girl:", v: allEmoji[184] }, { k: "\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA6", v: allEmoji[185] }, { k: ":family_woman_woman_boy:", v: allEmoji[185] }, { k: "\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA7", v: allEmoji[186] }, { k: ":family_woman_woman_girl:", v: allEmoji[186] }, { k: "\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA7\xE2\x80\x8D\xF0\x9F\x91\xA6", v: allEmoji[187] }, { k: ":family_woman_woman_girl_boy:", v: allEmoji[187] }, { k: "\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA6\xE2\x80\x8D\xF0\x9F\x91\xA6", v: allEmoji[188] }, { k: ":family_woman_woman_boy_boy:", v: allEmoji[188] }, { k: "\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA7\xE2\x80\x8D\xF0\x9F\x91\xA7", v: allEmoji[189] }, { k: ":family_woman_woman_girl_girl:", v: allEmoji[189] }, { k: "\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA6", v: allEmoji[190] }, { k: ":family_man_man_boy:", v: allEmoji[190] }, { k: "\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA7", v: allEmoji[191] }, { k: ":family_man_man_girl:", v: allEmoji[191] }, { k: "\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA7\xE2\x80\x8D\xF0\x9F\x91\xA6", v: allEmoji[192] }, { k: ":family_man_man_girl_boy:", v: allEmoji[192] }, { k: "\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA6\xE2\x80\x8D\xF0\x9F\x91\xA6", v: allEmoji[193] }, { k: ":family_man_man_boy_boy:", v: allEmoji[193] }, { k: "\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA7\xE2\x80\x8D\xF0\x9F\x91\xA7", v: allEmoji[194] }, { k: ":family_man_man_girl_girl:", v: allEmoji[194] }, { k: "\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA6", v: allEmoji[195] }, { k: ":family_woman_boy:", v: allEmoji[195] }, { k: "\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA7", v: allEmoji[196] }, { k: ":family_woman_girl:", v: allEmoji[196] }, { k: "\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA7\xE2\x80\x8D\xF0\x9F\x91\xA6", v: allEmoji[197] }, { k: ":family_woman_girl_boy:", v: allEmoji[197] }, { k: "\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA6\xE2\x80\x8D\xF0\x9F\x91\xA6", v: allEmoji[198] }, { k: ":family_woman_boy_boy:", v: allEmoji[198] }, { k: "\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA7\xE2\x80\x8D\xF0\x9F\x91\xA7", v: allEmoji[199] }, { k: ":family_woman_girl_girl:", v: allEmoji[199] }, { k: "\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA6", v: allEmoji[200] }, { k: ":family_man_boy:", v: allEmoji[200] }, { k: "\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA7", v: allEmoji[201] }, { k: ":family_man_girl:", v: allEmoji[201] }, { k: "\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA7\xE2\x80\x8D\xF0\x9F\x91\xA6", v: allEmoji[202] }, { k: ":family_man_girl_boy:", v: allEmoji[202] }, { k: "\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA6\xE2\x80\x8D\xF0\x9F\x91\xA6", v: allEmoji[203] }, { k: ":family_man_boy_boy:", v: allEmoji[203] }, { k: "\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA7\xE2\x80\x8D\xF0\x9F\x91\xA7", v: allEmoji[204] }, { k: ":family_man_girl_girl:", v: allEmoji[204] }, { k: "\xF0\x9F\x91\x9A", v: allEmoji[205] }, { k: ":womans_clothes:", v: allEmoji[205] }, { k: "\xF0\x9F\x91\x95", v: allEmoji[206] }, { k: ":shirt:", v: allEmoji[206] }, { k: ":tshirt:", v: allEmoji[206] }, { k: "\xF0\x9F\x91\x96", v: allEmoji[207] }, { k: ":jeans:", v: allEmoji[207] }, { k: "\xF0\x9F\x91\x94", v: allEmoji[208] }, { k: ":necktie:", v: allEmoji[208] }, { k: "\xF0\x9F\x91\x97", v: allEmoji[209] }, { k: ":dress:", v: allEmoji[209] }, { k: "\xF0\x9F\x91\x99", v: allEmoji[210] }, { k: ":bikini:", v: allEmoji[210] }, { k: "\xF0\x9F\x91\x98", v: allEmoji[211] }, { k: ":kimono:", v: allEmoji[211] }, { k: "\xF0\x9F\x92\x84", v: allEmoji[212] }, { k: ":lipstick:", v: allEmoji[212] }, { k: "\xF0\x9F\x92\x8B", v: allEmoji[213] }, { k: ":kiss:", v: allEmoji[213] }, { k: "\xF0\x9F\x91\xA3", v: allEmoji[214] }, { k: ":footprints:", v: allEmoji[214] }, { k: "\xF0\x9F\x91\xA0", v: allEmoji[215] }, { k: ":high_heel:", v: allEmoji[215] }, { k: "\xF0\x9F\x91\xA1", v: allEmoji[216] }, { k: ":sandal:", v: allEmoji[216] }, { k: "\xF0\x9F\x91\xA2", v: allEmoji[217] }, { k: ":boot:", v: allEmoji[217] }, { k: "\xF0\x9F\x91\x9E", v: allEmoji[218] }, { k: ":mans_shoe:", v: allEmoji[218] }, { k: ":shoe:", v: allEmoji[218] }, { k: "\xF0\x9F\x91\x9F", v: allEmoji[219] }, { k: ":athletic_shoe:", v: allEmoji[219] }, { k: "\xF0\x9F\x91\x92", v: allEmoji[220] }, { k: ":womans_hat:", v: allEmoji[220] }, { k: "\xF0\x9F\x8E\xA9", v: allEmoji[221] }, { k: ":tophat:", v: allEmoji[221] }, { k: "\xF0\x9F\x8E\x93", v: allEmoji[222] }, { k: ":mortar_board:", v: allEmoji[222] }, { k: "\xF0\x9F\x91\x91", v: allEmoji[223] }, { k: ":crown:", v: allEmoji[223] }, { k: "\xE2\x9B\x91", v: allEmoji[224] }, { k: ":rescue_worker_helmet:", v: allEmoji[224] }, { k: "\xF0\x9F\x8E\x92", v: allEmoji[225] }, { k: ":school_satchel:", v: allEmoji[225] }, { k: "\xF0\x9F\x91\x9D", v: allEmoji[226] }, { k: ":pouch:", v: allEmoji[226] }, { k: "\xF0\x9F\x91\x9B", v: allEmoji[227] }, { k: ":purse:", v: allEmoji[227] }, { k: "\xF0\x9F\x91\x9C", v: allEmoji[228] }, { k: ":handbag:", v: allEmoji[228] }, { k: "\xF0\x9F\x92\xBC", v: allEmoji[229] }, { k: ":briefcase:", v: allEmoji[229] }, { k: "\xF0\x9F\x91\x93", v: allEmoji[230] }, { k: ":eyeglasses:", v: allEmoji[230] }, { k: "\xF0\x9F\x95\xB6", v: allEmoji[231] }, { k: ":dark_sunglasses:", v: allEmoji[231] }, { k: "\xF0\x9F\x92\x8D", v: allEmoji[232] }, { k: ":ring:", v: allEmoji[232] }, { k: "\xF0\x9F\x8C\x82", v: allEmoji[233] }, { k: ":closed_umbrella:", v: allEmoji[233] }, { k: "\xF0\x9F\x90\xB6", v: allEmoji[234] }, { k: ":dog:", v: allEmoji[234] }, { k: "\xF0\x9F\x90\xB1", v: allEmoji[235] }, { k: ":cat:", v: allEmoji[235] }, { k: "\xF0\x9F\x90\xAD", v: allEmoji[236] }, { k: ":mouse:", v: allEmoji[236] }, { k: "\xF0\x9F\x90\xB9", v: allEmoji[237] }, { k: ":hamster:", v: allEmoji[237] }, { k: "\xF0\x9F\x90\xB0", v: allEmoji[238] }, { k: ":rabbit:", v: allEmoji[238] }, { k: "\xF0\x9F\x90\xBB", v: allEmoji[239] }, { k: ":bear:", v: allEmoji[239] }, { k: "\xF0\x9F\x90\xBC", v: allEmoji[240] }, { k: ":panda_face:", v: allEmoji[240] }, { k: "\xF0\x9F\x90\xA8", v: allEmoji[241] }, { k: ":koala:", v: allEmoji[241] }, { k: "\xF0\x9F\x90\xAF", v: allEmoji[242] }, { k: ":tiger:", v: allEmoji[242] }, { k: "\xF0\x9F\xA6\x81", v: allEmoji[243] }, { k: ":lion:", v: allEmoji[243] }, { k: "\xF0\x9F\x90\xAE", v: allEmoji[244] }, { k: ":cow:", v: allEmoji[244] }, { k: "\xF0\x9F\x90\xB7", v: allEmoji[245] }, { k: ":pig:", v: allEmoji[245] }, { k: "\xF0\x9F\x90\xBD", v: allEmoji[246] }, { k: ":pig_nose:", v: allEmoji[246] }, { k: "\xF0\x9F\x90\xB8", v: allEmoji[247] }, { k: ":frog:", v: allEmoji[247] }, { k: "\xF0\x9F\x90\x99", v: allEmoji[248] }, { k: ":octopus:", v: allEmoji[248] }, { k: "\xF0\x9F\x90\xB5", v: allEmoji[249] }, { k: ":monkey_face:", v: allEmoji[249] }, { k: "\xF0\x9F\x99\x88", v: allEmoji[250] }, { k: ":see_no_evil:", v: allEmoji[250] }, { k: "\xF0\x9F\x99\x89", v: allEmoji[251] }, { k: ":hear_no_evil:", v: allEmoji[251] }, { k: "\xF0\x9F\x99\x8A", v: allEmoji[252] }, { k: ":speak_no_evil:", v: allEmoji[252] }, { k: "\xF0\x9F\x90\x92", v: allEmoji[253] }, { k: ":monkey:", v: allEmoji[253] }, { k: "\xF0\x9F\x90\x94", v: allEmoji[254] }, { k: ":chicken:", v: allEmoji[254] }, { k: "\xF0\x9F\x90\xA7", v: allEmoji[255] }, { k: ":penguin:", v: allEmoji[255] }, { k: "\xF0\x9F\x90\xA6", v: allEmoji[256] }, { k: ":bird:", v: allEmoji[256] }, { k: "\xF0\x9F\x90\xA4", v: allEmoji[257] }, { k: ":baby_chick:", v: allEmoji[257] }, { k: "\xF0\x9F\x90\xA3", v: allEmoji[258] }, { k: ":hatching_chick:", v: allEmoji[258] }, { k: "\xF0\x9F\x90\xA5", v: allEmoji[259] }, { k: ":hatched_chick:", v: allEmoji[259] }, { k: "\xF0\x9F\x90\xBA", v: allEmoji[260] }, { k: ":wolf:", v: allEmoji[260] }, { k: "\xF0\x9F\x90\x97", v: allEmoji[261] }, { k: ":boar:", v: allEmoji[261] }, { k: "\xF0\x9F\x90\xB4", v: allEmoji[262] }, { k: ":horse:", v: allEmoji[262] }, { k: "\xF0\x9F\xA6\x84", v: allEmoji[263] }, { k: ":unicorn:", v: allEmoji[263] }, { k: "\xF0\x9F\x90\x9D", v: allEmoji[264] }, { k: ":bee:", v: allEmoji[264] }, { k: ":honeybee:", v: allEmoji[264] }, { k: "\xF0\x9F\x90\x9B", v: allEmoji[265] }, { k: ":bug:", v: allEmoji[265] }, { k: "\xF0\x9F\x90\x8C", v: allEmoji[266] }, { k: ":snail:", v: allEmoji[266] }, { k: "\xF0\x9F\x90\x9E", v: allEmoji[267] }, { k: ":beetle:", v: allEmoji[267] }, { k: "\xF0\x9F\x90\x9C", v: allEmoji[268] }, { k: ":ant:", v: allEmoji[268] }, { k: "\xF0\x9F\x95\xB7", v: allEmoji[269] }, { k: ":spider:", v: allEmoji[269] }, { k: "\xF0\x9F\xA6\x82", v: allEmoji[270] }, { k: ":scorpion:", v: allEmoji[270] }, { k: "\xF0\x9F\xA6\x80", v: allEmoji[271] }, { k: ":crab:", v: allEmoji[271] }, { k: "\xF0\x9F\x90\x8D", v: allEmoji[272] }, { k: ":snake:", v: allEmoji[272] }, { k: "\xF0\x9F\x90\xA2", v: allEmoji[273] }, { k: ":turtle:", v: allEmoji[273] }, { k: "\xF0\x9F\x90\xA0", v: allEmoji[274] }, { k: ":tropical_fish:", v: allEmoji[274] }, { k: "\xF0\x9F\x90\x9F", v: allEmoji[275] }, { k: ":fish:", v: allEmoji[275] }, { k: "\xF0\x9F\x90\xA1", v: allEmoji[276] }, { k: ":blowfish:", v: allEmoji[276] }, { k: "\xF0\x9F\x90\xAC", v: allEmoji[277] }, { k: ":dolphin:", v: allEmoji[277] }, { k: ":flipper:", v: allEmoji[277] }, { k: "\xF0\x9F\x90\xB3", v: allEmoji[278] }, { k: ":whale:", v: allEmoji[278] }, { k: "\xF0\x9F\x90\x8B", v: allEmoji[279] }, { k: ":whale2:", v: allEmoji[279] }, { k: "\xF0\x9F\x90\x8A", v: allEmoji[280] }, { k: ":crocodile:", v: allEmoji[280] }, { k: "\xF0\x9F\x90\x86", v: allEmoji[281] }, { k: ":leopard:", v: allEmoji[281] }, { k: "\xF0\x9F\x90\x85", v: allEmoji[282] }, { k: ":tiger2:", v: allEmoji[282] }, { k: "\xF0\x9F\x90\x83", v: allEmoji[283] }, { k: ":water_buffalo:", v: allEmoji[283] }, { k: "\xF0\x9F\x90\x82", v: allEmoji[284] }, { k: ":ox:", v: allEmoji[284] }, { k: "\xF0\x9F\x90\x84", v: allEmoji[285] }, { k: ":cow2:", v: allEmoji[285] }, { k: "\xF0\x9F\x90\xAA", v: allEmoji[286] }, { k: ":dromedary_camel:", v: allEmoji[286] }, { k: "\xF0\x9F\x90\xAB", v: allEmoji[287] }, { k: ":camel:", v: allEmoji[287] }, { k: "\xF0\x9F\x90\x98", v: allEmoji[288] }, { k: ":elephant:", v: allEmoji[288] }, { k: "\xF0\x9F\x90\x90", v: allEmoji[289] }, { k: ":goat:", v: allEmoji[289] }, { k: "\xF0\x9F\x90\x8F", v: allEmoji[290] }, { k: ":ram:", v: allEmoji[290] }, { k: "\xF0\x9F\x90\x91", v: allEmoji[291] }, { k: ":sheep:", v: allEmoji[291] }, { k: "\xF0\x9F\x90\x8E", v: allEmoji[292] }, { k: ":racehorse:", v: allEmoji[292] }, { k: "\xF0\x9F\x90\x96", v: allEmoji[293] }, { k: ":pig2:", v: allEmoji[293] }, { k: "\xF0\x9F\x90\x80", v: allEmoji[294] }, { k: ":rat:", v: allEmoji[294] }, { k: "\xF0\x9F\x90\x81", v: allEmoji[295] }, { k: ":mouse2:", v: allEmoji[295] }, { k: "\xF0\x9F\x90\x93", v: allEmoji[296] }, { k: ":rooster:", v: allEmoji[296] }, { k: "\xF0\x9F\xA6\x83", v: allEmoji[297] }, { k: ":turkey:", v: allEmoji[297] }, { k: "\xF0\x9F\x95\x8A", v: allEmoji[298] }, { k: ":dove:", v: allEmoji[298] }, { k: "\xF0\x9F\x90\x95", v: allEmoji[299] }, { k: ":dog2:", v: allEmoji[299] }, { k: "\xF0\x9F\x90\xA9", v: allEmoji[300] }, { k: ":poodle:", v: allEmoji[300] }, { k: "\xF0\x9F\x90\x88", v: allEmoji[301] }, { k: ":cat2:", v: allEmoji[301] }, { k: "\xF0\x9F\x90\x87", v: allEmoji[302] }, { k: ":rabbit2:", v: allEmoji[302] }, { k: "\xF0\x9F\x90\xBF", v: allEmoji[303] }, { k: ":chipmunk:", v: allEmoji[303] }, { k: "\xF0\x9F\x90\xBE", v: allEmoji[304] }, { k: ":feet:", v: allEmoji[304] }, { k: ":paw_prints:", v: allEmoji[304] }, { k: "\xF0\x9F\x90\x89", v: allEmoji[305] }, { k: ":dragon:", v: allEmoji[305] }, { k: "\xF0\x9F\x90\xB2", v: allEmoji[306] }, { k: ":dragon_face:", v: allEmoji[306] }, { k: "\xF0\x9F\x8C\xB5", v: allEmoji[307] }, { k: ":cactus:", v: allEmoji[307] }, { k: "\xF0\x9F\x8E\x84", v: allEmoji[308] }, { k: ":christmas_tree:", v: allEmoji[308] }, { k: "\xF0\x9F\x8C\xB2", v: allEmoji[309] }, { k: ":evergreen_tree:", v: allEmoji[309] }, { k: "\xF0\x9F\x8C\xB3", v: allEmoji[310] }, { k: ":deciduous_tree:", v: allEmoji[310] }, { k: "\xF0\x9F\x8C\xB4", v: allEmoji[311] }, { k: ":palm_tree:", v: allEmoji[311] }, { k: "\xF0\x9F\x8C\xB1", v: allEmoji[312] }, { k: ":seedling:", v: allEmoji[312] }, { k: "\xF0\x9F\x8C\xBF", v: allEmoji[313] }, { k: ":herb:", v: allEmoji[313] }, { k: "\xE2\x98\x98", v: allEmoji[314] }, { k: ":shamrock:", v: allEmoji[314] }, { k: "\xF0\x9F\x8D\x80", v: allEmoji[315] }, { k: ":four_leaf_clover:", v: allEmoji[315] }, { k: "\xF0\x9F\x8E\x8D", v: allEmoji[316] }, { k: ":bamboo:", v: allEmoji[316] }, { k: "\xF0\x9F\x8E\x8B", v: allEmoji[317] }, { k: ":tanabata_tree:", v: allEmoji[317] }, { k: "\xF0\x9F\x8D\x83", v: allEmoji[318] }, { k: ":leaves:", v: allEmoji[318] }, { k: "\xF0\x9F\x8D\x82", v: allEmoji[319] }, { k: ":fallen_leaf:", v: allEmoji[319] }, { k: "\xF0\x9F\x8D\x81", v: allEmoji[320] }, { k: ":maple_leaf:", v: allEmoji[320] }, { k: "\xF0\x9F\x8C\xBE", v: allEmoji[321] }, { k: ":ear_of_rice:", v: allEmoji[321] }, { k: "\xF0\x9F\x8C\xBA", v: allEmoji[322] }, { k: ":hibiscus:", v: allEmoji[322] }, { k: "\xF0\x9F\x8C\xBB", v: allEmoji[323] }, { k: ":sunflower:", v: allEmoji[323] }, { k: "\xF0\x9F\x8C\xB9", v: allEmoji[324] }, { k: ":rose:", v: allEmoji[324] }, { k: "\xF0\x9F\x8C\xB7", v: allEmoji[325] }, { k: ":tulip:", v: allEmoji[325] }, { k: "\xF0\x9F\x8C\xBC", v: allEmoji[326] }, { k: ":blossom:", v: allEmoji[326] }, { k: "\xF0\x9F\x8C\xB8", v: allEmoji[327] }, { k: ":cherry_blossom:", v: allEmoji[327] }, { k: "\xF0\x9F\x92\x90", v: allEmoji[328] }, { k: ":bouquet:", v: allEmoji[328] }, { k: "\xF0\x9F\x8D\x84", v: allEmoji[329] }, { k: ":mushroom:", v: allEmoji[329] }, { k: "\xF0\x9F\x8C\xB0", v: allEmoji[330] }, { k: ":chestnut:", v: allEmoji[330] }, { k: "\xF0\x9F\x8E\x83", v: allEmoji[331] }, { k: ":jack_o_lantern:", v: allEmoji[331] }, { k: "\xF0\x9F\x90\x9A", v: allEmoji[332] }, { k: ":shell:", v: allEmoji[332] }, { k: "\xF0\x9F\x95\xB8", v: allEmoji[333] }, { k: ":spider_web:", v: allEmoji[333] }, { k: "\xF0\x9F\x8C\x8E", v: allEmoji[334] }, { k: ":earth_americas:", v: allEmoji[334] }, { k: "\xF0\x9F\x8C\x8D", v: allEmoji[335] }, { k: ":earth_africa:", v: allEmoji[335] }, { k: "\xF0\x9F\x8C\x8F", v: allEmoji[336] }, { k: ":earth_asia:", v: allEmoji[336] }, { k: "\xF0\x9F\x8C\x95", v: allEmoji[337] }, { k: ":full_moon:", v: allEmoji[337] }, { k: "\xF0\x9F\x8C\x96", v: allEmoji[338] }, { k: ":waning_gibbous_moon:", v: allEmoji[338] }, { k: "\xF0\x9F\x8C\x97", v: allEmoji[339] }, { k: ":last_quarter_moon:", v: allEmoji[339] }, { k: "\xF0\x9F\x8C\x98", v: allEmoji[340] }, { k: ":waning_crescent_moon:", v: allEmoji[340] }, { k: "\xF0\x9F\x8C\x91", v: allEmoji[341] }, { k: ":new_moon:", v: allEmoji[341] }, { k: "\xF0\x9F\x8C\x92", v: allEmoji[342] }, { k: ":waxing_crescent_moon:", v: allEmoji[342] }, { k: "\xF0\x9F\x8C\x93", v: allEmoji[343] }, { k: ":first_quarter_moon:", v: allEmoji[343] }, { k: "\xF0\x9F\x8C\x94", v: allEmoji[344] }, { k: ":moon:", v: allEmoji[344] }, { k: ":waxing_gibbous_moon:", v: allEmoji[344] }, { k: "\xF0\x9F\x8C\x9A", v: allEmoji[345] }, { k: ":new_moon_with_face:", v: allEmoji[345] }, { k: "\xF0\x9F\x8C\x9D", v: allEmoji[346] }, { k: ":full_moon_with_face:", v: allEmoji[346] }, { k: "\xF0\x9F\x8C\x9B", v: allEmoji[347] }, { k: ":first_quarter_moon_with_face:", v: allEmoji[347] }, { k: "\xF0\x9F\x8C\x9C", v: allEmoji[348] }, { k: ":last_quarter_moon_with_face:", v: allEmoji[348] }, { k: "\xF0\x9F\x8C\x9E", v: allEmoji[349] }, { k: ":sun_with_face:", v: allEmoji[349] }, { k: "\xF0\x9F\x8C\x99", v: allEmoji[350] }, { k: ":crescent_moon:", v: allEmoji[350] }, { k: "\xE2\xAD\x90\xEF\xB8\x8F", v: allEmoji[351] }, { k: ":star:", v: allEmoji[351] }, { k: "\xF0\x9F\x8C\x9F", v: allEmoji[352] }, { k: ":star2:", v: allEmoji[352] }, { k: "\xF0\x9F\x92\xAB", v: allEmoji[353] }, { k: ":dizzy:", v: allEmoji[353] }, { k: "\xE2\x9C\xA8", v: allEmoji[354] }, { k: ":sparkles:", v: allEmoji[354] }, { k: "\xE2\x98\x84\xEF\xB8\x8F", v: allEmoji[355] }, { k: ":comet:", v: allEmoji[355] }, { k: "\xE2\x98\x80\xEF\xB8\x8F", v: allEmoji[356] }, { k: ":sunny:", v: allEmoji[356] }, { k: "\xF0\x9F\x8C\xA4", v: allEmoji[357] }, { k: ":sun_behind_small_cloud:", v: allEmoji[357] }, { k: "\xE2\x9B\x85\xEF\xB8\x8F", v: allEmoji[358] }, { k: ":partly_sunny:", v: allEmoji[358] }, { k: "\xF0\x9F\x8C\xA5", v: allEmoji[359] }, { k: ":sun_behind_large_cloud:", v: allEmoji[359] }, { k: "\xF0\x9F\x8C\xA6", v: allEmoji[360] }, { k: ":sun_behind_rain_cloud:", v: allEmoji[360] }, { k: "\xE2\x98\x81\xEF\xB8\x8F", v: allEmoji[361] }, { k: ":cloud:", v: allEmoji[361] }, { k: "\xF0\x9F\x8C\xA7", v: allEmoji[362] }, { k: ":cloud_with_rain:", v: allEmoji[362] }, { k: "\xE2\x9B\x88", v: allEmoji[363] }, { k: ":cloud_with_lightning_and_rain:", v: allEmoji[363] }, { k: "\xF0\x9F\x8C\xA9", v: allEmoji[364] }, { k: ":cloud_with_lightning:", v: allEmoji[364] }, { k: "\xE2\x9A\xA1\xEF\xB8\x8F", v: allEmoji[365] }, { k: ":zap:", v: allEmoji[365] }, { k: "\xF0\x9F\x94\xA5", v: allEmoji[366] }, { k: ":fire:", v: allEmoji[366] }, { k: "\xF0\x9F\x92\xA5", v: allEmoji[367] }, { k: ":boom:", v: allEmoji[367] }, { k: ":collision:", v: allEmoji[367] }, { k: "\xE2\x9D\x84\xEF\xB8\x8F", v: allEmoji[368] }, { k: ":snowflake:", v: allEmoji[368] }, { k: "\xF0\x9F\x8C\xA8", v: allEmoji[369] }, { k: ":cloud_with_snow:", v: allEmoji[369] }, { k: "\xE2\x98\x83\xEF\xB8\x8F", v: allEmoji[370] }, { k: ":snowman_with_snow:", v: allEmoji[370] }, { k: "\xE2\x9B\x84\xEF\xB8\x8F", v: allEmoji[371] }, { k: ":snowman:", v: allEmoji[371] }, { k: "\xF0\x9F\x8C\xAC", v: allEmoji[372] }, { k: ":wind_face:", v: allEmoji[372] }, { k: "\xF0\x9F\x92\xA8", v: allEmoji[373] }, { k: ":dash:", v: allEmoji[373] }, { k: "\xF0\x9F\x8C\xAA", v: allEmoji[374] }, { k: ":tornado:", v: allEmoji[374] }, { k: "\xF0\x9F\x8C\xAB", v: allEmoji[375] }, { k: ":fog:", v: allEmoji[375] }, { k: "\xE2\x98\x82\xEF\xB8\x8F", v: allEmoji[376] }, { k: ":open_umbrella:", v: allEmoji[376] }, { k: "\xE2\x98\x94\xEF\xB8\x8F", v: allEmoji[377] }, { k: ":umbrella:", v: allEmoji[377] }, { k: "\xF0\x9F\x92\xA7", v: allEmoji[378] }, { k: ":droplet:", v: allEmoji[378] }, { k: "\xF0\x9F\x92\xA6", v: allEmoji[379] }, { k: ":sweat_drops:", v: allEmoji[379] }, { k: "\xF0\x9F\x8C\x8A", v: allEmoji[380] }, { k: ":ocean:", v: allEmoji[380] }, { k: "\xF0\x9F\x8D\x8F", v: allEmoji[381] }, { k: ":green_apple:", v: allEmoji[381] }, { k: "\xF0\x9F\x8D\x8E", v: allEmoji[382] }, { k: ":apple:", v: allEmoji[382] }, { k: "\xF0\x9F\x8D\x90", v: allEmoji[383] }, { k: ":pear:", v: allEmoji[383] }, { k: "\xF0\x9F\x8D\x8A", v: allEmoji[384] }, { k: ":tangerine:", v: allEmoji[384] }, { k: ":orange:", v: allEmoji[384] }, { k: ":mandarin:", v: allEmoji[384] }, { k: "\xF0\x9F\x8D\x8B", v: allEmoji[385] }, { k: ":lemon:", v: allEmoji[385] }, { k: "\xF0\x9F\x8D\x8C", v: allEmoji[386] }, { k: ":banana:", v: allEmoji[386] }, { k: "\xF0\x9F\x8D\x89", v: allEmoji[387] }, { k: ":watermelon:", v: allEmoji[387] }, { k: "\xF0\x9F\x8D\x87", v: allEmoji[388] }, { k: ":grapes:", v: allEmoji[388] }, { k: "\xF0\x9F\x8D\x93", v: allEmoji[389] }, { k: ":strawberry:", v: allEmoji[389] }, { k: "\xF0\x9F\x8D\x88", v: allEmoji[390] }, { k: ":melon:", v: allEmoji[390] }, { k: "\xF0\x9F\x8D\x92", v: allEmoji[391] }, { k: ":cherries:", v: allEmoji[391] }, { k: "\xF0\x9F\x8D\x91", v: allEmoji[392] }, { k: ":peach:", v: allEmoji[392] }, { k: "\xF0\x9F\x8D\x8D", v: allEmoji[393] }, { k: ":pineapple:", v: allEmoji[393] }, { k: "\xF0\x9F\x8D\x85", v: allEmoji[394] }, { k: ":tomato:", v: allEmoji[394] }, { k: "\xF0\x9F\x8D\x86", v: allEmoji[395] }, { k: ":eggplant:", v: allEmoji[395] }, { k: "\xF0\x9F\x8C\xB6", v: allEmoji[396] }, { k: ":hot_pepper:", v: allEmoji[396] }, { k: "\xF0\x9F\x8C\xBD", v: allEmoji[397] }, { k: ":corn:", v: allEmoji[397] }, { k: "\xF0\x9F\x8D\xA0", v: allEmoji[398] }, { k: ":sweet_potato:", v: allEmoji[398] }, { k: "\xF0\x9F\x8D\xAF", v: allEmoji[399] }, { k: ":honey_pot:", v: allEmoji[399] }, { k: "\xF0\x9F\x8D\x9E", v: allEmoji[400] }, { k: ":bread:", v: allEmoji[400] }, { k: "\xF0\x9F\xA7\x80", v: allEmoji[401] }, { k: ":cheese:", v: allEmoji[401] }, { k: "\xF0\x9F\x8D\x97", v: allEmoji[402] }, { k: ":poultry_leg:", v: allEmoji[402] }, { k: "\xF0\x9F\x8D\x96", v: allEmoji[403] }, { k: ":meat_on_bone:", v: allEmoji[403] }, { k: "\xF0\x9F\x8D\xA4", v: allEmoji[404] }, { k: ":fried_shrimp:", v: allEmoji[404] }, { k: "\xF0\x9F\x8D\xB3", v: allEmoji[405] }, { k: ":egg:", v: allEmoji[405] }, { k: "\xF0\x9F\x8D\x94", v: allEmoji[406] }, { k: ":hamburger:", v: allEmoji[406] }, { k: "\xF0\x9F\x8D\x9F", v: allEmoji[407] }, { k: ":fries:", v: allEmoji[407] }, { k: "\xF0\x9F\x8C\xAD", v: allEmoji[408] }, { k: ":hotdog:", v: allEmoji[408] }, { k: "\xF0\x9F\x8D\x95", v: allEmoji[409] }, { k: ":pizza:", v: allEmoji[409] }, { k: "\xF0\x9F\x8D\x9D", v: allEmoji[410] }, { k: ":spaghetti:", v: allEmoji[410] }, { k: "\xF0\x9F\x8C\xAE", v: allEmoji[411] }, { k: ":taco:", v: allEmoji[411] }, { k: "\xF0\x9F\x8C\xAF", v: allEmoji[412] }, { k: ":burrito:", v: allEmoji[412] }, { k: "\xF0\x9F\x8D\x9C", v: allEmoji[413] }, { k: ":ramen:", v: allEmoji[413] }, { k: "\xF0\x9F\x8D\xB2", v: allEmoji[414] }, { k: ":stew:", v: allEmoji[414] }, { k: "\xF0\x9F\x8D\xA5", v: allEmoji[415] }, { k: ":fish_cake:", v: allEmoji[415] }, { k: "\xF0\x9F\x8D\xA3", v: allEmoji[416] }, { k: ":sushi:", v: allEmoji[416] }, { k: "\xF0\x9F\x8D\xB1", v: allEmoji[417] }, { k: ":bento:", v: allEmoji[417] }, { k: "\xF0\x9F\x8D\x9B", v: allEmoji[418] }, { k: ":curry:", v: allEmoji[418] }, { k: "\xF0\x9F\x8D\x99", v: allEmoji[419] }, { k: ":rice_ball:", v: allEmoji[419] }, { k: "\xF0\x9F\x8D\x9A", v: allEmoji[420] }, { k: ":rice:", v: allEmoji[420] }, { k: "\xF0\x9F\x8D\x98", v: allEmoji[421] }, { k: ":rice_cracker:", v: allEmoji[421] }, { k: "\xF0\x9F\x8D\xA2", v: allEmoji[422] }, { k: ":oden:", v: allEmoji[422] }, { k: "\xF0\x9F\x8D\xA1", v: allEmoji[423] }, { k: ":dango:", v: allEmoji[423] }, { k: "\xF0\x9F\x8D\xA7", v: allEmoji[424] }, { k: ":shaved_ice:", v: allEmoji[424] }, { k: "\xF0\x9F\x8D\xA8", v: allEmoji[425] }, { k: ":ice_cream:", v: allEmoji[425] }, { k: "\xF0\x9F\x8D\xA6", v: allEmoji[426] }, { k: ":icecream:", v: allEmoji[426] }, { k: "\xF0\x9F\x8D\xB0", v: allEmoji[427] }, { k: ":cake:", v: allEmoji[427] }, { k: "\xF0\x9F\x8E\x82", v: allEmoji[428] }, { k: ":birthday:", v: allEmoji[428] }, { k: "\xF0\x9F\x8D\xAE", v: allEmoji[429] }, { k: ":custard:", v: allEmoji[429] }, { k: "\xF0\x9F\x8D\xAC", v: allEmoji[430] }, { k: ":candy:", v: allEmoji[430] }, { k: "\xF0\x9F\x8D\xAD", v: allEmoji[431] }, { k: ":lollipop:", v: allEmoji[431] }, { k: "\xF0\x9F\x8D\xAB", v: allEmoji[432] }, { k: ":chocolate_bar:", v: allEmoji[432] }, { k: "\xF0\x9F\x8D\xBF", v: allEmoji[433] }, { k: ":popcorn:", v: allEmoji[433] }, { k: "\xF0\x9F\x8D\xA9", v: allEmoji[434] }, { k: ":doughnut:", v: allEmoji[434] }, { k: "\xF0\x9F\x8D\xAA", v: allEmoji[435] }, { k: ":cookie:", v: allEmoji[435] }, { k: "\xF0\x9F\x8D\xBA", v: allEmoji[436] }, { k: ":beer:", v: allEmoji[436] }, { k: "\xF0\x9F\x8D\xBB", v: allEmoji[437] }, { k: ":beers:", v: allEmoji[437] }, { k: "\xF0\x9F\x8D\xB7", v: allEmoji[438] }, { k: ":wine_glass:", v: allEmoji[438] }, { k: "\xF0\x9F\x8D\xB8", v: allEmoji[439] }, { k: ":cocktail:", v: allEmoji[439] }, { k: "\xF0\x9F\x8D\xB9", v: allEmoji[440] }, { k: ":tropical_drink:", v: allEmoji[440] }, { k: "\xF0\x9F\x8D\xBE", v: allEmoji[441] }, { k: ":champagne:", v: allEmoji[441] }, { k: "\xF0\x9F\x8D\xB6", v: allEmoji[442] }, { k: ":sake:", v: allEmoji[442] }, { k: "\xF0\x9F\x8D\xB5", v: allEmoji[443] }, { k: ":tea:", v: allEmoji[443] }, { k: "\xE2\x98\x95\xEF\xB8\x8F", v: allEmoji[444] }, { k: ":coffee:", v: allEmoji[444] }, { k: "\xF0\x9F\x8D\xBC", v: allEmoji[445] }, { k: ":baby_bottle:", v: allEmoji[445] }, { k: "\xF0\x9F\x8D\xB4", v: allEmoji[446] }, { k: ":fork_and_knife:", v: allEmoji[446] }, { k: "\xF0\x9F\x8D\xBD", v: allEmoji[447] }, { k: ":plate_with_cutlery:", v: allEmoji[447] }, { k: "\xE2\x9A\xBD\xEF\xB8\x8F", v: allEmoji[448] }, { k: ":soccer:", v: allEmoji[448] }, { k: "\xF0\x9F\x8F\x80", v: allEmoji[449] }, { k: ":basketball:", v: allEmoji[449] }, { k: "\xF0\x9F\x8F\x88", v: allEmoji[450] }, { k: ":football:", v: allEmoji[450] }, { k: "\xE2\x9A\xBE\xEF\xB8\x8F", v: allEmoji[451] }, { k: ":baseball:", v: allEmoji[451] }, { k: "\xF0\x9F\x8E\xBE", v: allEmoji[452] }, { k: ":tennis:", v: allEmoji[452] }, { k: "\xF0\x9F\x8F\x90", v: allEmoji[453] }, { k: ":volleyball:", v: allEmoji[453] }, { k: "\xF0\x9F\x8F\x89", v: allEmoji[454] }, { k: ":rugby_football:", v: allEmoji[454] }, { k: "\xF0\x9F\x8E\xB1", v: allEmoji[455] }, { k: ":8ball:", v: allEmoji[455] }, { k: "\xF0\x9F\x8F\x93", v: allEmoji[456] }, { k: ":ping_pong:", v: allEmoji[456] }, { k: "\xF0\x9F\x8F\xB8", v: allEmoji[457] }, { k: ":badminton:", v: allEmoji[457] }, { k: "\xF0\x9F\x8F\x92", v: allEmoji[458] }, { k: ":ice_hockey:", v: allEmoji[458] }, { k: "\xF0\x9F\x8F\x91", v: allEmoji[459] }, { k: ":field_hockey:", v: allEmoji[459] }, { k: "\xF0\x9F\x8F\x8F", v: allEmoji[460] }, { k: ":cricket:", v: allEmoji[460] }, { k: "\xF0\x9F\x8F\xB9", v: allEmoji[461] }, { k: ":bow_and_arrow:", v: allEmoji[461] }, { k: "\xE2\x9B\xB3\xEF\xB8\x8F", v: allEmoji[462] }, { k: ":golf:", v: allEmoji[462] }, { k: "\xF0\x9F\x8E\xA3", v: allEmoji[463] }, { k: ":fishing_pole_and_fish:", v: allEmoji[463] }, { k: "\xE2\x9B\xB8", v: allEmoji[464] }, { k: ":ice_skate:", v: allEmoji[464] }, { k: "\xF0\x9F\x8E\xBF", v: allEmoji[465] }, { k: ":ski:", v: allEmoji[465] }, { k: "\xE2\x9B\xB7", v: allEmoji[466] }, { k: ":skier:", v: allEmoji[466] }, { k: "\xF0\x9F\x8F\x82", v: allEmoji[467] }, { k: ":snowboarder:", v: allEmoji[467] }, { k: "\xF0\x9F\x8F\x8B\xEF\xB8\x8F\xE2\x80\x8D\xE2\x99\x80\xEF\xB8\x8F", v: allEmoji[468] }, { k: ":weight_lifting_woman:", v: allEmoji[468] }, { k: "\xF0\x9F\x8F\x8B\xEF\xB8\x8F", v: allEmoji[469] }, { k: ":weight_lifting_man:", v: allEmoji[469] }, { k: "\xE2\x9B\xB9\xEF\xB8\x8F\xE2\x80\x8D\xE2\x99\x80\xEF\xB8\x8F", v: allEmoji[470] }, { k: ":basketball_woman:", v: allEmoji[470] }, { k: "\xE2\x9B\xB9\xEF\xB8\x8F", v: allEmoji[471] }, { k: ":basketball_man:", v: allEmoji[471] }, { k: "\xF0\x9F\x8F\x8C\xEF\xB8\x8F\xE2\x80\x8D\xE2\x99\x80\xEF\xB8\x8F", v: allEmoji[472] }, { k: ":golfing_woman:", v: allEmoji[472] }, { k: "\xF0\x9F\x8F\x8C\xEF\xB8\x8F", v: allEmoji[473] }, { k: ":golfing_man:", v: allEmoji[473] }, { k: "\xF0\x9F\x8F\x84\xE2\x80\x8D\xE2\x99\x80\xEF\xB8\x8F", v: allEmoji[474] }, { k: ":surfing_woman:", v: allEmoji[474] }, { k: "\xF0\x9F\x8F\x84", v: allEmoji[475] }, { k: ":surfing_man:", v: allEmoji[475] }, { k: ":surfer:", v: allEmoji[475] }, { k: "\xF0\x9F\x8F\x8A\xE2\x80\x8D\xE2\x99\x80\xEF\xB8\x8F", v: allEmoji[476] }, { k: ":swimming_woman:", v: allEmoji[476] }, { k: "\xF0\x9F\x8F\x8A", v: allEmoji[477] }, { k: ":swimming_man:", v: allEmoji[477] }, { k: ":swimmer:", v: allEmoji[477] }, { k: "\xF0\x9F\x9A\xA3\xE2\x80\x8D\xE2\x99\x80\xEF\xB8\x8F", v: allEmoji[478] }, { k: ":rowing_woman:", v: allEmoji[478] }, { k: "\xF0\x9F\x9A\xA3", v: allEmoji[479] }, { k: ":rowing_man:", v: allEmoji[479] }, { k: ":rowboat:", v: allEmoji[479] }, { k: "\xF0\x9F\x8F\x87", v: allEmoji[480] }, { k: ":horse_racing:", v: allEmoji[480] }, { k: "\xF0\x9F\x9A\xB4\xE2\x80\x8D\xE2\x99\x80\xEF\xB8\x8F", v: allEmoji[481] }, { k: ":biking_woman:", v: allEmoji[481] }, { k: "\xF0\x9F\x9A\xB4", v: allEmoji[482] }, { k: ":biking_man:", v: allEmoji[482] }, { k: ":bicyclist:", v: allEmoji[482] }, { k: "\xF0\x9F\x9A\xB5\xE2\x80\x8D\xE2\x99\x80\xEF\xB8\x8F", v: allEmoji[483] }, { k: ":mountain_biking_woman:", v: allEmoji[483] }, { k: "\xF0\x9F\x9A\xB5", v: allEmoji[484] }, { k: ":mountain_biking_man:", v: allEmoji[484] }, { k: ":mountain_bicyclist:", v: allEmoji[484] }, { k: "\xF0\x9F\x9B\x80", v: allEmoji[485] }, { k: ":bath:", v: allEmoji[485] }, { k: "\xF0\x9F\x95\xB4", v: allEmoji[486] }, { k: ":business_suit_levitating:", v: allEmoji[486] }, { k: "\xF0\x9F\x8E\x97", v: allEmoji[487] }, { k: ":reminder_ribbon:", v: allEmoji[487] }, { k: "\xF0\x9F\x8E\xBD", v: allEmoji[488] }, { k: ":running_shirt_with_sash:", v: allEmoji[488] }, { k: "\xF0\x9F\x8F\x85", v: allEmoji[489] }, { k: ":medal_sports:", v: allEmoji[489] }, { k: "\xF0\x9F\x8E\x96", v: allEmoji[490] }, { k: ":medal_military:", v: allEmoji[490] }, { k: "\xF0\x9F\x8F\x86", v: allEmoji[491] }, { k: ":trophy:", v: allEmoji[491] }, { k: "\xF0\x9F\x8F\xB5", v: allEmoji[492] }, { k: ":rosette:", v: allEmoji[492] }, { k: "\xF0\x9F\x8E\xAF", v: allEmoji[493] }, { k: ":dart:", v: allEmoji[493] }, { k: "\xF0\x9F\x8E\xAB", v: allEmoji[494] }, { k: ":ticket:", v: allEmoji[494] }, { k: "\xF0\x9F\x8E\x9F", v: allEmoji[495] }, { k: ":tickets:", v: allEmoji[495] }, { k: "\xF0\x9F\x8E\xAD", v: allEmoji[496] }, { k: ":performing_arts:", v: allEmoji[496] }, { k: "\xF0\x9F\x8E\xA8", v: allEmoji[497] }, { k: ":art:", v: allEmoji[497] }, { k: "\xF0\x9F\x8E\xAA", v: allEmoji[498] }, { k: ":circus_tent:", v: allEmoji[498] }, { k: "\xF0\x9F\x8E\xAC", v: allEmoji[499] }, { k: ":clapper:", v: allEmoji[499] }, { k: "\xF0\x9F\x8E\xA4", v: allEmoji[500] }, { k: ":microphone:", v: allEmoji[500] }, { k: "\xF0\x9F\x8E\xA7", v: allEmoji[501] }, { k: ":headphones:", v: allEmoji[501] }, { k: "\xF0\x9F\x8E\xBC", v: allEmoji[502] }, { k: ":musical_score:", v: allEmoji[502] }, { k: "\xF0\x9F\x8E\xB9", v: allEmoji[503] }, { k: ":musical_keyboard:", v: allEmoji[503] }, { k: "\xF0\x9F\x8E\xB7", v: allEmoji[504] }, { k: ":saxophone:", v: allEmoji[504] }, { k: "\xF0\x9F\x8E\xBA", v: allEmoji[505] }, { k: ":trumpet:", v: allEmoji[505] }, { k: "\xF0\x9F\x8E\xB8", v: allEmoji[506] }, { k: ":guitar:", v: allEmoji[506] }, { k: "\xF0\x9F\x8E\xBB", v: allEmoji[507] }, { k: ":violin:", v: allEmoji[507] }, { k: "\xF0\x9F\x8E\xAE", v: allEmoji[508] }, { k: ":video_game:", v: allEmoji[508] }, { k: "\xF0\x9F\x8E\xB0", v: allEmoji[509] }, { k: ":slot_machine:", v: allEmoji[509] }, { k: "\xF0\x9F\x8E\xB2", v: allEmoji[510] }, { k: ":game_die:", v: allEmoji[510] }, { k: "\xF0\x9F\x8E\xB3", v: allEmoji[511] }, { k: ":bowling:", v: allEmoji[511] }, { k: "\xF0\x9F\x9A\x97", v: allEmoji[512] }, { k: ":car:", v: allEmoji[512] }, { k: ":red_car:", v: allEmoji[512] }, { k: "\xF0\x9F\x9A\x95", v: allEmoji[513] }, { k: ":taxi:", v: allEmoji[513] }, { k: "\xF0\x9F\x9A\x99", v: allEmoji[514] }, { k: ":blue_car:", v: allEmoji[514] }, { k: "\xF0\x9F\x9A\x8C", v: allEmoji[515] }, { k: ":bus:", v: allEmoji[515] }, { k: "\xF0\x9F\x9A\x8E", v: allEmoji[516] }, { k: ":trolleybus:", v: allEmoji[516] }, { k: "\xF0\x9F\x8F\x8E", v: allEmoji[517] }, { k: ":racing_car:", v: allEmoji[517] }, { k: "\xF0\x9F\x9A\x93", v: allEmoji[518] }, { k: ":police_car:", v: allEmoji[518] }, { k: "\xF0\x9F\x9A\x91", v: allEmoji[519] }, { k: ":ambulance:", v: allEmoji[519] }, { k: "\xF0\x9F\x9A\x92", v: allEmoji[520] }, { k: ":fire_engine:", v: allEmoji[520] }, { k: "\xF0\x9F\x9A\x90", v: allEmoji[521] }, { k: ":minibus:", v: allEmoji[521] }, { k: "\xF0\x9F\x9A\x9A", v: allEmoji[522] }, { k: ":truck:", v: allEmoji[522] }, { k: "\xF0\x9F\x9A\x9B", v: allEmoji[523] }, { k: ":articulated_lorry:", v: allEmoji[523] }, { k: "\xF0\x9F\x9A\x9C", v: allEmoji[524] }, { k: ":tractor:", v: allEmoji[524] }, { k: "\xF0\x9F\x8F\x8D", v: allEmoji[525] }, { k: ":motorcycle:", v: allEmoji[525] }, { k: "\xF0\x9F\x9A\xB2", v: allEmoji[526] }, { k: ":bike:", v: allEmoji[526] }, { k: "\xF0\x9F\x9A\xA8", v: allEmoji[527] }, { k: ":rotating_light:", v: allEmoji[527] }, { k: "\xF0\x9F\x9A\x94", v: allEmoji[528] }, { k: ":oncoming_police_car:", v: allEmoji[528] }, { k: "\xF0\x9F\x9A\x8D", v: allEmoji[529] }, { k: ":oncoming_bus:", v: allEmoji[529] }, { k: "\xF0\x9F\x9A\x98", v: allEmoji[530] }, { k: ":oncoming_automobile:", v: allEmoji[530] }, { k: "\xF0\x9F\x9A\x96", v: allEmoji[531] }, { k: ":oncoming_taxi:", v: allEmoji[531] }, { k: "\xF0\x9F\x9A\xA1", v: allEmoji[532] }, { k: ":aerial_tramway:", v: allEmoji[532] }, { k: "\xF0\x9F\x9A\xA0", v: allEmoji[533] }, { k: ":mountain_cableway:", v: allEmoji[533] }, { k: "\xF0\x9F\x9A\x9F", v: allEmoji[534] }, { k: ":suspension_railway:", v: allEmoji[534] }, { k: "\xF0\x9F\x9A\x83", v: allEmoji[535] }, { k: ":railway_car:", v: allEmoji[535] }, { k: "\xF0\x9F\x9A\x8B", v: allEmoji[536] }, { k: ":train:", v: allEmoji[536] }, { k: "\xF0\x9F\x9A\x9D", v: allEmoji[537] }, { k: ":monorail:", v: allEmoji[537] }, { k: "\xF0\x9F\x9A\x84", v: allEmoji[538] }, { k: ":bullettrain_side:", v: allEmoji[538] }, { k: "\xF0\x9F\x9A\x85", v: allEmoji[539] }, { k: ":bullettrain_front:", v: allEmoji[539] }, { k: "\xF0\x9F\x9A\x88", v: allEmoji[540] }, { k: ":light_rail:", v: allEmoji[540] }, { k: "\xF0\x9F\x9A\x9E", v: allEmoji[541] }, { k: ":mountain_railway:", v: allEmoji[541] }, { k: "\xF0\x9F\x9A\x82", v: allEmoji[542] }, { k: ":steam_locomotive:", v: allEmoji[542] }, { k: "\xF0\x9F\x9A\x86", v: allEmoji[543] }, { k: ":train2:", v: allEmoji[543] }, { k: "\xF0\x9F\x9A\x87", v: allEmoji[544] }, { k: ":metro:", v: allEmoji[544] }, { k: "\xF0\x9F\x9A\x8A", v: allEmoji[545] }, { k: ":tram:", v: allEmoji[545] }, { k: "\xF0\x9F\x9A\x89", v: allEmoji[546] }, { k: ":station:", v: allEmoji[546] }, { k: "\xF0\x9F\x9A\x81", v: allEmoji[547] }, { k: ":helicopter:", v: allEmoji[547] }, { k: "\xF0\x9F\x9B\xA9", v: allEmoji[548] }, { k: ":small_airplane:", v: allEmoji[548] }, { k: "\xE2\x9C\x88\xEF\xB8\x8F", v: allEmoji[549] }, { k: ":airplane:", v: allEmoji[549] }, { k: "\xF0\x9F\x9B\xAB", v: allEmoji[550] }, { k: ":flight_departure:", v: allEmoji[550] }, { k: "\xF0\x9F\x9B\xAC", v: allEmoji[551] }, { k: ":flight_arrival:", v: allEmoji[551] }, { k: "\xE2\x9B\xB5\xEF\xB8\x8F", v: allEmoji[552] }, { k: ":boat:", v: allEmoji[552] }, { k: ":sailboat:", v: allEmoji[552] }, { k: "\xF0\x9F\x9B\xA5", v: allEmoji[553] }, { k: ":motor_boat:", v: allEmoji[553] }, { k: "\xF0\x9F\x9A\xA4", v: allEmoji[554] }, { k: ":speedboat:", v: allEmoji[554] }, { k: "\xE2\x9B\xB4", v: allEmoji[555] }, { k: ":ferry:", v: allEmoji[555] }, { k: "\xF0\x9F\x9B\xB3", v: allEmoji[556] }, { k: ":passenger_ship:", v: allEmoji[556] }, { k: "\xF0\x9F\x9A\x80", v: allEmoji[557] }, { k: ":rocket:", v: allEmoji[557] }, { k: "\xF0\x9F\x9B\xB0", v: allEmoji[558] }, { k: ":artificial_satellite:", v: allEmoji[558] }, { k: "\xF0\x9F\x92\xBA", v: allEmoji[559] }, { k: ":seat:", v: allEmoji[559] }, { k: "\xE2\x9A\x93\xEF\xB8\x8F", v: allEmoji[560] }, { k: ":anchor:", v: allEmoji[560] }, { k: "\xF0\x9F\x9A\xA7", v: allEmoji[561] }, { k: ":construction:", v: allEmoji[561] }, { k: "\xE2\x9B\xBD\xEF\xB8\x8F", v: allEmoji[562] }, { k: ":fuelpump:", v: allEmoji[562] }, { k: "\xF0\x9F\x9A\x8F", v: allEmoji[563] }, { k: ":busstop:", v: allEmoji[563] }, { k: "\xF0\x9F\x9A\xA6", v: allEmoji[564] }, { k: ":vertical_traffic_light:", v: allEmoji[564] }, { k: "\xF0\x9F\x9A\xA5", v: allEmoji[565] }, { k: ":traffic_light:", v: allEmoji[565] }, { k: "\xF0\x9F\x97\xBA", v: allEmoji[566] }, { k: ":world_map:", v: allEmoji[566] }, { k: "\xF0\x9F\x9A\xA2", v: allEmoji[567] }, { k: ":ship:", v: allEmoji[567] }, { k: "\xF0\x9F\x8E\xA1", v: allEmoji[568] }, { k: ":ferris_wheel:", v: allEmoji[568] }, { k: "\xF0\x9F\x8E\xA2", v: allEmoji[569] }, { k: ":roller_coaster:", v: allEmoji[569] }, { k: "\xF0\x9F\x8E\xA0", v: allEmoji[570] }, { k: ":carousel_horse:", v: allEmoji[570] }, { k: "\xF0\x9F\x8F\x97", v: allEmoji[571] }, { k: ":building_construction:", v: allEmoji[571] }, { k: "\xF0\x9F\x8C\x81", v: allEmoji[572] }, { k: ":foggy:", v: allEmoji[572] }, { k: "\xF0\x9F\x97\xBC", v: allEmoji[573] }, { k: ":tokyo_tower:", v: allEmoji[573] }, { k: "\xF0\x9F\x8F\xAD", v: allEmoji[574] }, { k: ":factory:", v: allEmoji[574] }, { k: "\xE2\x9B\xB2\xEF\xB8\x8F", v: allEmoji[575] }, { k: ":fountain:", v: allEmoji[575] }, { k: "\xF0\x9F\x8E\x91", v: allEmoji[576] }, { k: ":rice_scene:", v: allEmoji[576] }, { k: "\xE2\x9B\xB0", v: allEmoji[577] }, { k: ":mountain:", v: allEmoji[577] }, { k: "\xF0\x9F\x8F\x94", v: allEmoji[578] }, { k: ":mountain_snow:", v: allEmoji[578] }, { k: "\xF0\x9F\x97\xBB", v: allEmoji[579] }, { k: ":mount_fuji:", v: allEmoji[579] }, { k: "\xF0\x9F\x8C\x8B", v: allEmoji[580] }, { k: ":volcano:", v: allEmoji[580] }, { k: "\xF0\x9F\x97\xBE", v: allEmoji[581] }, { k: ":japan:", v: allEmoji[581] }, { k: "\xF0\x9F\x8F\x95", v: allEmoji[582] }, { k: ":camping:", v: allEmoji[582] }, { k: "\xE2\x9B\xBA\xEF\xB8\x8F", v: allEmoji[583] }, { k: ":tent:", v: allEmoji[583] }, { k: "\xF0\x9F\x8F\x9E", v: allEmoji[584] }, { k: ":national_park:", v: allEmoji[584] }, { k: "\xF0\x9F\x9B\xA3", v: allEmoji[585] }, { k: ":motorway:", v: allEmoji[585] }, { k: "\xF0\x9F\x9B\xA4", v: allEmoji[586] }, { k: ":railway_track:", v: allEmoji[586] }, { k: "\xF0\x9F\x8C\x85", v: allEmoji[587] }, { k: ":sunrise:", v: allEmoji[587] }, { k: "\xF0\x9F\x8C\x84", v: allEmoji[588] }, { k: ":sunrise_over_mountains:", v: allEmoji[588] }, { k: "\xF0\x9F\x8F\x9C", v: allEmoji[589] }, { k: ":desert:", v: allEmoji[589] }, { k: "\xF0\x9F\x8F\x96", v: allEmoji[590] }, { k: ":beach_umbrella:", v: allEmoji[590] }, { k: "\xF0\x9F\x8F\x9D", v: allEmoji[591] }, { k: ":desert_island:", v: allEmoji[591] }, { k: "\xF0\x9F\x8C\x87", v: allEmoji[592] }, { k: ":city_sunrise:", v: allEmoji[592] }, { k: "\xF0\x9F\x8C\x86", v: allEmoji[593] }, { k: ":city_sunset:", v: allEmoji[593] }, { k: "\xF0\x9F\x8F\x99", v: allEmoji[594] }, { k: ":cityscape:", v: allEmoji[594] }, { k: "\xF0\x9F\x8C\x83", v: allEmoji[595] }, { k: ":night_with_stars:", v: allEmoji[595] }, { k: "\xF0\x9F\x8C\x89", v: allEmoji[596] }, { k: ":bridge_at_night:", v: allEmoji[596] }, { k: "\xF0\x9F\x8C\x8C", v: allEmoji[597] }, { k: ":milky_way:", v: allEmoji[597] }, { k: "\xF0\x9F\x8C\xA0", v: allEmoji[598] }, { k: ":stars:", v: allEmoji[598] }, { k: "\xF0\x9F\x8E\x87", v: allEmoji[599] }, { k: ":sparkler:", v: allEmoji[599] }, { k: "\xF0\x9F\x8E\x86", v: allEmoji[600] }, { k: ":fireworks:", v: allEmoji[600] }, { k: "\xF0\x9F\x8C\x88", v: allEmoji[601] }, { k: ":rainbow:", v: allEmoji[601] }, { k: "\xF0\x9F\x8F\x98", v: allEmoji[602] }, { k: ":houses:", v: allEmoji[602] }, { k: "\xF0\x9F\x8F\xB0", v: allEmoji[603] }, { k: ":european_castle:", v: allEmoji[603] }, { k: "\xF0\x9F\x8F\xAF", v: allEmoji[604] }, { k: ":japanese_castle:", v: allEmoji[604] }, { k: "\xF0\x9F\x8F\x9F", v: allEmoji[605] }, { k: ":stadium:", v: allEmoji[605] }, { k: "\xF0\x9F\x97\xBD", v: allEmoji[606] }, { k: ":statue_of_liberty:", v: allEmoji[606] }, { k: "\xF0\x9F\x8F\xA0", v: allEmoji[607] }, { k: ":house:", v: allEmoji[607] }, { k: "\xF0\x9F\x8F\xA1", v: allEmoji[608] }, { k: ":house_with_garden:", v: allEmoji[608] }, { k: "\xF0\x9F\x8F\x9A", v: allEmoji[609] }, { k: ":derelict_house:", v: allEmoji[609] }, { k: "\xF0\x9F\x8F\xA2", v: allEmoji[610] }, { k: ":office:", v: allEmoji[610] }, { k: "\xF0\x9F\x8F\xAC", v: allEmoji[611] }, { k: ":department_store:", v: allEmoji[611] }, { k: "\xF0\x9F\x8F\xA3", v: allEmoji[612] }, { k: ":post_office:", v: allEmoji[612] }, { k: "\xF0\x9F\x8F\xA4", v: allEmoji[613] }, { k: ":european_post_office:", v: allEmoji[613] }, { k: "\xF0\x9F\x8F\xA5", v: allEmoji[614] }, { k: ":hospital:", v: allEmoji[614] }, { k: "\xF0\x9F\x8F\xA6", v: allEmoji[615] }, { k: ":bank:", v: allEmoji[615] }, { k: "\xF0\x9F\x8F\xA8", v: allEmoji[616] }, { k: ":hotel:", v: allEmoji[616] }, { k: "\xF0\x9F\x8F\xAA", v: allEmoji[617] }, { k: ":convenience_store:", v: allEmoji[617] }, { k: "\xF0\x9F\x8F\xAB", v: allEmoji[618] }, { k: ":school:", v: allEmoji[618] }, { k: "\xF0\x9F\x8F\xA9", v: allEmoji[619] }, { k: ":love_hotel:", v: allEmoji[619] }, { k: "\xF0\x9F\x92\x92", v: allEmoji[620] }, { k: ":wedding:", v: allEmoji[620] }, { k: "\xF0\x9F\x8F\x9B", v: allEmoji[621] }, { k: ":classical_building:", v: allEmoji[621] }, { k: "\xE2\x9B\xAA\xEF\xB8\x8F", v: allEmoji[622] }, { k: ":church:", v: allEmoji[622] }, { k: "\xF0\x9F\x95\x8C", v: allEmoji[623] }, { k: ":mosque:", v: allEmoji[623] }, { k: "\xF0\x9F\x95\x8D", v: allEmoji[624] }, { k: ":synagogue:", v: allEmoji[624] }, { k: "\xF0\x9F\x95\x8B", v: allEmoji[625] }, { k: ":kaaba:", v: allEmoji[625] }, { k: "\xE2\x9B\xA9", v: allEmoji[626] }, { k: ":shinto_shrine:", v: allEmoji[626] }, { k: "\xE2\x8C\x9A\xEF\xB8\x8F", v: allEmoji[627] }, { k: ":watch:", v: allEmoji[627] }, { k: "\xF0\x9F\x93\xB1", v: allEmoji[628] }, { k: ":iphone:", v: allEmoji[628] }, { k: "\xF0\x9F\x93\xB2", v: allEmoji[629] }, { k: ":calling:", v: allEmoji[629] }, { k: "\xF0\x9F\x92\xBB", v: allEmoji[630] }, { k: ":computer:", v: allEmoji[630] }, { k: "\xE2\x8C\xA8\xEF\xB8\x8F", v: allEmoji[631] }, { k: ":keyboard:", v: allEmoji[631] }, { k: "\xF0\x9F\x96\xA5", v: allEmoji[632] }, { k: ":desktop_computer:", v: allEmoji[632] }, { k: "\xF0\x9F\x96\xA8", v: allEmoji[633] }, { k: ":printer:", v: allEmoji[633] }, { k: "\xF0\x9F\x96\xB1", v: allEmoji[634] }, { k: ":computer_mouse:", v: allEmoji[634] }, { k: "\xF0\x9F\x96\xB2", v: allEmoji[635] }, { k: ":trackball:", v: allEmoji[635] }, { k: "\xF0\x9F\x95\xB9", v: allEmoji[636] }, { k: ":joystick:", v: allEmoji[636] }, { k: "\xF0\x9F\x97\x9C", v: allEmoji[637] }, { k: ":clamp:", v: allEmoji[637] }, { k: "\xF0\x9F\x92\xBD", v: allEmoji[638] }, { k: ":minidisc:", v: allEmoji[638] }, { k: "\xF0\x9F\x92\xBE", v: allEmoji[639] }, { k: ":floppy_disk:", v: allEmoji[639] }, { k: "\xF0\x9F\x92\xBF", v: allEmoji[640] }, { k: ":cd:", v: allEmoji[640] }, { k: "\xF0\x9F\x93\x80", v: allEmoji[641] }, { k: ":dvd:", v: allEmoji[641] }, { k: "\xF0\x9F\x93\xBC", v: allEmoji[642] }, { k: ":vhs:", v: allEmoji[642] }, { k: "\xF0\x9F\x93\xB7", v: allEmoji[643] }, { k: ":camera:", v: allEmoji[643] }, { k: "\xF0\x9F\x93\xB8", v: allEmoji[644] }, { k: ":camera_flash:", v: allEmoji[644] }, { k: "\xF0\x9F\x93\xB9", v: allEmoji[645] }, { k: ":video_camera:", v: allEmoji[645] }, { k: "\xF0\x9F\x8E\xA5", v: allEmoji[646] }, { k: ":movie_camera:", v: allEmoji[646] }, { k: "\xF0\x9F\x93\xBD", v: allEmoji[647] }, { k: ":film_projector:", v: allEmoji[647] }, { k: "\xF0\x9F\x8E\x9E", v: allEmoji[648] }, { k: ":film_strip:", v: allEmoji[648] }, { k: "\xF0\x9F\x93\x9E", v: allEmoji[649] }, { k: ":telephone_receiver:", v: allEmoji[649] }, { k: "\xE2\x98\x8E\xEF\xB8\x8F", v: allEmoji[650] }, { k: ":phone:", v: allEmoji[650] }, { k: ":telephone:", v: allEmoji[650] }, { k: "\xF0\x9F\x93\x9F", v: allEmoji[651] }, { k: ":pager:", v: allEmoji[651] }, { k: "\xF0\x9F\x93\xA0", v: allEmoji[652] }, { k: ":fax:", v: allEmoji[652] }, { k: "\xF0\x9F\x93\xBA", v: allEmoji[653] }, { k: ":tv:", v: allEmoji[653] }, { k: "\xF0\x9F\x93\xBB", v: allEmoji[654] }, { k: ":radio:", v: allEmoji[654] }, { k: "\xF0\x9F\x8E\x99", v: allEmoji[655] }, { k: ":studio_microphone:", v: allEmoji[655] }, { k: "\xF0\x9F\x8E\x9A", v: allEmoji[656] }, { k: ":level_slider:", v: allEmoji[656] }, { k: "\xF0\x9F\x8E\x9B", v: allEmoji[657] }, { k: ":control_knobs:", v: allEmoji[657] }, { k: "\xE2\x8F\xB1", v: allEmoji[658] }, { k: ":stopwatch:", v: allEmoji[658] }, { k: "\xE2\x8F\xB2", v: allEmoji[659] }, { k: ":timer_clock:", v: allEmoji[659] }, { k: "\xE2\x8F\xB0", v: allEmoji[660] }, { k: ":alarm_clock:", v: allEmoji[660] }, { k: "\xF0\x9F\x95\xB0", v: allEmoji[661] }, { k: ":mantelpiece_clock:", v: allEmoji[661] }, { k: "\xE2\x8F\xB3", v: allEmoji[662] }, { k: ":hourglass_flowing_sand:", v: allEmoji[662] }, { k: "\xE2\x8C\x9B\xEF\xB8\x8F", v: allEmoji[663] }, { k: ":hourglass:", v: allEmoji[663] }, { k: "\xF0\x9F\x93\xA1", v: allEmoji[664] }, { k: ":satellite:", v: allEmoji[664] }, { k: "\xF0\x9F\x94\x8B", v: allEmoji[665] }, { k: ":battery:", v: allEmoji[665] }, { k: "\xF0\x9F\x94\x8C", v: allEmoji[666] }, { k: ":electric_plug:", v: allEmoji[666] }, { k: "\xF0\x9F\x92\xA1", v: allEmoji[667] }, { k: ":bulb:", v: allEmoji[667] }, { k: "\xF0\x9F\x94\xA6", v: allEmoji[668] }, { k: ":flashlight:", v: allEmoji[668] }, { k: "\xF0\x9F\x95\xAF", v: allEmoji[669] }, { k: ":candle:", v: allEmoji[669] }, { k: "\xF0\x9F\x97\x91", v: allEmoji[670] }, { k: ":wastebasket:", v: allEmoji[670] }, { k: "\xF0\x9F\x9B\xA2", v: allEmoji[671] }, { k: ":oil_drum:", v: allEmoji[671] }, { k: "\xF0\x9F\x92\xB8", v: allEmoji[672] }, { k: ":money_with_wings:", v: allEmoji[672] }, { k: "\xF0\x9F\x92\xB5", v: allEmoji[673] }, { k: ":dollar:", v: allEmoji[673] }, { k: "\xF0\x9F\x92\xB4", v: allEmoji[674] }, { k: ":yen:", v: allEmoji[674] }, { k: "\xF0\x9F\x92\xB6", v: allEmoji[675] }, { k: ":euro:", v: allEmoji[675] }, { k: "\xF0\x9F\x92\xB7", v: allEmoji[676] }, { k: ":pound:", v: allEmoji[676] }, { k: "\xF0\x9F\x92\xB0", v: allEmoji[677] }, { k: ":moneybag:", v: allEmoji[677] }, { k: "\xF0\x9F\x92\xB3", v: allEmoji[678] }, { k: ":credit_card:", v: allEmoji[678] }, { k: "\xF0\x9F\x92\x8E", v: allEmoji[679] }, { k: ":gem:", v: allEmoji[679] }, { k: "\xE2\x9A\x96", v: allEmoji[680] }, { k: ":balance_scale:", v: allEmoji[680] }, { k: "\xF0\x9F\x94\xA7", v: allEmoji[681] }, { k: ":wrench:", v: allEmoji[681] }, { k: "\xF0\x9F\x94\xA8", v: allEmoji[682] }, { k: ":hammer:", v: allEmoji[682] }, { k: "\xE2\x9A\x92", v: allEmoji[683] }, { k: ":hammer_and_pick:", v: allEmoji[683] }, { k: "\xF0\x9F\x9B\xA0", v: allEmoji[684] }, { k: ":hammer_and_wrench:", v: allEmoji[684] }, { k: "\xE2\x9B\x8F", v: allEmoji[685] }, { k: ":pick:", v: allEmoji[685] }, { k: "\xF0\x9F\x94\xA9", v: allEmoji[686] }, { k: ":nut_and_bolt:", v: allEmoji[686] }, { k: "\xE2\x9A\x99", v: allEmoji[687] }, { k: ":gear:", v: allEmoji[687] }, { k: "\xE2\x9B\x93", v: allEmoji[688] }, { k: ":chains:", v: allEmoji[688] }, { k: "\xF0\x9F\x94\xAB", v: allEmoji[689] }, { k: ":gun:", v: allEmoji[689] }, { k: "\xF0\x9F\x92\xA3", v: allEmoji[690] }, { k: ":bomb:", v: allEmoji[690] }, { k: "\xF0\x9F\x94\xAA", v: allEmoji[691] }, { k: ":hocho:", v: allEmoji[691] }, { k: ":knife:", v: allEmoji[691] }, { k: "\xF0\x9F\x97\xA1", v: allEmoji[692] }, { k: ":dagger:", v: allEmoji[692] }, { k: "\xE2\x9A\x94", v: allEmoji[693] }, { k: ":crossed_swords:", v: allEmoji[693] }, { k: "\xF0\x9F\x9B\xA1", v: allEmoji[694] }, { k: ":shield:", v: allEmoji[694] }, { k: "\xF0\x9F\x9A\xAC", v: allEmoji[695] }, { k: ":smoking:", v: allEmoji[695] }, { k: "\xE2\x9A\xB0", v: allEmoji[696] }, { k: ":coffin:", v: allEmoji[696] }, { k: "\xE2\x9A\xB1", v: allEmoji[697] }, { k: ":funeral_urn:", v: allEmoji[697] }, { k: "\xF0\x9F\x8F\xBA", v: allEmoji[698] }, { k: ":amphora:", v: allEmoji[698] }, { k: "\xF0\x9F\x94\xAE", v: allEmoji[699] }, { k: ":crystal_ball:", v: allEmoji[699] }, { k: "\xF0\x9F\x93\xBF", v: allEmoji[700] }, { k: ":prayer_beads:", v: allEmoji[700] }, { k: "\xF0\x9F\x92\x88", v: allEmoji[701] }, { k: ":barber:", v: allEmoji[701] }, { k: "\xE2\x9A\x97", v: allEmoji[702] }, { k: ":alembic:", v: allEmoji[702] }, { k: "\xF0\x9F\x94\xAD", v: allEmoji[703] }, { k: ":telescope:", v: allEmoji[703] }, { k: "\xF0\x9F\x94\xAC", v: allEmoji[704] }, { k: ":microscope:", v: allEmoji[704] }, { k: "\xF0\x9F\x95\xB3", v: allEmoji[705] }, { k: ":hole:", v: allEmoji[705] }, { k: "\xF0\x9F\x92\x8A", v: allEmoji[706] }, { k: ":pill:", v: allEmoji[706] }, { k: "\xF0\x9F\x92\x89", v: allEmoji[707] }, { k: ":syringe:", v: allEmoji[707] }, { k: "\xF0\x9F\x8C\xA1", v: allEmoji[708] }, { k: ":thermometer:", v: allEmoji[708] }, { k: "\xF0\x9F\x9A\xBD", v: allEmoji[709] }, { k: ":toilet:", v: allEmoji[709] }, { k: "\xF0\x9F\x9A\xBF", v: allEmoji[710] }, { k: ":shower:", v: allEmoji[710] }, { k: "\xF0\x9F\x9B\x81", v: allEmoji[711] }, { k: ":bathtub:", v: allEmoji[711] }, { k: "\xF0\x9F\x9B\x8E", v: allEmoji[712] }, { k: ":bellhop_bell:", v: allEmoji[712] }, { k: "\xF0\x9F\x94\x91", v: allEmoji[713] }, { k: ":key:", v: allEmoji[713] }, { k: "\xF0\x9F\x97\x9D", v: allEmoji[714] }, { k: ":old_key:", v: allEmoji[714] }, { k: "\xF0\x9F\x9A\xAA", v: allEmoji[715] }, { k: ":door:", v: allEmoji[715] }, { k: "\xF0\x9F\x9B\x8B", v: allEmoji[716] }, { k: ":couch_and_lamp:", v: allEmoji[716] }, { k: "\xF0\x9F\x9B\x8C", v: allEmoji[717] }, { k: ":sleeping_bed:", v: allEmoji[717] }, { k: "\xF0\x9F\x9B\x8F", v: allEmoji[718] }, { k: ":bed:", v: allEmoji[718] }, { k: "\xF0\x9F\x96\xBC", v: allEmoji[719] }, { k: ":framed_picture:", v: allEmoji[719] }, { k: "\xE2\x9B\xB1", v: allEmoji[720] }, { k: ":parasol_on_ground:", v: allEmoji[720] }, { k: "\xF0\x9F\x97\xBF", v: allEmoji[721] }, { k: ":moyai:", v: allEmoji[721] }, { k: "\xF0\x9F\x9B\x8D", v: allEmoji[722] }, { k: ":shopping:", v: allEmoji[722] }, { k: "\xF0\x9F\x8E\x81", v: allEmoji[723] }, { k: ":gift:", v: allEmoji[723] }, { k: "\xF0\x9F\x8E\x88", v: allEmoji[724] }, { k: ":balloon:", v: allEmoji[724] }, { k: "\xF0\x9F\x8E\x8F", v: allEmoji[725] }, { k: ":flags:", v: allEmoji[725] }, { k: "\xF0\x9F\x8E\x80", v: allEmoji[726] }, { k: ":ribbon:", v: allEmoji[726] }, { k: "\xF0\x9F\x8E\x8A", v: allEmoji[727] }, { k: ":confetti_ball:", v: allEmoji[727] }, { k: "\xF0\x9F\x8E\x89", v: allEmoji[728] }, { k: ":tada:", v: allEmoji[728] }, { k: "\xF0\x9F\x8E\x90", v: allEmoji[729] }, { k: ":wind_chime:", v: allEmoji[729] }, { k: "\xF0\x9F\x8F\xAE", v: allEmoji[730] }, { k: ":izakaya_lantern:", v: allEmoji[730] }, { k: ":lantern:", v: allEmoji[730] }, { k: "\xF0\x9F\x8E\x8E", v: allEmoji[731] }, { k: ":dolls:", v: allEmoji[731] }, { k: "\xE2\x9C\x89\xEF\xB8\x8F", v: allEmoji[732] }, { k: ":email:", v: allEmoji[732] }, { k: ":envelope:", v: allEmoji[732] }, { k: "\xF0\x9F\x93\xA9", v: allEmoji[733] }, { k: ":envelope_with_arrow:", v: allEmoji[733] }, { k: "\xF0\x9F\x93\xA8", v: allEmoji[734] }, { k: ":incoming_envelope:", v: allEmoji[734] }, { k: "\xF0\x9F\x93\xA7", v: allEmoji[735] }, { k: ":e-mail:", v: allEmoji[735] }, { k: "\xF0\x9F\x92\x8C", v: allEmoji[736] }, { k: ":love_letter:", v: allEmoji[736] }, { k: "\xF0\x9F\x93\xA5", v: allEmoji[737] }, { k: ":inbox_tray:", v: allEmoji[737] }, { k: "\xF0\x9F\x93\xA4", v: allEmoji[738] }, { k: ":outbox_tray:", v: allEmoji[738] }, { k: "\xF0\x9F\x93\xA6", v: allEmoji[739] }, { k: ":package:", v: allEmoji[739] }, { k: "\xF0\x9F\x8F\xB7", v: allEmoji[740] }, { k: ":label:", v: allEmoji[740] }, { k: "\xF0\x9F\x94\x96", v: allEmoji[741] }, { k: ":bookmark:", v: allEmoji[741] }, { k: "\xF0\x9F\x93\xAA", v: allEmoji[742] }, { k: ":mailbox_closed:", v: allEmoji[742] }, { k: "\xF0\x9F\x93\xAB", v: allEmoji[743] }, { k: ":mailbox:", v: allEmoji[743] }, { k: "\xF0\x9F\x93\xAC", v: allEmoji[744] }, { k: ":mailbox_with_mail:", v: allEmoji[744] }, { k: "\xF0\x9F\x93\xAD", v: allEmoji[745] }, { k: ":mailbox_with_no_mail:", v: allEmoji[745] }, { k: "\xF0\x9F\x93\xAE", v: allEmoji[746] }, { k: ":postbox:", v: allEmoji[746] }, { k: "\xF0\x9F\x93\xAF", v: allEmoji[747] }, { k: ":postal_horn:", v: allEmoji[747] }, { k: "\xF0\x9F\x93\x9C", v: allEmoji[748] }, { k: ":scroll:", v: allEmoji[748] }, { k: "\xF0\x9F\x93\x83", v: allEmoji[749] }, { k: ":page_with_curl:", v: allEmoji[749] }, { k: "\xF0\x9F\x93\x84", v: allEmoji[750] }, { k: ":page_facing_up:", v: allEmoji[750] }, { k: "\xF0\x9F\x93\x91", v: allEmoji[751] }, { k: ":bookmark_tabs:", v: allEmoji[751] }, { k: "\xF0\x9F\x93\x8A", v: allEmoji[752] }, { k: ":bar_chart:", v: allEmoji[752] }, { k: "\xF0\x9F\x93\x88", v: allEmoji[753] }, { k: ":chart_with_upwards_trend:", v: allEmoji[753] }, { k: "\xF0\x9F\x93\x89", v: allEmoji[754] }, { k: ":chart_with_downwards_trend:", v: allEmoji[754] }, { k: "\xF0\x9F\x97\x92", v: allEmoji[755] }, { k: ":spiral_notepad:", v: allEmoji[755] }, { k: "\xF0\x9F\x97\x93", v: allEmoji[756] }, { k: ":spiral_calendar:", v: allEmoji[756] }, { k: "\xF0\x9F\x93\x86", v: allEmoji[757] }, { k: ":calendar:", v: allEmoji[757] }, { k: "\xF0\x9F\x93\x85", v: allEmoji[758] }, { k: ":date:", v: allEmoji[758] }, { k: "\xF0\x9F\x93\x87", v: allEmoji[759] }, { k: ":card_index:", v: allEmoji[759] }, { k: "\xF0\x9F\x97\x83", v: allEmoji[760] }, { k: ":card_file_box:", v: allEmoji[760] }, { k: "\xF0\x9F\x97\xB3", v: allEmoji[761] }, { k: ":ballot_box:", v: allEmoji[761] }, { k: "\xF0\x9F\x97\x84", v: allEmoji[762] }, { k: ":file_cabinet:", v: allEmoji[762] }, { k: "\xF0\x9F\x93\x8B", v: allEmoji[763] }, { k: ":clipboard:", v: allEmoji[763] }, { k: "\xF0\x9F\x93\x81", v: allEmoji[764] }, { k: ":file_folder:", v: allEmoji[764] }, { k: "\xF0\x9F\x93\x82", v: allEmoji[765] }, { k: ":open_file_folder:", v: allEmoji[765] }, { k: "\xF0\x9F\x97\x82", v: allEmoji[766] }, { k: ":card_index_dividers:", v: allEmoji[766] }, { k: "\xF0\x9F\x97\x9E", v: allEmoji[767] }, { k: ":newspaper_roll:", v: allEmoji[767] }, { k: "\xF0\x9F\x93\xB0", v: allEmoji[768] }, { k: ":newspaper:", v: allEmoji[768] }, { k: "\xF0\x9F\x93\x93", v: allEmoji[769] }, { k: ":notebook:", v: allEmoji[769] }, { k: "\xF0\x9F\x93\x94", v: allEmoji[770] }, { k: ":notebook_with_decorative_cover:", v: allEmoji[770] }, { k: "\xF0\x9F\x93\x92", v: allEmoji[771] }, { k: ":ledger:", v: allEmoji[771] }, { k: "\xF0\x9F\x93\x95", v: allEmoji[772] }, { k: ":closed_book:", v: allEmoji[772] }, { k: "\xF0\x9F\x93\x97", v: allEmoji[773] }, { k: ":green_book:", v: allEmoji[773] }, { k: "\xF0\x9F\x93\x98", v: allEmoji[774] }, { k: ":blue_book:", v: allEmoji[774] }, { k: "\xF0\x9F\x93\x99", v: allEmoji[775] }, { k: ":orange_book:", v: allEmoji[775] }, { k: "\xF0\x9F\x93\x9A", v: allEmoji[776] }, { k: ":books:", v: allEmoji[776] }, { k: "\xF0\x9F\x93\x96", v: allEmoji[777] }, { k: ":book:", v: allEmoji[777] }, { k: ":open_book:", v: allEmoji[777] }, { k: "\xF0\x9F\x94\x97", v: allEmoji[778] }, { k: ":link:", v: allEmoji[778] }, { k: "\xF0\x9F\x93\x8E", v: allEmoji[779] }, { k: ":paperclip:", v: allEmoji[779] }, { k: "\xF0\x9F\x96\x87", v: allEmoji[780] }, { k: ":paperclips:", v: allEmoji[780] }, { k: "\xF0\x9F\x93\x90", v: allEmoji[781] }, { k: ":triangular_ruler:", v: allEmoji[781] }, { k: "\xF0\x9F\x93\x8F", v: allEmoji[782] }, { k: ":straight_ruler:", v: allEmoji[782] }, { k: "\xE2\x9C\x82\xEF\xB8\x8F", v: allEmoji[783] }, { k: ":scissors:", v: allEmoji[783] }, { k: "\xF0\x9F\x93\x8C", v: allEmoji[784] }, { k: ":pushpin:", v: allEmoji[784] }, { k: "\xF0\x9F\x93\x8D", v: allEmoji[785] }, { k: ":round_pushpin:", v: allEmoji[785] }, { k: "\xF0\x9F\x9A\xA9", v: allEmoji[786] }, { k: ":triangular_flag_on_post:", v: allEmoji[786] }, { k: "\xF0\x9F\x8E\x8C", v: allEmoji[787] }, { k: ":crossed_flags:", v: allEmoji[787] }, { k: "\xF0\x9F\x8F\xB3\xEF\xB8\x8F", v: allEmoji[788] }, { k: ":white_flag:", v: allEmoji[788] }, { k: "\xF0\x9F\x8F\xB4", v: allEmoji[789] }, { k: ":black_flag:", v: allEmoji[789] }, { k: "\xF0\x9F\x8F\x81", v: allEmoji[790] }, { k: ":checkered_flag:", v: allEmoji[790] }, { k: "\xF0\x9F\x8F\xB3\xEF\xB8\x8F\xE2\x80\x8D\xF0\x9F\x8C\x88", v: allEmoji[791] }, { k: ":rainbow_flag:", v: allEmoji[791] }, { k: "\xF0\x9F\x96\x8C", v: allEmoji[792] }, { k: ":paintbrush:", v: allEmoji[792] }, { k: "\xF0\x9F\x96\x8D", v: allEmoji[793] }, { k: ":crayon:", v: allEmoji[793] }, { k: "\xF0\x9F\x96\x8A", v: allEmoji[794] }, { k: ":pen:", v: allEmoji[794] }, { k: "\xF0\x9F\x96\x8B", v: allEmoji[795] }, { k: ":fountain_pen:", v: allEmoji[795] }, { k: "\xE2\x9C\x92\xEF\xB8\x8F", v: allEmoji[796] }, { k: ":black_nib:", v: allEmoji[796] }, { k: "\xF0\x9F\x93\x9D", v: allEmoji[797] }, { k: ":memo:", v: allEmoji[797] }, { k: ":pencil:", v: allEmoji[797] }, { k: "\xE2\x9C\x8F\xEF\xB8\x8F", v: allEmoji[798] }, { k: ":pencil2:", v: allEmoji[798] }, { k: "\xF0\x9F\x94\x8F", v: allEmoji[799] }, { k: ":lock_with_ink_pen:", v: allEmoji[799] }, { k: "\xF0\x9F\x94\x90", v: allEmoji[800] }, { k: ":closed_lock_with_key:", v: allEmoji[800] }, { k: "\xF0\x9F\x94\x92", v: allEmoji[801] }, { k: ":lock:", v: allEmoji[801] }, { k: "\xF0\x9F\x94\x93", v: allEmoji[802] }, { k: ":unlock:", v: allEmoji[802] }, { k: "\xF0\x9F\x94\x8D", v: allEmoji[803] }, { k: ":mag:", v: allEmoji[803] }, { k: "\xF0\x9F\x94\x8E", v: allEmoji[804] }, { k: ":mag_right:", v: allEmoji[804] }, { k: "\xE2\x9D\xA4\xEF\xB8\x8F", v: allEmoji[805] }, { k: ":heart:", v: allEmoji[805] }, { k: "\xF0\x9F\x92\x9B", v: allEmoji[806] }, { k: ":yellow_heart:", v: allEmoji[806] }, { k: "\xF0\x9F\x92\x9A", v: allEmoji[807] }, { k: ":green_heart:", v: allEmoji[807] }, { k: "\xF0\x9F\x92\x99", v: allEmoji[808] }, { k: ":blue_heart:", v: allEmoji[808] }, { k: "\xF0\x9F\x92\x9C", v: allEmoji[809] }, { k: ":purple_heart:", v: allEmoji[809] }, { k: "\xF0\x9F\x92\x94", v: allEmoji[810] }, { k: ":broken_heart:", v: allEmoji[810] }, { k: "\xE2\x9D\xA3\xEF\xB8\x8F", v: allEmoji[811] }, { k: ":heavy_heart_exclamation:", v: allEmoji[811] }, { k: "\xF0\x9F\x92\x95", v: allEmoji[812] }, { k: ":two_hearts:", v: allEmoji[812] }, { k: "\xF0\x9F\x92\x9E", v: allEmoji[813] }, { k: ":revolving_hearts:", v: allEmoji[813] }, { k: "\xF0\x9F\x92\x93", v: allEmoji[814] }, { k: ":heartbeat:", v: allEmoji[814] }, { k: "\xF0\x9F\x92\x97", v: allEmoji[815] }, { k: ":heartpulse:", v: allEmoji[815] }, { k: "\xF0\x9F\x92\x96", v: allEmoji[816] }, { k: ":sparkling_heart:", v: allEmoji[816] }, { k: "\xF0\x9F\x92\x98", v: allEmoji[817] }, { k: ":cupid:", v: allEmoji[817] }, { k: "\xF0\x9F\x92\x9D", v: allEmoji[818] }, { k: ":gift_heart:", v: allEmoji[818] }, { k: "\xF0\x9F\x92\x9F", v: allEmoji[819] }, { k: ":heart_decoration:", v: allEmoji[819] }, { k: "\xE2\x98\xAE\xEF\xB8\x8F", v: allEmoji[820] }, { k: ":peace_symbol:", v: allEmoji[820] }, { k: "\xE2\x9C\x9D\xEF\xB8\x8F", v: allEmoji[821] }, { k: ":latin_cross:", v: allEmoji[821] }, { k: "\xE2\x98\xAA\xEF\xB8\x8F", v: allEmoji[822] }, { k: ":star_and_crescent:", v: allEmoji[822] }, { k: "\xF0\x9F\x95\x89", v: allEmoji[823] }, { k: ":om:", v: allEmoji[823] }, { k: "\xE2\x98\xB8\xEF\xB8\x8F", v: allEmoji[824] }, { k: ":wheel_of_dharma:", v: allEmoji[824] }, { k: "\xE2\x9C\xA1\xEF\xB8\x8F", v: allEmoji[825] }, { k: ":star_of_david:", v: allEmoji[825] }, { k: "\xF0\x9F\x94\xAF", v: allEmoji[826] }, { k: ":six_pointed_star:", v: allEmoji[826] }, { k: "\xF0\x9F\x95\x8E", v: allEmoji[827] }, { k: ":menorah:", v: allEmoji[827] }, { k: "\xE2\x98\xAF\xEF\xB8\x8F", v: allEmoji[828] }, { k: ":yin_yang:", v: allEmoji[828] }, { k: "\xE2\x98\xA6\xEF\xB8\x8F", v: allEmoji[829] }, { k: ":orthodox_cross:", v: allEmoji[829] }, { k: "\xF0\x9F\x9B\x90", v: allEmoji[830] }, { k: ":place_of_worship:", v: allEmoji[830] }, { k: "\xE2\x9B\x8E", v: allEmoji[831] }, { k: ":ophiuchus:", v: allEmoji[831] }, { k: "\xE2\x99\x88\xEF\xB8\x8F", v: allEmoji[832] }, { k: ":aries:", v: allEmoji[832] }, { k: "\xE2\x99\x89\xEF\xB8\x8F", v: allEmoji[833] }, { k: ":taurus:", v: allEmoji[833] }, { k: "\xE2\x99\x8A\xEF\xB8\x8F", v: allEmoji[834] }, { k: ":gemini:", v: allEmoji[834] }, { k: "\xE2\x99\x8B\xEF\xB8\x8F", v: allEmoji[835] }, { k: ":cancer:", v: allEmoji[835] }, { k: "\xE2\x99\x8C\xEF\xB8\x8F", v: allEmoji[836] }, { k: ":leo:", v: allEmoji[836] }, { k: "\xE2\x99\x8D\xEF\xB8\x8F", v: allEmoji[837] }, { k: ":virgo:", v: allEmoji[837] }, { k: "\xE2\x99\x8E\xEF\xB8\x8F", v: allEmoji[838] }, { k: ":libra:", v: allEmoji[838] }, { k: "\xE2\x99\x8F\xEF\xB8\x8F", v: allEmoji[839] }, { k: ":scorpius:", v: allEmoji[839] }, { k: "\xE2\x99\x90\xEF\xB8\x8F", v: allEmoji[840] }, { k: ":sagittarius:", v: allEmoji[840] }, { k: "\xE2\x99\x91\xEF\xB8\x8F", v: allEmoji[841] }, { k: ":capricorn:", v: allEmoji[841] }, { k: "\xE2\x99\x92\xEF\xB8\x8F", v: allEmoji[842] }, { k: ":aquarius:", v: allEmoji[842] }, { k: "\xE2\x99\x93\xEF\xB8\x8F", v: allEmoji[843] }, { k: ":pisces:", v: allEmoji[843] }, { k: "\xF0\x9F\x86\x94", v: allEmoji[844] }, { k: ":id:", v: allEmoji[844] }, { k: "\xE2\x9A\x9B", v: allEmoji[845] }, { k: ":atom_symbol:", v: allEmoji[845] }, { k: "\xF0\x9F\x88\xB3", v: allEmoji[846] }, { k: ":u7a7a:", v: allEmoji[846] }, { k: "\xF0\x9F\x88\xB9", v: allEmoji[847] }, { k: ":u5272:", v: allEmoji[847] }, { k: "\xE2\x98\xA2\xEF\xB8\x8F", v: allEmoji[848] }, { k: ":radioactive:", v: allEmoji[848] }, { k: "\xE2\x98\xA3\xEF\xB8\x8F", v: allEmoji[849] }, { k: ":biohazard:", v: allEmoji[849] }, { k: "\xF0\x9F\x93\xB4", v: allEmoji[850] }, { k: ":mobile_phone_off:", v: allEmoji[850] }, { k: "\xF0\x9F\x93\xB3", v: allEmoji[851] }, { k: ":vibration_mode:", v: allEmoji[851] }, { k: "\xF0\x9F\x88\xB6", v: allEmoji[852] }, { k: ":u6709:", v: allEmoji[852] }, { k: "\xF0\x9F\x88\x9A\xEF\xB8\x8F", v: allEmoji[853] }, { k: ":u7121:", v: allEmoji[853] }, { k: "\xF0\x9F\x88\xB8", v: allEmoji[854] }, { k: ":u7533:", v: allEmoji[854] }, { k: "\xF0\x9F\x88\xBA", v: allEmoji[855] }, { k: ":u55b6:", v: allEmoji[855] }, { k: "\xF0\x9F\x88\xB7\xEF\xB8\x8F", v: allEmoji[856] }, { k: ":u6708:", v: allEmoji[856] }, { k: "\xE2\x9C\xB4\xEF\xB8\x8F", v: allEmoji[857] }, { k: ":eight_pointed_black_star:", v: allEmoji[857] }, { k: "\xF0\x9F\x86\x9A", v: allEmoji[858] }, { k: ":vs:", v: allEmoji[858] }, { k: "\xF0\x9F\x89\x91", v: allEmoji[859] }, { k: ":accept:", v: allEmoji[859] }, { k: "\xF0\x9F\x92\xAE", v: allEmoji[860] }, { k: ":white_flower:", v: allEmoji[860] }, { k: "\xF0\x9F\x89\x90", v: allEmoji[861] }, { k: ":ideograph_advantage:", v: allEmoji[861] }, { k: "\xE3\x8A\x99\xEF\xB8\x8F", v: allEmoji[862] }, { k: ":secret:", v: allEmoji[862] }, { k: "\xE3\x8A\x97\xEF\xB8\x8F", v: allEmoji[863] }, { k: ":congratulations:", v: allEmoji[863] }, { k: "\xF0\x9F\x88\xB4", v: allEmoji[864] }, { k: ":u5408:", v: allEmoji[864] }, { k: "\xF0\x9F\x88\xB5", v: allEmoji[865] }, { k: ":u6e80:", v: allEmoji[865] }, { k: "\xF0\x9F\x88\xB2", v: allEmoji[866] }, { k: ":u7981:", v: allEmoji[866] }, { k: "\xF0\x9F\x85\xB0\xEF\xB8\x8F", v: allEmoji[867] }, { k: ":a:", v: allEmoji[867] }, { k: "\xF0\x9F\x85\xB1\xEF\xB8\x8F", v: allEmoji[868] }, { k: ":b:", v: allEmoji[868] }, { k: "\xF0\x9F\x86\x8E", v: allEmoji[869] }, { k: ":ab:", v: allEmoji[869] }, { k: "\xF0\x9F\x86\x91", v: allEmoji[870] }, { k: ":cl:", v: allEmoji[870] }, { k: "\xF0\x9F\x85\xBE\xEF\xB8\x8F", v: allEmoji[871] }, { k: ":o2:", v: allEmoji[871] }, { k: "\xF0\x9F\x86\x98", v: allEmoji[872] }, { k: ":sos:", v: allEmoji[872] }, { k: "\xE2\x9B\x94\xEF\xB8\x8F", v: allEmoji[873] }, { k: ":no_entry:", v: allEmoji[873] }, { k: "\xF0\x9F\x93\x9B", v: allEmoji[874] }, { k: ":name_badge:", v: allEmoji[874] }, { k: "\xF0\x9F\x9A\xAB", v: allEmoji[875] }, { k: ":no_entry_sign:", v: allEmoji[875] }, { k: "\xE2\x9D\x8C", v: allEmoji[876] }, { k: ":x:", v: allEmoji[876] }, { k: "\xE2\xAD\x95\xEF\xB8\x8F", v: allEmoji[877] }, { k: ":o:", v: allEmoji[877] }, { k: "\xF0\x9F\x92\xA2", v: allEmoji[878] }, { k: ":anger:", v: allEmoji[878] }, { k: "\xE2\x99\xA8\xEF\xB8\x8F", v: allEmoji[879] }, { k: ":hotsprings:", v: allEmoji[879] }, { k: "\xF0\x9F\x9A\xB7", v: allEmoji[880] }, { k: ":no_pedestrians:", v: allEmoji[880] }, { k: "\xF0\x9F\x9A\xAF", v: allEmoji[881] }, { k: ":do_not_litter:", v: allEmoji[881] }, { k: "\xF0\x9F\x9A\xB3", v: allEmoji[882] }, { k: ":no_bicycles:", v: allEmoji[882] }, { k: "\xF0\x9F\x9A\xB1", v: allEmoji[883] }, { k: ":non-potable_water:", v: allEmoji[883] }, { k: "\xF0\x9F\x94\x9E", v: allEmoji[884] }, { k: ":underage:", v: allEmoji[884] }, { k: "\xF0\x9F\x93\xB5", v: allEmoji[885] }, { k: ":no_mobile_phones:", v: allEmoji[885] }, { k: "\xE2\x9D\x97\xEF\xB8\x8F", v: allEmoji[886] }, { k: ":exclamation:", v: allEmoji[886] }, { k: ":heavy_exclamation_mark:", v: allEmoji[886] }, { k: "\xE2\x9D\x95", v: allEmoji[887] }, { k: ":grey_exclamation:", v: allEmoji[887] }, { k: "\xE2\x9D\x93", v: allEmoji[888] }, { k: ":question:", v: allEmoji[888] }, { k: "\xE2\x9D\x94", v: allEmoji[889] }, { k: ":grey_question:", v: allEmoji[889] }, { k: "\xE2\x80\xBC\xEF\xB8\x8F", v: allEmoji[890] }, { k: ":bangbang:", v: allEmoji[890] }, { k: "\xE2\x81\x89\xEF\xB8\x8F", v: allEmoji[891] }, { k: ":interrobang:", v: allEmoji[891] }, { k: "\xF0\x9F\x92\xAF", v: allEmoji[892] }, { k: ":100:", v: allEmoji[892] }, { k: "\xF0\x9F\x94\x85", v: allEmoji[893] }, { k: ":low_brightness:", v: allEmoji[893] }, { k: "\xF0\x9F\x94\x86", v: allEmoji[894] }, { k: ":high_brightness:", v: allEmoji[894] }, { k: "\xF0\x9F\x94\xB1", v: allEmoji[895] }, { k: ":trident:", v: allEmoji[895] }, { k: "\xE2\x9A\x9C", v: allEmoji[896] }, { k: ":fleur_de_lis:", v: allEmoji[896] }, { k: "\xE3\x80\xBD\xEF\xB8\x8F", v: allEmoji[897] }, { k: ":part_alternation_mark:", v: allEmoji[897] }, { k: "\xE2\x9A\xA0\xEF\xB8\x8F", v: allEmoji[898] }, { k: ":warning:", v: allEmoji[898] }, { k: "\xF0\x9F\x9A\xB8", v: allEmoji[899] }, { k: ":children_crossing:", v: allEmoji[899] }, { k: "\xF0\x9F\x94\xB0", v: allEmoji[900] }, { k: ":beginner:", v: allEmoji[900] }, { k: "\xE2\x99\xBB\xEF\xB8\x8F", v: allEmoji[901] }, { k: ":recycle:", v: allEmoji[901] }, { k: "\xF0\x9F\x88\xAF\xEF\xB8\x8F", v: allEmoji[902] }, { k: ":u6307:", v: allEmoji[902] }, { k: "\xF0\x9F\x92\xB9", v: allEmoji[903] }, { k: ":chart:", v: allEmoji[903] }, { k: "\xE2\x9D\x87\xEF\xB8\x8F", v: allEmoji[904] }, { k: ":sparkle:", v: allEmoji[904] }, { k: "\xE2\x9C\xB3\xEF\xB8\x8F", v: allEmoji[905] }, { k: ":eight_spoked_asterisk:", v: allEmoji[905] }, { k: "\xE2\x9D\x8E", v: allEmoji[906] }, { k: ":negative_squared_cross_mark:", v: allEmoji[906] }, { k: "\xE2\x9C\x85", v: allEmoji[907] }, { k: ":white_check_mark:", v: allEmoji[907] }, { k: "\xF0\x9F\x8C\x90", v: allEmoji[908] }, { k: ":globe_with_meridians:", v: allEmoji[908] }, { k: "\xE2\x93\x82\xEF\xB8\x8F", v: allEmoji[909] }, { k: ":m:", v: allEmoji[909] }, { k: "\xF0\x9F\x92\xA0", v: allEmoji[910] }, { k: ":diamond_shape_with_a_dot_inside:", v: allEmoji[910] }, { k: "\xF0\x9F\x8C\x80", v: allEmoji[911] }, { k: ":cyclone:", v: allEmoji[911] }, { k: "\xE2\x9E\xBF", v: allEmoji[912] }, { k: ":loop:", v: allEmoji[912] }, { k: "\xF0\x9F\x8F\xA7", v: allEmoji[913] }, { k: ":atm:", v: allEmoji[913] }, { k: "\xF0\x9F\x88\x82\xEF\xB8\x8F", v: allEmoji[914] }, { k: ":sa:", v: allEmoji[914] }, { k: "\xF0\x9F\x9B\x82", v: allEmoji[915] }, { k: ":passport_control:", v: allEmoji[915] }, { k: "\xF0\x9F\x9B\x83", v: allEmoji[916] }, { k: ":customs:", v: allEmoji[916] }, { k: "\xF0\x9F\x9B\x84", v: allEmoji[917] }, { k: ":baggage_claim:", v: allEmoji[917] }, { k: "\xF0\x9F\x9B\x85", v: allEmoji[918] }, { k: ":left_luggage:", v: allEmoji[918] }, { k: "\xE2\x99\xBF\xEF\xB8\x8F", v: allEmoji[919] }, { k: ":wheelchair:", v: allEmoji[919] }, { k: "\xF0\x9F\x9A\xAD", v: allEmoji[920] }, { k: ":no_smoking:", v: allEmoji[920] }, { k: "\xF0\x9F\x9A\xBE", v: allEmoji[921] }, { k: ":wc:", v: allEmoji[921] }, { k: "\xF0\x9F\x85\xBF\xEF\xB8\x8F", v: allEmoji[922] }, { k: ":parking:", v: allEmoji[922] }, { k: "\xF0\x9F\x9A\xB0", v: allEmoji[923] }, { k: ":potable_water:", v: allEmoji[923] }, { k: "\xF0\x9F\x9A\xB9", v: allEmoji[924] }, { k: ":mens:", v: allEmoji[924] }, { k: "\xF0\x9F\x9A\xBA", v: allEmoji[925] }, { k: ":womens:", v: allEmoji[925] }, { k: "\xF0\x9F\x9A\xBC", v: allEmoji[926] }, { k: ":baby_symbol:", v: allEmoji[926] }, { k: "\xF0\x9F\x9A\xBB", v: allEmoji[927] }, { k: ":restroom:", v: allEmoji[927] }, { k: "\xF0\x9F\x9A\xAE", v: allEmoji[928] }, { k: ":put_litter_in_its_place:", v: allEmoji[928] }, { k: "\xF0\x9F\x8E\xA6", v: allEmoji[929] }, { k: ":cinema:", v: allEmoji[929] }, { k: "\xF0\x9F\x93\xB6", v: allEmoji[930] }, { k: ":signal_strength:", v: allEmoji[930] }, { k: "\xF0\x9F\x88\x81", v: allEmoji[931] }, { k: ":koko:", v: allEmoji[931] }, { k: "\xF0\x9F\x94\xA4", v: allEmoji[932] }, { k: ":abc:", v: allEmoji[932] }, { k: "\xF0\x9F\x94\xA1", v: allEmoji[933] }, { k: ":abcd:", v: allEmoji[933] }, { k: "\xF0\x9F\x94\xA0", v: allEmoji[934] }, { k: ":capital_abcd:", v: allEmoji[934] }, { k: "\xF0\x9F\x94\xA3", v: allEmoji[935] }, { k: ":symbols:", v: allEmoji[935] }, { k: "\xE2\x84\xB9\xEF\xB8\x8F", v: allEmoji[936] }, { k: ":information_source:", v: allEmoji[936] }, { k: "\xF0\x9F\x86\x96", v: allEmoji[937] }, { k: ":ng:", v: allEmoji[937] }, { k: "\xF0\x9F\x86\x97", v: allEmoji[938] }, { k: ":ok:", v: allEmoji[938] }, { k: "\xF0\x9F\x86\x99", v: allEmoji[939] }, { k: ":up:", v: allEmoji[939] }, { k: "\xF0\x9F\x86\x92", v: allEmoji[940] }, { k: ":cool:", v: allEmoji[940] }, { k: "\xF0\x9F\x86\x95", v: allEmoji[941] }, { k: ":new:", v: allEmoji[941] }, { k: "\xF0\x9F\x86\x93", v: allEmoji[942] }, { k: ":free:", v: allEmoji[942] }, { k: "0\xEF\xB8\x8F\xE2\x83\xA3", v: allEmoji[943] }, { k: ":zero:", v: allEmoji[943] }, { k: "1\xEF\xB8\x8F\xE2\x83\xA3", v: allEmoji[944] }, { k: ":one:", v: allEmoji[944] }, { k: "2\xEF\xB8\x8F\xE2\x83\xA3", v: allEmoji[945] }, { k: ":two:", v: allEmoji[945] }, { k: "3\xEF\xB8\x8F\xE2\x83\xA3", v: allEmoji[946] }, { k: ":three:", v: allEmoji[946] }, { k: "4\xEF\xB8\x8F\xE2\x83\xA3", v: allEmoji[947] }, { k: ":four:", v: allEmoji[947] }, { k: "5\xEF\xB8\x8F\xE2\x83\xA3", v: allEmoji[948] }, { k: ":five:", v: allEmoji[948] }, { k: "6\xEF\xB8\x8F\xE2\x83\xA3", v: allEmoji[949] }, { k: ":six:", v: allEmoji[949] }, { k: "7\xEF\xB8\x8F\xE2\x83\xA3", v: allEmoji[950] }, { k: ":seven:", v: allEmoji[950] }, { k: "8\xEF\xB8\x8F\xE2\x83\xA3", v: allEmoji[951] }, { k: ":eight:", v: allEmoji[951] }, { k: "9\xEF\xB8\x8F\xE2\x83\xA3", v: allEmoji[952] }, { k: ":nine:", v: allEmoji[952] }, { k: "\xF0\x9F\x94\x9F", v: allEmoji[953] }, { k: ":keycap_ten:", v: allEmoji[953] }, { k: "\xF0\x9F\x94\xA2", v: allEmoji[954] }, { k: ":1234:", v: allEmoji[954] }, { k: "#\xEF\xB8\x8F\xE2\x83\xA3", v: allEmoji[955] }, { k: ":hash:", v: allEmoji[955] }, { k: "*\xEF\xB8\x8F\xE2\x83\xA3", v: allEmoji[956] }, { k: ":asterisk:", v: allEmoji[956] }, { k: "\xE2\x96\xB6\xEF\xB8\x8F", v: allEmoji[957] }, { k: ":arrow_forward:", v: allEmoji[957] }, { k: "\xE2\x8F\xB8", v: allEmoji[958] }, { k: ":pause_button:", v: allEmoji[958] }, { k: "\xE2\x8F\xAF", v: allEmoji[959] }, { k: ":play_or_pause_button:", v: allEmoji[959] }, { k: "\xE2\x8F\xB9", v: allEmoji[960] }, { k: ":stop_button:", v: allEmoji[960] }, { k: "\xE2\x8F\xBA", v: allEmoji[961] }, { k: ":record_button:", v: allEmoji[961] }, { k: "\xE2\x8F\xAD", v: allEmoji[962] }, { k: ":next_track_button:", v: allEmoji[962] }, { k: "\xE2\x8F\xAE", v: allEmoji[963] }, { k: ":previous_track_button:", v: allEmoji[963] }, { k: "\xE2\x8F\xA9", v: allEmoji[964] }, { k: ":fast_forward:", v: allEmoji[964] }, { k: "\xE2\x8F\xAA", v: allEmoji[965] }, { k: ":rewind:", v: allEmoji[965] }, { k: "\xE2\x8F\xAB", v: allEmoji[966] }, { k: ":arrow_double_up:", v: allEmoji[966] }, { k: "\xE2\x8F\xAC", v: allEmoji[967] }, { k: ":arrow_double_down:", v: allEmoji[967] }, { k: "\xE2\x97\x80\xEF\xB8\x8F", v: allEmoji[968] }, { k: ":arrow_backward:", v: allEmoji[968] }, { k: "\xF0\x9F\x94\xBC", v: allEmoji[969] }, { k: ":arrow_up_small:", v: allEmoji[969] }, { k: "\xF0\x9F\x94\xBD", v: allEmoji[970] }, { k: ":arrow_down_small:", v: allEmoji[970] }, { k: "\xE2\x9E\xA1\xEF\xB8\x8F", v: allEmoji[971] }, { k: ":arrow_right:", v: allEmoji[971] }, { k: "\xE2\xAC\x85\xEF\xB8\x8F", v: allEmoji[972] }, { k: ":arrow_left:", v: allEmoji[972] }, { k: "\xE2\xAC\x86\xEF\xB8\x8F", v: allEmoji[973] }, { k: ":arrow_up:", v: allEmoji[973] }, { k: "\xE2\xAC\x87\xEF\xB8\x8F", v: allEmoji[974] }, { k: ":arrow_down:", v: allEmoji[974] }, { k: "\xE2\x86\x97\xEF\xB8\x8F", v: allEmoji[975] }, { k: ":arrow_upper_right:", v: allEmoji[975] }, { k: "\xE2\x86\x98\xEF\xB8\x8F", v: allEmoji[976] }, { k: ":arrow_lower_right:", v: allEmoji[976] }, { k: "\xE2\x86\x99\xEF\xB8\x8F", v: allEmoji[977] }, { k: ":arrow_lower_left:", v: allEmoji[977] }, { k: "\xE2\x86\x96\xEF\xB8\x8F", v: allEmoji[978] }, { k: ":arrow_upper_left:", v: allEmoji[978] }, { k: "\xE2\x86\x95\xEF\xB8\x8F", v: allEmoji[979] }, { k: ":arrow_up_down:", v: allEmoji[979] }, { k: "\xE2\x86\x94\xEF\xB8\x8F", v: allEmoji[980] }, { k: ":left_right_arrow:", v: allEmoji[980] }, { k: "\xE2\x86\xAA\xEF\xB8\x8F", v: allEmoji[981] }, { k: ":arrow_right_hook:", v: allEmoji[981] }, { k: "\xE2\x86\xA9\xEF\xB8\x8F", v: allEmoji[982] }, { k: ":leftwards_arrow_with_hook:", v: allEmoji[982] }, { k: "\xE2\xA4\xB4\xEF\xB8\x8F", v: allEmoji[983] }, { k: ":arrow_heading_up:", v: allEmoji[983] }, { k: "\xE2\xA4\xB5\xEF\xB8\x8F", v: allEmoji[984] }, { k: ":arrow_heading_down:", v: allEmoji[984] }, { k: "\xF0\x9F\x94\x80", v: allEmoji[985] }, { k: ":twisted_rightwards_arrows:", v: allEmoji[985] }, { k: "\xF0\x9F\x94\x81", v: allEmoji[986] }, { k: ":repeat:", v: allEmoji[986] }, { k: "\xF0\x9F\x94\x82", v: allEmoji[987] }, { k: ":repeat_one:", v: allEmoji[987] }, { k: "\xF0\x9F\x94\x84", v: allEmoji[988] }, { k: ":arrows_counterclockwise:", v: allEmoji[988] }, { k: "\xF0\x9F\x94\x83", v: allEmoji[989] }, { k: ":arrows_clockwise:", v: allEmoji[989] }, { k: "\xF0\x9F\x8E\xB5", v: allEmoji[990] }, { k: ":musical_note:", v: allEmoji[990] }, { k: "\xF0\x9F\x8E\xB6", v: allEmoji[991] }, { k: ":notes:", v: allEmoji[991] }, { k: "\xE3\x80\xB0\xEF\xB8\x8F", v: allEmoji[992] }, { k: ":wavy_dash:", v: allEmoji[992] }, { k: "\xE2\x9E\xB0", v: allEmoji[993] }, { k: ":curly_loop:", v: allEmoji[993] }, { k: "\xE2\x9C\x94\xEF\xB8\x8F", v: allEmoji[994] }, { k: ":heavy_check_mark:", v: allEmoji[994] }, { k: "\xE2\x9E\x95", v: allEmoji[995] }, { k: ":heavy_plus_sign:", v: allEmoji[995] }, { k: "\xE2\x9E\x96", v: allEmoji[996] }, { k: ":heavy_minus_sign:", v: allEmoji[996] }, { k: "\xE2\x9E\x97", v: allEmoji[997] }, { k: ":heavy_division_sign:", v: allEmoji[997] }, { k: "\xE2\x9C\x96\xEF\xB8\x8F", v: allEmoji[998] }, { k: ":heavy_multiplication_x:", v: allEmoji[998] }, { k: "\xF0\x9F\x92\xB2", v: allEmoji[999] }, { k: ":heavy_dollar_sign:", v: allEmoji[999] }, { k: "\xF0\x9F\x92\xB1", v: allEmoji[1000] }, { k: ":currency_exchange:", v: allEmoji[1000] }, { k: "\xE2\x84\xA2\xEF\xB8\x8F", v: allEmoji[1001] }, { k: ":tm:", v: allEmoji[1001] }, { k: "\xC2\xA9\xEF\xB8\x8F", v: allEmoji[1002] }, { k: ":copyright:", v: allEmoji[1002] }, { k: "\xC2\xAE\xEF\xB8\x8F", v: allEmoji[1003] }, { k: ":registered:", v: allEmoji[1003] }, { k: "\xF0\x9F\x94\x9A", v: allEmoji[1004] }, { k: ":end:", v: allEmoji[1004] }, { k: "\xF0\x9F\x94\x99", v: allEmoji[1005] }, { k: ":back:", v: allEmoji[1005] }, { k: "\xF0\x9F\x94\x9B", v: allEmoji[1006] }, { k: ":on:", v: allEmoji[1006] }, { k: "\xF0\x9F\x94\x9D", v: allEmoji[1007] }, { k: ":top:", v: allEmoji[1007] }, { k: "\xF0\x9F\x94\x9C", v: allEmoji[1008] }, { k: ":soon:", v: allEmoji[1008] }, { k: "\xE2\x98\x91\xEF\xB8\x8F", v: allEmoji[1009] }, { k: ":ballot_box_with_check:", v: allEmoji[1009] }, { k: "\xF0\x9F\x94\x98", v: allEmoji[1010] }, { k: ":radio_button:", v: allEmoji[1010] }, { k: "\xE2\x9A\xAA\xEF\xB8\x8F", v: allEmoji[1011] }, { k: ":white_circle:", v: allEmoji[1011] }, { k: "\xE2\x9A\xAB\xEF\xB8\x8F", v: allEmoji[1012] }, { k: ":black_circle:", v: allEmoji[1012] }, { k: "\xF0\x9F\x94\xB4", v: allEmoji[1013] }, { k: ":red_circle:", v: allEmoji[1013] }, { k: "\xF0\x9F\x94\xB5", v: allEmoji[1014] }, { k: ":large_blue_circle:", v: allEmoji[1014] }, { k: "\xF0\x9F\x94\xBA", v: allEmoji[1015] }, { k: ":small_red_triangle:", v: allEmoji[1015] }, { k: "\xF0\x9F\x94\xBB", v: allEmoji[1016] }, { k: ":small_red_triangle_down:", v: allEmoji[1016] }, { k: "\xF0\x9F\x94\xB8", v: allEmoji[1017] }, { k: ":small_orange_diamond:", v: allEmoji[1017] }, { k: "\xF0\x9F\x94\xB9", v: allEmoji[1018] }, { k: ":small_blue_diamond:", v: allEmoji[1018] }, { k: "\xF0\x9F\x94\xB6", v: allEmoji[1019] }, { k: ":large_orange_diamond:", v: allEmoji[1019] }, { k: "\xF0\x9F\x94\xB7", v: allEmoji[1020] }, { k: ":large_blue_diamond:", v: allEmoji[1020] }, { k: "\xF0\x9F\x94\xB3", v: allEmoji[1021] }, { k: ":white_square_button:", v: allEmoji[1021] }, { k: "\xF0\x9F\x94\xB2", v: allEmoji[1022] }, { k: ":black_square_button:", v: allEmoji[1022] }, { k: "\xE2\x96\xAA\xEF\xB8\x8F", v: allEmoji[1023] }, { k: ":black_small_square:", v: allEmoji[1023] }, { k: "\xE2\x96\xAB\xEF\xB8\x8F", v: allEmoji[1024] }, { k: ":white_small_square:", v: allEmoji[1024] }, { k: "\xE2\x97\xBE\xEF\xB8\x8F", v: allEmoji[1025] }, { k: ":black_medium_small_square:", v: allEmoji[1025] }, { k: "\xE2\x97\xBD\xEF\xB8\x8F", v: allEmoji[1026] }, { k: ":white_medium_small_square:", v: allEmoji[1026] }, { k: "\xE2\x97\xBC\xEF\xB8\x8F", v: allEmoji[1027] }, { k: ":black_medium_square:", v: allEmoji[1027] }, { k: "\xE2\x97\xBB\xEF\xB8\x8F", v: allEmoji[1028] }, { k: ":white_medium_square:", v: allEmoji[1028] }, { k: "\xE2\xAC\x9B\xEF\xB8\x8F", v: allEmoji[1029] }, { k: ":black_large_square:", v: allEmoji[1029] }, { k: "\xE2\xAC\x9C\xEF\xB8\x8F", v: allEmoji[1030] }, { k: ":white_large_square:", v: allEmoji[1030] }, { k: "\xF0\x9F\x94\x87", v: allEmoji[1031] }, { k: ":mute:", v: allEmoji[1031] }, { k: "\xF0\x9F\x94\x88", v: allEmoji[1032] }, { k: ":speaker:", v: allEmoji[1032] }, { k: "\xF0\x9F\x94\x89", v: allEmoji[1033] }, { k: ":sound:", v: allEmoji[1033] }, { k: "\xF0\x9F\x94\x8A", v: allEmoji[1034] }, { k: ":loud_sound:", v: allEmoji[1034] }, { k: "\xF0\x9F\x94\x95", v: allEmoji[1035] }, { k: ":no_bell:", v: allEmoji[1035] }, { k: "\xF0\x9F\x94\x94", v: allEmoji[1036] }, { k: ":bell:", v: allEmoji[1036] }, { k: "\xF0\x9F\x93\xA3", v: allEmoji[1037] }, { k: ":mega:", v: allEmoji[1037] }, { k: "\xF0\x9F\x93\xA2", v: allEmoji[1038] }, { k: ":loudspeaker:", v: allEmoji[1038] }, { k: "\xF0\x9F\x91\x81\xE2\x80\x8D\xF0\x9F\x97\xA8", v: allEmoji[1039] }, { k: ":eye_speech_bubble:", v: allEmoji[1039] }, { k: "\xF0\x9F\x92\xAC", v: allEmoji[1040] }, { k: ":speech_balloon:", v: allEmoji[1040] }, { k: "\xF0\x9F\x92\xAD", v: allEmoji[1041] }, { k: ":thought_balloon:", v: allEmoji[1041] }, { k: "\xF0\x9F\x97\xAF", v: allEmoji[1042] }, { k: ":right_anger_bubble:", v: allEmoji[1042] }, { k: "\xF0\x9F\x83\x8F", v: allEmoji[1043] }, { k: ":black_joker:", v: allEmoji[1043] }, { k: "\xF0\x9F\x80\x84\xEF\xB8\x8F", v: allEmoji[1044] }, { k: ":mahjong:", v: allEmoji[1044] }, { k: "\xF0\x9F\x8E\xB4", v: allEmoji[1045] }, { k: ":flower_playing_cards:", v: allEmoji[1045] }, { k: "\xE2\x99\xA0\xEF\xB8\x8F", v: allEmoji[1046] }, { k: ":spades:", v: allEmoji[1046] }, { k: "\xE2\x99\xA3\xEF\xB8\x8F", v: allEmoji[1047] }, { k: ":clubs:", v: allEmoji[1047] }, { k: "\xE2\x99\xA5\xEF\xB8\x8F", v: allEmoji[1048] }, { k: ":hearts:", v: allEmoji[1048] }, { k: "\xE2\x99\xA6\xEF\xB8\x8F", v: allEmoji[1049] }, { k: ":diamonds:", v: allEmoji[1049] }, { k: "\xF0\x9F\x95\x90", v: allEmoji[1050] }, { k: ":clock1:", v: allEmoji[1050] }, { k: "\xF0\x9F\x95\x91", v: allEmoji[1051] }, { k: ":clock2:", v: allEmoji[1051] }, { k: "\xF0\x9F\x95\x92", v: allEmoji[1052] }, { k: ":clock3:", v: allEmoji[1052] }, { k: "\xF0\x9F\x95\x93", v: allEmoji[1053] }, { k: ":clock4:", v: allEmoji[1053] }, { k: "\xF0\x9F\x95\x94", v: allEmoji[1054] }, { k: ":clock5:", v: allEmoji[1054] }, { k: "\xF0\x9F\x95\x95", v: allEmoji[1055] }, { k: ":clock6:", v: allEmoji[1055] }, { k: "\xF0\x9F\x95\x96", v: allEmoji[1056] }, { k: ":clock7:", v: allEmoji[1056] }, { k: "\xF0\x9F\x95\x97", v: allEmoji[1057] }, { k: ":clock8:", v: allEmoji[1057] }, { k: "\xF0\x9F\x95\x98", v: allEmoji[1058] }, { k: ":clock9:", v: allEmoji[1058] }, { k: "\xF0\x9F\x95\x99", v: allEmoji[1059] }, { k: ":clock10:", v: allEmoji[1059] }, { k: "\xF0\x9F\x95\x9A", v: allEmoji[1060] }, { k: ":clock11:", v: allEmoji[1060] }, { k: "\xF0\x9F\x95\x9B", v: allEmoji[1061] }, { k: ":clock12:", v: allEmoji[1061] }, { k: "\xF0\x9F\x95\x9C", v: allEmoji[1062] }, { k: ":clock130:", v: allEmoji[1062] }, { k: "\xF0\x9F\x95\x9D", v: allEmoji[1063] }, { k: ":clock230:", v: allEmoji[1063] }, { k: "\xF0\x9F\x95\x9E", v: allEmoji[1064] }, { k: ":clock330:", v: allEmoji[1064] }, { k: "\xF0\x9F\x95\x9F", v: allEmoji[1065] }, { k: ":clock430:", v: allEmoji[1065] }, { k: "\xF0\x9F\x95\xA0", v: allEmoji[1066] }, { k: ":clock530:", v: allEmoji[1066] }, { k: "\xF0\x9F\x95\xA1", v: allEmoji[1067] }, { k: ":clock630:", v: allEmoji[1067] }, { k: "\xF0\x9F\x95\xA2", v: allEmoji[1068] }, { k: ":clock730:", v: allEmoji[1068] }, { k: "\xF0\x9F\x95\xA3", v: allEmoji[1069] }, { k: ":clock830:", v: allEmoji[1069] }, { k: "\xF0\x9F\x95\xA4", v: allEmoji[1070] }, { k: ":clock930:", v: allEmoji[1070] }, { k: "\xF0\x9F\x95\xA5", v: allEmoji[1071] }, { k: ":clock1030:", v: allEmoji[1071] }, { k: "\xF0\x9F\x95\xA6", v: allEmoji[1072] }, { k: ":clock1130:", v: allEmoji[1072] }, { k: "\xF0\x9F\x95\xA7", v: allEmoji[1073] }, { k: ":clock1230:", v: allEmoji[1073] }, { k: "\xF0\x9F\x87\xA6\xF0\x9F\x87\xAB", v: allEmoji[1074] }, { k: ":afghanistan:", v: allEmoji[1074] }, { k: "\xF0\x9F\x87\xA6\xF0\x9F\x87\xBD", v: allEmoji[1075] }, { k: ":aland_islands:", v: allEmoji[1075] }, { k: "\xF0\x9F\x87\xA6\xF0\x9F\x87\xB1", v: allEmoji[1076] }, { k: ":albania:", v: allEmoji[1076] }, { k: "\xF0\x9F\x87\xA9\xF0\x9F\x87\xBF", v: allEmoji[1077] }, { k: ":algeria:", v: allEmoji[1077] }, { k: "\xF0\x9F\x87\xA6\xF0\x9F\x87\xB8", v: allEmoji[1078] }, { k: ":american_samoa:", v: allEmoji[1078] }, { k: "\xF0\x9F\x87\xA6\xF0\x9F\x87\xA9", v: allEmoji[1079] }, { k: ":andorra:", v: allEmoji[1079] }, { k: "\xF0\x9F\x87\xA6\xF0\x9F\x87\xB4", v: allEmoji[1080] }, { k: ":angola:", v: allEmoji[1080] }, { k: "\xF0\x9F\x87\xA6\xF0\x9F\x87\xAE", v: allEmoji[1081] }, { k: ":anguilla:", v: allEmoji[1081] }, { k: "\xF0\x9F\x87\xA6\xF0\x9F\x87\xB6", v: allEmoji[1082] }, { k: ":antarctica:", v: allEmoji[1082] }, { k: "\xF0\x9F\x87\xA6\xF0\x9F\x87\xAC", v: allEmoji[1083] }, { k: ":antigua_barbuda:", v: allEmoji[1083] }, { k: "\xF0\x9F\x87\xA6\xF0\x9F\x87\xB7", v: allEmoji[1084] }, { k: ":argentina:", v: allEmoji[1084] }, { k: "\xF0\x9F\x87\xA6\xF0\x9F\x87\xB2", v: allEmoji[1085] }, { k: ":armenia:", v: allEmoji[1085] }, { k: "\xF0\x9F\x87\xA6\xF0\x9F\x87\xBC", v: allEmoji[1086] }, { k: ":aruba:", v: allEmoji[1086] }, { k: "\xF0\x9F\x87\xA6\xF0\x9F\x87\xBA", v: allEmoji[1087] }, { k: ":australia:", v: allEmoji[1087] }, { k: "\xF0\x9F\x87\xA6\xF0\x9F\x87\xB9", v: allEmoji[1088] }, { k: ":austria:", v: allEmoji[1088] }, { k: "\xF0\x9F\x87\xA6\xF0\x9F\x87\xBF", v: allEmoji[1089] }, { k: ":azerbaijan:", v: allEmoji[1089] }, { k: "\xF0\x9F\x87\xA7\xF0\x9F\x87\xB8", v: allEmoji[1090] }, { k: ":bahamas:", v: allEmoji[1090] }, { k: "\xF0\x9F\x87\xA7\xF0\x9F\x87\xAD", v: allEmoji[1091] }, { k: ":bahrain:", v: allEmoji[1091] }, { k: "\xF0\x9F\x87\xA7\xF0\x9F\x87\xA9", v: allEmoji[1092] }, { k: ":bangladesh:", v: allEmoji[1092] }, { k: "\xF0\x9F\x87\xA7\xF0\x9F\x87\xA7", v: allEmoji[1093] }, { k: ":barbados:", v: allEmoji[1093] }, { k: "\xF0\x9F\x87\xA7\xF0\x9F\x87\xBE", v: allEmoji[1094] }, { k: ":belarus:", v: allEmoji[1094] }, { k: "\xF0\x9F\x87\xA7\xF0\x9F\x87\xAA", v: allEmoji[1095] }, { k: ":belgium:", v: allEmoji[1095] }, { k: "\xF0\x9F\x87\xA7\xF0\x9F\x87\xBF", v: allEmoji[1096] }, { k: ":belize:", v: allEmoji[1096] }, { k: "\xF0\x9F\x87\xA7\xF0\x9F\x87\xAF", v: allEmoji[1097] }, { k: ":benin:", v: allEmoji[1097] }, { k: "\xF0\x9F\x87\xA7\xF0\x9F\x87\xB2", v: allEmoji[1098] }, { k: ":bermuda:", v: allEmoji[1098] }, { k: "\xF0\x9F\x87\xA7\xF0\x9F\x87\xB9", v: allEmoji[1099] }, { k: ":bhutan:", v: allEmoji[1099] }, { k: "\xF0\x9F\x87\xA7\xF0\x9F\x87\xB4", v: allEmoji[1100] }, { k: ":bolivia:", v: allEmoji[1100] }, { k: "\xF0\x9F\x87\xA7\xF0\x9F\x87\xB6", v: allEmoji[1101] }, { k: ":caribbean_netherlands:", v: allEmoji[1101] }, { k: "\xF0\x9F\x87\xA7\xF0\x9F\x87\xA6", v: allEmoji[1102] }, { k: ":bosnia_herzegovina:", v: allEmoji[1102] }, { k: "\xF0\x9F\x87\xA7\xF0\x9F\x87\xBC", v: allEmoji[1103] }, { k: ":botswana:", v: allEmoji[1103] }, { k: "\xF0\x9F\x87\xA7\xF0\x9F\x87\xB7", v: allEmoji[1104] }, { k: ":brazil:", v: allEmoji[1104] }, { k: "\xF0\x9F\x87\xAE\xF0\x9F\x87\xB4", v: allEmoji[1105] }, { k: ":british_indian_ocean_territory:", v: allEmoji[1105] }, { k: "\xF0\x9F\x87\xBB\xF0\x9F\x87\xAC", v: allEmoji[1106] }, { k: ":british_virgin_islands:", v: allEmoji[1106] }, { k: "\xF0\x9F\x87\xA7\xF0\x9F\x87\xB3", v: allEmoji[1107] }, { k: ":brunei:", v: allEmoji[1107] }, { k: "\xF0\x9F\x87\xA7\xF0\x9F\x87\xAC", v: allEmoji[1108] }, { k: ":bulgaria:", v: allEmoji[1108] }, { k: "\xF0\x9F\x87\xA7\xF0\x9F\x87\xAB", v: allEmoji[1109] }, { k: ":burkina_faso:", v: allEmoji[1109] }, { k: "\xF0\x9F\x87\xA7\xF0\x9F\x87\xAE", v: allEmoji[1110] }, { k: ":burundi:", v: allEmoji[1110] }, { k: "\xF0\x9F\x87\xA8\xF0\x9F\x87\xBB", v: allEmoji[1111] }, { k: ":cape_verde:", v: allEmoji[1111] }, { k: "\xF0\x9F\x87\xB0\xF0\x9F\x87\xAD", v: allEmoji[1112] }, { k: ":cambodia:", v: allEmoji[1112] }, { k: "\xF0\x9F\x87\xA8\xF0\x9F\x87\xB2", v: allEmoji[1113] }, { k: ":cameroon:", v: allEmoji[1113] }, { k: "\xF0\x9F\x87\xA8\xF0\x9F\x87\xA6", v: allEmoji[1114] }, { k: ":canada:", v: allEmoji[1114] }, { k: "\xF0\x9F\x87\xAE\xF0\x9F\x87\xA8", v: allEmoji[1115] }, { k: ":canary_islands:", v: allEmoji[1115] }, { k: "\xF0\x9F\x87\xB0\xF0\x9F\x87\xBE", v: allEmoji[1116] }, { k: ":cayman_islands:", v: allEmoji[1116] }, { k: "\xF0\x9F\x87\xA8\xF0\x9F\x87\xAB", v: allEmoji[1117] }, { k: ":central_african_republic:", v: allEmoji[1117] }, { k: "\xF0\x9F\x87\xB9\xF0\x9F\x87\xA9", v: allEmoji[1118] }, { k: ":chad:", v: allEmoji[1118] }, { k: "\xF0\x9F\x87\xA8\xF0\x9F\x87\xB1", v: allEmoji[1119] }, { k: ":chile:", v: allEmoji[1119] }, { k: "\xF0\x9F\x87\xA8\xF0\x9F\x87\xB3", v: allEmoji[1120] }, { k: ":cn:", v: allEmoji[1120] }, { k: "\xF0\x9F\x87\xA8\xF0\x9F\x87\xBD", v: allEmoji[1121] }, { k: ":christmas_island:", v: allEmoji[1121] }, { k: "\xF0\x9F\x87\xA8\xF0\x9F\x87\xA8", v: allEmoji[1122] }, { k: ":cocos_islands:", v: allEmoji[1122] }, { k: "\xF0\x9F\x87\xA8\xF0\x9F\x87\xB4", v: allEmoji[1123] }, { k: ":colombia:", v: allEmoji[1123] }, { k: "\xF0\x9F\x87\xB0\xF0\x9F\x87\xB2", v: allEmoji[1124] }, { k: ":comoros:", v: allEmoji[1124] }, { k: "\xF0\x9F\x87\xA8\xF0\x9F\x87\xAC", v: allEmoji[1125] }, { k: ":congo_brazzaville:", v: allEmoji[1125] }, { k: "\xF0\x9F\x87\xA8\xF0\x9F\x87\xA9", v: allEmoji[1126] }, { k: ":congo_kinshasa:", v: allEmoji[1126] }, { k: "\xF0\x9F\x87\xA8\xF0\x9F\x87\xB0", v: allEmoji[1127] }, { k: ":cook_islands:", v: allEmoji[1127] }, { k: "\xF0\x9F\x87\xA8\xF0\x9F\x87\xB7", v: allEmoji[1128] }, { k: ":costa_rica:", v: allEmoji[1128] }, { k: "\xF0\x9F\x87\xAD\xF0\x9F\x87\xB7", v: allEmoji[1129] }, { k: ":croatia:", v: allEmoji[1129] }, { k: "\xF0\x9F\x87\xA8\xF0\x9F\x87\xBA", v: allEmoji[1130] }, { k: ":cuba:", v: allEmoji[1130] }, { k: "\xF0\x9F\x87\xA8\xF0\x9F\x87\xBC", v: allEmoji[1131] }, { k: ":curacao:", v: allEmoji[1131] }, { k: "\xF0\x9F\x87\xA8\xF0\x9F\x87\xBE", v: allEmoji[1132] }, { k: ":cyprus:", v: allEmoji[1132] }, { k: "\xF0\x9F\x87\xA8\xF0\x9F\x87\xBF", v: allEmoji[1133] }, { k: ":czech_republic:", v: allEmoji[1133] }, { k: "\xF0\x9F\x87\xA9\xF0\x9F\x87\xB0", v: allEmoji[1134] }, { k: ":denmark:", v: allEmoji[1134] }, { k: "\xF0\x9F\x87\xA9\xF0\x9F\x87\xAF", v: allEmoji[1135] }, { k: ":djibouti:", v: allEmoji[1135] }, { k: "\xF0\x9F\x87\xA9\xF0\x9F\x87\xB2", v: allEmoji[1136] }, { k: ":dominica:", v: allEmoji[1136] }, { k: "\xF0\x9F\x87\xA9\xF0\x9F\x87\xB4", v: allEmoji[1137] }, { k: ":dominican_republic:", v: allEmoji[1137] }, { k: "\xF0\x9F\x87\xAA\xF0\x9F\x87\xA8", v: allEmoji[1138] }, { k: ":ecuador:", v: allEmoji[1138] }, { k: "\xF0\x9F\x87\xAA\xF0\x9F\x87\xAC", v: allEmoji[1139] }, { k: ":egypt:", v: allEmoji[1139] }, { k: "\xF0\x9F\x87\xB8\xF0\x9F\x87\xBB", v: allEmoji[1140] }, { k: ":el_salvador:", v: allEmoji[1140] }, { k: "\xF0\x9F\x87\xAC\xF0\x9F\x87\xB6", v: allEmoji[1141] }, { k: ":equatorial_guinea:", v: allEmoji[1141] }, { k: "\xF0\x9F\x87\xAA\xF0\x9F\x87\xB7", v: allEmoji[1142] }, { k: ":eritrea:", v: allEmoji[1142] }, { k: "\xF0\x9F\x87\xAA\xF0\x9F\x87\xAA", v: allEmoji[1143] }, { k: ":estonia:", v: allEmoji[1143] }, { k: "\xF0\x9F\x87\xAA\xF0\x9F\x87\xB9", v: allEmoji[1144] }, { k: ":ethiopia:", v: allEmoji[1144] }, { k: "\xF0\x9F\x87\xAA\xF0\x9F\x87\xBA", v: allEmoji[1145] }, { k: ":eu:", v: allEmoji[1145] }, { k: ":european_union:", v: allEmoji[1145] }, { k: "\xF0\x9F\x87\xAB\xF0\x9F\x87\xB0", v: allEmoji[1146] }, { k: ":falkland_islands:", v: allEmoji[1146] }, { k: "\xF0\x9F\x87\xAB\xF0\x9F\x87\xB4", v: allEmoji[1147] }, { k: ":faroe_islands:", v: allEmoji[1147] }, { k: "\xF0\x9F\x87\xAB\xF0\x9F\x87\xAF", v: allEmoji[1148] }, { k: ":fiji:", v: allEmoji[1148] }, { k: "\xF0\x9F\x87\xAB\xF0\x9F\x87\xAE", v: allEmoji[1149] }, { k: ":finland:", v: allEmoji[1149] }, { k: "\xF0\x9F\x87\xAB\xF0\x9F\x87\xB7", v: allEmoji[1150] }, { k: ":fr:", v: allEmoji[1150] }, { k: "\xF0\x9F\x87\xAC\xF0\x9F\x87\xAB", v: allEmoji[1151] }, { k: ":french_guiana:", v: allEmoji[1151] }, { k: "\xF0\x9F\x87\xB5\xF0\x9F\x87\xAB", v: allEmoji[1152] }, { k: ":french_polynesia:", v: allEmoji[1152] }, { k: "\xF0\x9F\x87\xB9\xF0\x9F\x87\xAB", v: allEmoji[1153] }, { k: ":french_southern_territories:", v: allEmoji[1153] }, { k: "\xF0\x9F\x87\xAC\xF0\x9F\x87\xA6", v: allEmoji[1154] }, { k: ":gabon:", v: allEmoji[1154] }, { k: "\xF0\x9F\x87\xAC\xF0\x9F\x87\xB2", v: allEmoji[1155] }, { k: ":gambia:", v: allEmoji[1155] }, { k: "\xF0\x9F\x87\xAC\xF0\x9F\x87\xAA", v: allEmoji[1156] }, { k: ":georgia:", v: allEmoji[1156] }, { k: "\xF0\x9F\x87\xA9\xF0\x9F\x87\xAA", v: allEmoji[1157] }, { k: ":de:", v: allEmoji[1157] }, { k: "\xF0\x9F\x87\xAC\xF0\x9F\x87\xAD", v: allEmoji[1158] }, { k: ":ghana:", v: allEmoji[1158] }, { k: "\xF0\x9F\x87\xAC\xF0\x9F\x87\xAE", v: allEmoji[1159] }, { k: ":gibraltar:", v: allEmoji[1159] }, { k: "\xF0\x9F\x87\xAC\xF0\x9F\x87\xB7", v: allEmoji[1160] }, { k: ":greece:", v: allEmoji[1160] }, { k: "\xF0\x9F\x87\xAC\xF0\x9F\x87\xB1", v: allEmoji[1161] }, { k: ":greenland:", v: allEmoji[1161] }, { k: "\xF0\x9F\x87\xAC\xF0\x9F\x87\xA9", v: allEmoji[1162] }, { k: ":grenada:", v: allEmoji[1162] }, { k: "\xF0\x9F\x87\xAC\xF0\x9F\x87\xB5", v: allEmoji[1163] }, { k: ":guadeloupe:", v: allEmoji[1163] }, { k: "\xF0\x9F\x87\xAC\xF0\x9F\x87\xBA", v: allEmoji[1164] }, { k: ":guam:", v: allEmoji[1164] }, { k: "\xF0\x9F\x87\xAC\xF0\x9F\x87\xB9", v: allEmoji[1165] }, { k: ":guatemala:", v: allEmoji[1165] }, { k: "\xF0\x9F\x87\xAC\xF0\x9F\x87\xAC", v: allEmoji[1166] }, { k: ":guernsey:", v: allEmoji[1166] }, { k: "\xF0\x9F\x87\xAC\xF0\x9F\x87\xB3", v: allEmoji[1167] }, { k: ":guinea:", v: allEmoji[1167] }, { k: "\xF0\x9F\x87\xAC\xF0\x9F\x87\xBC", v: allEmoji[1168] }, { k: ":guinea_bissau:", v: allEmoji[1168] }, { k: "\xF0\x9F\x87\xAC\xF0\x9F\x87\xBE", v: allEmoji[1169] }, { k: ":guyana:", v: allEmoji[1169] }, { k: "\xF0\x9F\x87\xAD\xF0\x9F\x87\xB9", v: allEmoji[1170] }, { k: ":haiti:", v: allEmoji[1170] }, { k: "\xF0\x9F\x87\xAD\xF0\x9F\x87\xB3", v: allEmoji[1171] }, { k: ":honduras:", v: allEmoji[1171] }, { k: "\xF0\x9F\x87\xAD\xF0\x9F\x87\xB0", v: allEmoji[1172] }, { k: ":hong_kong:", v: allEmoji[1172] }, { k: "\xF0\x9F\x87\xAD\xF0\x9F\x87\xBA", v: allEmoji[1173] }, { k: ":hungary:", v: allEmoji[1173] }, { k: "\xF0\x9F\x87\xAE\xF0\x9F\x87\xB8", v: allEmoji[1174] }, { k: ":iceland:", v: allEmoji[1174] }, { k: "\xF0\x9F\x87\xAE\xF0\x9F\x87\xB3", v: allEmoji[1175] }, { k: ":india:", v: allEmoji[1175] }, { k: "\xF0\x9F\x87\xAE\xF0\x9F\x87\xA9", v: allEmoji[1176] }, { k: ":indonesia:", v: allEmoji[1176] }, { k: "\xF0\x9F\x87\xAE\xF0\x9F\x87\xB7", v: allEmoji[1177] }, { k: ":iran:", v: allEmoji[1177] }, { k: "\xF0\x9F\x87\xAE\xF0\x9F\x87\xB6", v: allEmoji[1178] }, { k: ":iraq:", v: allEmoji[1178] }, { k: "\xF0\x9F\x87\xAE\xF0\x9F\x87\xAA", v: allEmoji[1179] }, { k: ":ireland:", v: allEmoji[1179] }, { k: "\xF0\x9F\x87\xAE\xF0\x9F\x87\xB2", v: allEmoji[1180] }, { k: ":isle_of_man:", v: allEmoji[1180] }, { k: "\xF0\x9F\x87\xAE\xF0\x9F\x87\xB1", v: allEmoji[1181] }, { k: ":israel:", v: allEmoji[1181] }, { k: "\xF0\x9F\x87\xAE\xF0\x9F\x87\xB9", v: allEmoji[1182] }, { k: ":it:", v: allEmoji[1182] }, { k: "\xF0\x9F\x87\xA8\xF0\x9F\x87\xAE", v: allEmoji[1183] }, { k: ":cote_divoire:", v: allEmoji[1183] }, { k: "\xF0\x9F\x87\xAF\xF0\x9F\x87\xB2", v: allEmoji[1184] }, { k: ":jamaica:", v: allEmoji[1184] }, { k: "\xF0\x9F\x87\xAF\xF0\x9F\x87\xB5", v: allEmoji[1185] }, { k: ":jp:", v: allEmoji[1185] }, { k: "\xF0\x9F\x87\xAF\xF0\x9F\x87\xAA", v: allEmoji[1186] }, { k: ":jersey:", v: allEmoji[1186] }, { k: "\xF0\x9F\x87\xAF\xF0\x9F\x87\xB4", v: allEmoji[1187] }, { k: ":jordan:", v: allEmoji[1187] }, { k: "\xF0\x9F\x87\xB0\xF0\x9F\x87\xBF", v: allEmoji[1188] }, { k: ":kazakhstan:", v: allEmoji[1188] }, { k: "\xF0\x9F\x87\xB0\xF0\x9F\x87\xAA", v: allEmoji[1189] }, { k: ":kenya:", v: allEmoji[1189] }, { k: "\xF0\x9F\x87\xB0\xF0\x9F\x87\xAE", v: allEmoji[1190] }, { k: ":kiribati:", v: allEmoji[1190] }, { k: "\xF0\x9F\x87\xBD\xF0\x9F\x87\xB0", v: allEmoji[1191] }, { k: ":kosovo:", v: allEmoji[1191] }, { k: "\xF0\x9F\x87\xB0\xF0\x9F\x87\xBC", v: allEmoji[1192] }, { k: ":kuwait:", v: allEmoji[1192] }, { k: "\xF0\x9F\x87\xB0\xF0\x9F\x87\xAC", v: allEmoji[1193] }, { k: ":kyrgyzstan:", v: allEmoji[1193] }, { k: "\xF0\x9F\x87\xB1\xF0\x9F\x87\xA6", v: allEmoji[1194] }, { k: ":laos:", v: allEmoji[1194] }, { k: "\xF0\x9F\x87\xB1\xF0\x9F\x87\xBB", v: allEmoji[1195] }, { k: ":latvia:", v: allEmoji[1195] }, { k: "\xF0\x9F\x87\xB1\xF0\x9F\x87\xA7", v: allEmoji[1196] }, { k: ":lebanon:", v: allEmoji[1196] }, { k: "\xF0\x9F\x87\xB1\xF0\x9F\x87\xB8", v: allEmoji[1197] }, { k: ":lesotho:", v: allEmoji[1197] }, { k: "\xF0\x9F\x87\xB1\xF0\x9F\x87\xB7", v: allEmoji[1198] }, { k: ":liberia:", v: allEmoji[1198] }, { k: "\xF0\x9F\x87\xB1\xF0\x9F\x87\xBE", v: allEmoji[1199] }, { k: ":libya:", v: allEmoji[1199] }, { k: "\xF0\x9F\x87\xB1\xF0\x9F\x87\xAE", v: allEmoji[1200] }, { k: ":liechtenstein:", v: allEmoji[1200] }, { k: "\xF0\x9F\x87\xB1\xF0\x9F\x87\xB9", v: allEmoji[1201] }, { k: ":lithuania:", v: allEmoji[1201] }, { k: "\xF0\x9F\x87\xB1\xF0\x9F\x87\xBA", v: allEmoji[1202] }, { k: ":luxembourg:", v: allEmoji[1202] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xB4", v: allEmoji[1203] }, { k: ":macau:", v: allEmoji[1203] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xB0", v: allEmoji[1204] }, { k: ":macedonia:", v: allEmoji[1204] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xAC", v: allEmoji[1205] }, { k: ":madagascar:", v: allEmoji[1205] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xBC", v: allEmoji[1206] }, { k: ":malawi:", v: allEmoji[1206] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xBE", v: allEmoji[1207] }, { k: ":malaysia:", v: allEmoji[1207] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xBB", v: allEmoji[1208] }, { k: ":maldives:", v: allEmoji[1208] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xB1", v: allEmoji[1209] }, { k: ":mali:", v: allEmoji[1209] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xB9", v: allEmoji[1210] }, { k: ":malta:", v: allEmoji[1210] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xAD", v: allEmoji[1211] }, { k: ":marshall_islands:", v: allEmoji[1211] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xB6", v: allEmoji[1212] }, { k: ":martinique:", v: allEmoji[1212] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xB7", v: allEmoji[1213] }, { k: ":mauritania:", v: allEmoji[1213] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xBA", v: allEmoji[1214] }, { k: ":mauritius:", v: allEmoji[1214] }, { k: "\xF0\x9F\x87\xBE\xF0\x9F\x87\xB9", v: allEmoji[1215] }, { k: ":mayotte:", v: allEmoji[1215] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xBD", v: allEmoji[1216] }, { k: ":mexico:", v: allEmoji[1216] }, { k: "\xF0\x9F\x87\xAB\xF0\x9F\x87\xB2", v: allEmoji[1217] }, { k: ":micronesia:", v: allEmoji[1217] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xA9", v: allEmoji[1218] }, { k: ":moldova:", v: allEmoji[1218] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xA8", v: allEmoji[1219] }, { k: ":monaco:", v: allEmoji[1219] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xB3", v: allEmoji[1220] }, { k: ":mongolia:", v: allEmoji[1220] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xAA", v: allEmoji[1221] }, { k: ":montenegro:", v: allEmoji[1221] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xB8", v: allEmoji[1222] }, { k: ":montserrat:", v: allEmoji[1222] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xA6", v: allEmoji[1223] }, { k: ":morocco:", v: allEmoji[1223] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xBF", v: allEmoji[1224] }, { k: ":mozambique:", v: allEmoji[1224] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xB2", v: allEmoji[1225] }, { k: ":myanmar:", v: allEmoji[1225] }, { k: "\xF0\x9F\x87\xB3\xF0\x9F\x87\xA6", v: allEmoji[1226] }, { k: ":namibia:", v: allEmoji[1226] }, { k: "\xF0\x9F\x87\xB3\xF0\x9F\x87\xB7", v: allEmoji[1227] }, { k: ":nauru:", v: allEmoji[1227] }, { k: "\xF0\x9F\x87\xB3\xF0\x9F\x87\xB5", v: allEmoji[1228] }, { k: ":nepal:", v: allEmoji[1228] }, { k: "\xF0\x9F\x87\xB3\xF0\x9F\x87\xB1", v: allEmoji[1229] }, { k: ":netherlands:", v: allEmoji[1229] }, { k: "\xF0\x9F\x87\xB3\xF0\x9F\x87\xA8", v: allEmoji[1230] }, { k: ":new_caledonia:", v: allEmoji[1230] }, { k: "\xF0\x9F\x87\xB3\xF0\x9F\x87\xBF", v: allEmoji[1231] }, { k: ":new_zealand:", v: allEmoji[1231] }, { k: "\xF0\x9F\x87\xB3\xF0\x9F\x87\xAE", v: allEmoji[1232] }, { k: ":nicaragua:", v: allEmoji[1232] }, { k: "\xF0\x9F\x87\xB3\xF0\x9F\x87\xAA", v: allEmoji[1233] }, { k: ":niger:", v: allEmoji[1233] }, { k: "\xF0\x9F\x87\xB3\xF0\x9F\x87\xAC", v: allEmoji[1234] }, { k: ":nigeria:", v: allEmoji[1234] }, { k: "\xF0\x9F\x87\xB3\xF0\x9F\x87\xBA", v: allEmoji[1235] }, { k: ":niue:", v: allEmoji[1235] }, { k: "\xF0\x9F\x87\xB3\xF0\x9F\x87\xAB", v: allEmoji[1236] }, { k: ":norfolk_island:", v: allEmoji[1236] }, { k: "\xF0\x9F\x87\xB2\xF0\x9F\x87\xB5", v: allEmoji[1237] }, { k: ":northern_mariana_islands:", v: allEmoji[1237] }, { k: "\xF0\x9F\x87\xB0\xF0\x9F\x87\xB5", v: allEmoji[1238] }, { k: ":north_korea:", v: allEmoji[1238] }, { k: "\xF0\x9F\x87\xB3\xF0\x9F\x87\xB4", v: allEmoji[1239] }, { k: ":norway:", v: allEmoji[1239] }, { k: "\xF0\x9F\x87\xB4\xF0\x9F\x87\xB2", v: allEmoji[1240] }, { k: ":oman:", v: allEmoji[1240] }, { k: "\xF0\x9F\x87\xB5\xF0\x9F\x87\xB0", v: allEmoji[1241] }, { k: ":pakistan:", v: allEmoji[1241] }, { k: "\xF0\x9F\x87\xB5\xF0\x9F\x87\xBC", v: allEmoji[1242] }, { k: ":palau:", v: allEmoji[1242] }, { k: "\xF0\x9F\x87\xB5\xF0\x9F\x87\xB8", v: allEmoji[1243] }, { k: ":palestinian_territories:", v: allEmoji[1243] }, { k: "\xF0\x9F\x87\xB5\xF0\x9F\x87\xA6", v: allEmoji[1244] }, { k: ":panama:", v: allEmoji[1244] }, { k: "\xF0\x9F\x87\xB5\xF0\x9F\x87\xAC", v: allEmoji[1245] }, { k: ":papua_new_guinea:", v: allEmoji[1245] }, { k: "\xF0\x9F\x87\xB5\xF0\x9F\x87\xBE", v: allEmoji[1246] }, { k: ":paraguay:", v: allEmoji[1246] }, { k: "\xF0\x9F\x87\xB5\xF0\x9F\x87\xAA", v: allEmoji[1247] }, { k: ":peru:", v: allEmoji[1247] }, { k: "\xF0\x9F\x87\xB5\xF0\x9F\x87\xAD", v: allEmoji[1248] }, { k: ":philippines:", v: allEmoji[1248] }, { k: "\xF0\x9F\x87\xB5\xF0\x9F\x87\xB3", v: allEmoji[1249] }, { k: ":pitcairn_islands:", v: allEmoji[1249] }, { k: "\xF0\x9F\x87\xB5\xF0\x9F\x87\xB1", v: allEmoji[1250] }, { k: ":poland:", v: allEmoji[1250] }, { k: "\xF0\x9F\x87\xB5\xF0\x9F\x87\xB9", v: allEmoji[1251] }, { k: ":portugal:", v: allEmoji[1251] }, { k: "\xF0\x9F\x87\xB5\xF0\x9F\x87\xB7", v: allEmoji[1252] }, { k: ":puerto_rico:", v: allEmoji[1252] }, { k: "\xF0\x9F\x87\xB6\xF0\x9F\x87\xA6", v: allEmoji[1253] }, { k: ":qatar:", v: allEmoji[1253] }, { k: "\xF0\x9F\x87\xB7\xF0\x9F\x87\xAA", v: allEmoji[1254] }, { k: ":reunion:", v: allEmoji[1254] }, { k: "\xF0\x9F\x87\xB7\xF0\x9F\x87\xB4", v: allEmoji[1255] }, { k: ":romania:", v: allEmoji[1255] }, { k: "\xF0\x9F\x87\xB7\xF0\x9F\x87\xBA", v: allEmoji[1256] }, { k: ":ru:", v: allEmoji[1256] }, { k: "\xF0\x9F\x87\xB7\xF0\x9F\x87\xBC", v: allEmoji[1257] }, { k: ":rwanda:", v: allEmoji[1257] }, { k: "\xF0\x9F\x87\xA7\xF0\x9F\x87\xB1", v: allEmoji[1258] }, { k: ":st_barthelemy:", v: allEmoji[1258] }, { k: "\xF0\x9F\x87\xB8\xF0\x9F\x87\xAD", v: allEmoji[1259] }, { k: ":st_helena:", v: allEmoji[1259] }, { k: "\xF0\x9F\x87\xB0\xF0\x9F\x87\xB3", v: allEmoji[1260] }, { k: ":st_kitts_nevis:", v: allEmoji[1260] }, { k: "\xF0\x9F\x87\xB1\xF0\x9F\x87\xA8", v: allEmoji[1261] }, { k: ":st_lucia:", v: allEmoji[1261] }, { k: "\xF0\x9F\x87\xB5\xF0\x9F\x87\xB2", v: allEmoji[1262] }, { k: ":st_pierre_miquelon:", v: allEmoji[1262] }, { k: "\xF0\x9F\x87\xBB\xF0\x9F\x87\xA8", v: allEmoji[1263] }, { k: ":st_vincent_grenadines:", v: allEmoji[1263] }, { k: "\xF0\x9F\x87\xBC\xF0\x9F\x87\xB8", v: allEmoji[1264] }, { k: ":samoa:", v: allEmoji[1264] }, { k: "\xF0\x9F\x87\xB8\xF0\x9F\x87\xB2", v: allEmoji[1265] }, { k: ":san_marino:", v: allEmoji[1265] }, { k: "\xF0\x9F\x87\xB8\xF0\x9F\x87\xB9", v: allEmoji[1266] }, { k: ":sao_tome_principe:", v: allEmoji[1266] }, { k: "\xF0\x9F\x87\xB8\xF0\x9F\x87\xA6", v: allEmoji[1267] }, { k: ":saudi_arabia:", v: allEmoji[1267] }, { k: "\xF0\x9F\x87\xB8\xF0\x9F\x87\xB3", v: allEmoji[1268] }, { k: ":senegal:", v: allEmoji[1268] }, { k: "\xF0\x9F\x87\xB7\xF0\x9F\x87\xB8", v: allEmoji[1269] }, { k: ":serbia:", v: allEmoji[1269] }, { k: "\xF0\x9F\x87\xB8\xF0\x9F\x87\xA8", v: allEmoji[1270] }, { k: ":seychelles:", v: allEmoji[1270] }, { k: "\xF0\x9F\x87\xB8\xF0\x9F\x87\xB1", v: allEmoji[1271] }, { k: ":sierra_leone:", v: allEmoji[1271] }, { k: "\xF0\x9F\x87\xB8\xF0\x9F\x87\xAC", v: allEmoji[1272] }, { k: ":singapore:", v: allEmoji[1272] }, { k: "\xF0\x9F\x87\xB8\xF0\x9F\x87\xBD", v: allEmoji[1273] }, { k: ":sint_maarten:", v: allEmoji[1273] }, { k: "\xF0\x9F\x87\xB8\xF0\x9F\x87\xB0", v: allEmoji[1274] }, { k: ":slovakia:", v: allEmoji[1274] }, { k: "\xF0\x9F\x87\xB8\xF0\x9F\x87\xAE", v: allEmoji[1275] }, { k: ":slovenia:", v: allEmoji[1275] }, { k: "\xF0\x9F\x87\xB8\xF0\x9F\x87\xA7", v: allEmoji[1276] }, { k: ":solomon_islands:", v: allEmoji[1276] }, { k: "\xF0\x9F\x87\xB8\xF0\x9F\x87\xB4", v: allEmoji[1277] }, { k: ":somalia:", v: allEmoji[1277] }, { k: "\xF0\x9F\x87\xBF\xF0\x9F\x87\xA6", v: allEmoji[1278] }, { k: ":south_africa:", v: allEmoji[1278] }, { k: "\xF0\x9F\x87\xAC\xF0\x9F\x87\xB8", v: allEmoji[1279] }, { k: ":south_georgia_south_sandwich_islands:", v: allEmoji[1279] }, { k: "\xF0\x9F\x87\xB0\xF0\x9F\x87\xB7", v: allEmoji[1280] }, { k: ":kr:", v: allEmoji[1280] }, { k: "\xF0\x9F\x87\xB8\xF0\x9F\x87\xB8", v: allEmoji[1281] }, { k: ":south_sudan:", v: allEmoji[1281] }, { k: "\xF0\x9F\x87\xAA\xF0\x9F\x87\xB8", v: allEmoji[1282] }, { k: ":es:", v: allEmoji[1282] }, { k: "\xF0\x9F\x87\xB1\xF0\x9F\x87\xB0", v: allEmoji[1283] }, { k: ":sri_lanka:", v: allEmoji[1283] }, { k: "\xF0\x9F\x87\xB8\xF0\x9F\x87\xA9", v: allEmoji[1284] }, { k: ":sudan:", v: allEmoji[1284] }, { k: "\xF0\x9F\x87\xB8\xF0\x9F\x87\xB7", v: allEmoji[1285] }, { k: ":suriname:", v: allEmoji[1285] }, { k: "\xF0\x9F\x87\xB8\xF0\x9F\x87\xBF", v: allEmoji[1286] }, { k: ":swaziland:", v: allEmoji[1286] }, { k: "\xF0\x9F\x87\xB8\xF0\x9F\x87\xAA", v: allEmoji[1287] }, { k: ":sweden:", v: allEmoji[1287] }, { k: "\xF0\x9F\x87\xA8\xF0\x9F\x87\xAD", v: allEmoji[1288] }, { k: ":switzerland:", v: allEmoji[1288] }, { k: "\xF0\x9F\x87\xB8\xF0\x9F\x87\xBE", v: allEmoji[1289] }, { k: ":syria:", v: allEmoji[1289] }, { k: "\xF0\x9F\x87\xB9\xF0\x9F\x87\xBC", v: allEmoji[1290] }, { k: ":taiwan:", v: allEmoji[1290] }, { k: "\xF0\x9F\x87\xB9\xF0\x9F\x87\xAF", v: allEmoji[1291] }, { k: ":tajikistan:", v: allEmoji[1291] }, { k: "\xF0\x9F\x87\xB9\xF0\x9F\x87\xBF", v: allEmoji[1292] }, { k: ":tanzania:", v: allEmoji[1292] }, { k: "\xF0\x9F\x87\xB9\xF0\x9F\x87\xAD", v: allEmoji[1293] }, { k: ":thailand:", v: allEmoji[1293] }, { k: "\xF0\x9F\x87\xB9\xF0\x9F\x87\xB1", v: allEmoji[1294] }, { k: ":timor_leste:", v: allEmoji[1294] }, { k: "\xF0\x9F\x87\xB9\xF0\x9F\x87\xAC", v: allEmoji[1295] }, { k: ":togo:", v: allEmoji[1295] }, { k: "\xF0\x9F\x87\xB9\xF0\x9F\x87\xB0", v: allEmoji[1296] }, { k: ":tokelau:", v: allEmoji[1296] }, { k: "\xF0\x9F\x87\xB9\xF0\x9F\x87\xB4", v: allEmoji[1297] }, { k: ":tonga:", v: allEmoji[1297] }, { k: "\xF0\x9F\x87\xB9\xF0\x9F\x87\xB9", v: allEmoji[1298] }, { k: ":trinidad_tobago:", v: allEmoji[1298] }, { k: "\xF0\x9F\x87\xB9\xF0\x9F\x87\xB3", v: allEmoji[1299] }, { k: ":tunisia:", v: allEmoji[1299] }, { k: "\xF0\x9F\x87\xB9\xF0\x9F\x87\xB7", v: allEmoji[1300] }, { k: ":tr:", v: allEmoji[1300] }, { k: "\xF0\x9F\x87\xB9\xF0\x9F\x87\xB2", v: allEmoji[1301] }, { k: ":turkmenistan:", v: allEmoji[1301] }, { k: "\xF0\x9F\x87\xB9\xF0\x9F\x87\xA8", v: allEmoji[1302] }, { k: ":turks_caicos_islands:", v: allEmoji[1302] }, { k: "\xF0\x9F\x87\xB9\xF0\x9F\x87\xBB", v: allEmoji[1303] }, { k: ":tuvalu:", v: allEmoji[1303] }, { k: "\xF0\x9F\x87\xBA\xF0\x9F\x87\xAC", v: allEmoji[1304] }, { k: ":uganda:", v: allEmoji[1304] }, { k: "\xF0\x9F\x87\xBA\xF0\x9F\x87\xA6", v: allEmoji[1305] }, { k: ":ukraine:", v: allEmoji[1305] }, { k: "\xF0\x9F\x87\xA6\xF0\x9F\x87\xAA", v: allEmoji[1306] }, { k: ":united_arab_emirates:", v: allEmoji[1306] }, { k: "\xF0\x9F\x87\xAC\xF0\x9F\x87\xA7", v: allEmoji[1307] }, { k: ":gb:", v: allEmoji[1307] }, { k: ":uk:", v: allEmoji[1307] }, { k: "\xF0\x9F\x87\xBA\xF0\x9F\x87\xB8", v: allEmoji[1308] }, { k: ":us:", v: allEmoji[1308] }, { k: "\xF0\x9F\x87\xBB\xF0\x9F\x87\xAE", v: allEmoji[1309] }, { k: ":us_virgin_islands:", v: allEmoji[1309] }, { k: "\xF0\x9F\x87\xBA\xF0\x9F\x87\xBE", v: allEmoji[1310] }, { k: ":uruguay:", v: allEmoji[1310] }, { k: "\xF0\x9F\x87\xBA\xF0\x9F\x87\xBF", v: allEmoji[1311] }, { k: ":uzbekistan:", v: allEmoji[1311] }, { k: "\xF0\x9F\x87\xBB\xF0\x9F\x87\xBA", v: allEmoji[1312] }, { k: ":vanuatu:", v: allEmoji[1312] }, { k: "\xF0\x9F\x87\xBB\xF0\x9F\x87\xA6", v: allEmoji[1313] }, { k: ":vatican_city:", v: allEmoji[1313] }, { k: "\xF0\x9F\x87\xBB\xF0\x9F\x87\xAA", v: allEmoji[1314] }, { k: ":venezuela:", v: allEmoji[1314] }, { k: "\xF0\x9F\x87\xBB\xF0\x9F\x87\xB3", v: allEmoji[1315] }, { k: ":vietnam:", v: allEmoji[1315] }, { k: "\xF0\x9F\x87\xBC\xF0\x9F\x87\xAB", v: allEmoji[1316] }, { k: ":wallis_futuna:", v: allEmoji[1316] }, { k: "\xF0\x9F\x87\xAA\xF0\x9F\x87\xAD", v: allEmoji[1317] }, { k: ":western_sahara:", v: allEmoji[1317] }, { k: "\xF0\x9F\x87\xBE\xF0\x9F\x87\xAA", v: allEmoji[1318] }, { k: ":yemen:", v: allEmoji[1318] }, { k: "\xF0\x9F\x87\xBF\xF0\x9F\x87\xB2", v: allEmoji[1319] }, { k: ":zambia:", v: allEmoji[1319] }, { k: "\xF0\x9F\x87\xBF\xF0\x9F\x87\xBC", v: allEmoji[1320] }, { k: ":zimbabwe:", v: allEmoji[1320] }]);
-		skipElement = $makeMap(atom.Atom.keyFor, [{ k: 4, v: true }, { k: 250886, v: true }, { k: 397573, v: true }, { k: 155139, v: true }, { k: 84228, v: true }]);
+		skipElement = $makeMap(atom.Atom.keyFor, [{ k: 250886, v: true }, { k: 397573, v: true }, { k: 155139, v: true }, { k: 84228, v: true }]);
 		_r = (function $b() {
 			var $ptr, _entry, _i, _keys, _r, _ref, name, root, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _entry = $f._entry; _i = $f._i; _keys = $f._keys; _r = $f._r; _ref = $f._ref; name = $f.name; root = $f.root; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
