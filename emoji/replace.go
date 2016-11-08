@@ -32,7 +32,7 @@ func (conf *Config) replace(tooltip bool, nodes ...*html.Node) []*html.Node {
 		switch node.Type {
 		case html.ElementNode:
 			if node.Namespace != "" || skipElement[node.DataAtom] {
-				result = append(result, node)
+				result = append(result, deepClone(node))
 				break
 			}
 
@@ -40,7 +40,7 @@ func (conf *Config) replace(tooltip bool, nodes ...*html.Node) []*html.Node {
 		case html.TextNode:
 			result = append(result, conf.replaceText(tooltip, node)...)
 		default:
-			result = append(result, node)
+			result = append(result, deepClone(node))
 		}
 	}
 
@@ -62,19 +62,10 @@ func (conf *Config) replaceElement(tooltip bool, node *html.Node) []*html.Node {
 		}
 	}
 
-	result := node
+	result := shallowClone(node)
 	for child := node.FirstChild; child != nil; child = child.NextSibling {
-		if out := conf.replace(tooltip, child); len(out) != 1 || out[0] != child || result != node {
-			if result == node {
-				result = shallowClone(node)
-
-				for prev := node.FirstChild; prev != child && prev != nil; prev = prev.NextSibling {
-					result.AppendChild(deepClone(prev))
-				}
-			}
-			for _, o := range out {
-				result.AppendChild(o)
-			}
+		for _, o := range conf.replace(tooltip, child) {
+			result.AppendChild(o)
 		}
 	}
 	return []*html.Node{result}

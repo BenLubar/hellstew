@@ -68,6 +68,11 @@ var replaceTests = [...]replaceTest{
 		input:  `<p><a href="https://www.google.com/"><img src="https://www.google.com/favicon.ico" alt="Google"/></a> :mag: Look it up:exclamation:</p>`,
 		output: `<p><a href="https://www.google.com/"><img src="https://www.google.com/favicon.ico" alt="Google"/></a> <abbr class="emoji" title="left-pointing magnifying glass">🔍</abbr> Look it up<abbr class="emoji" title="exclamation mark">❗️</abbr></p>`,
 	},
+	{
+		name:   "ElementBefore",
+		input:  `<p><br/>:horse:</p>`,
+		output: `<p><br/><abbr class="emoji" title="horse face">🐴</abbr></p>`,
+	},
 }
 
 func TestReplace(t *testing.T) {
