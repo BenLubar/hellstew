@@ -23766,14 +23766,14 @@ $packages["github.com/BenLubar/hellstew/emoji"] = (function() {
 				_1 = node.Type;
 				if (_1 === (3)) {
 					if (!(node.Namespace === "") || (_entry = skipElement[atom.Atom.keyFor(node.DataAtom)], _entry !== undefined ? _entry.v : false)) {
-						result = $append(result, node);
+						result = $append(result, deepClone(node));
 						break;
 					}
 					result = $appendSlice(result, conf.replaceElement(tooltip, node));
 				} else if (_1 === (1)) {
 					result = $appendSlice(result, conf.replaceText(tooltip, node));
 				} else {
-					result = $append(result, node);
+					result = $append(result, deepClone(node));
 				}
 			}
 			_i++;
@@ -23782,7 +23782,7 @@ $packages["github.com/BenLubar/hellstew/emoji"] = (function() {
 	};
 	Config.prototype.replace = function(tooltip, nodes) { return this.$val.replace(tooltip, nodes); };
 	Config.ptr.prototype.replaceElement = function(tooltip, node) {
-		var $ptr, _i, _i$1, _i$2, _ref, _ref$1, _ref$2, a, a$1, child, conf, node, o, out, prev, result, tooltip;
+		var $ptr, _i, _i$1, _i$2, _ref, _ref$1, _ref$2, a, a$1, child, conf, node, o, result, tooltip;
 		conf = this;
 		if (tooltip) {
 			_ref = node.Attr;
@@ -23807,29 +23807,17 @@ $packages["github.com/BenLubar/hellstew/emoji"] = (function() {
 			}
 			_i$1++;
 		}
-		result = node;
+		result = shallowClone(node);
 		child = node.FirstChild;
 		while (true) {
 			if (!(!(child === ptrType$4.nil))) { break; }
-			out = conf.replace(tooltip, new sliceType$3([child]));
-			if (!((out.$length === 1)) || !((0 >= out.$length ? $throwRuntimeError("index out of range") : out.$array[out.$offset + 0]) === child) || !(result === node)) {
-				if (result === node) {
-					result = shallowClone(node);
-					prev = node.FirstChild;
-					while (true) {
-						if (!(!(prev === child) && !(prev === ptrType$4.nil))) { break; }
-						result.AppendChild(deepClone(prev));
-						prev = prev.NextSibling;
-					}
-				}
-				_ref$2 = out;
-				_i$2 = 0;
-				while (true) {
-					if (!(_i$2 < _ref$2.$length)) { break; }
-					o = ((_i$2 < 0 || _i$2 >= _ref$2.$length) ? $throwRuntimeError("index out of range") : _ref$2.$array[_ref$2.$offset + _i$2]);
-					result.AppendChild(o);
-					_i$2++;
-				}
+			_ref$2 = conf.replace(tooltip, new sliceType$3([child]));
+			_i$2 = 0;
+			while (true) {
+				if (!(_i$2 < _ref$2.$length)) { break; }
+				o = ((_i$2 < 0 || _i$2 >= _ref$2.$length) ? $throwRuntimeError("index out of range") : _ref$2.$array[_ref$2.$offset + _i$2]);
+				result.AppendChild(o);
+				_i$2++;
 			}
 			child = child.NextSibling;
 		}
